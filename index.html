@@ -237,7 +237,7 @@
 <body class="menu">
 <div id="elim"><span>ELIMINATED!</span></div>
 <div id="victory"><span>VICTORY!</span></div>
-<div id="timer">0:00</div>
+<div id="timer">3:00</div>
 <div id="toast"><span>Floor shrinks!</span></div>
 <div id="menu">
   <button id="profileBtn" title="Profile"><div class="avatar"></div><span id="profileName"></span></button>
@@ -542,7 +542,7 @@ scene.add(sun); scene.add(sun.target);
 const TILE_R = 2.8, TILE_GAP = 0.96, TILE_H = 0.5, RINGS0 = 8;   // promień kafelka, grubość (płaska podłoga), liczba pierścieni
 const HEX_A = Math.sqrt(3) / 2 * TILE_R;                          // pół szerokości kafelka
 const GN = RINGS0, GW = GN * 2 + 1;
-const HONEY_T = 0.9, RESPAWN_T = 3.5, POP_T = 0.45, START_GRACE = 0.8;
+const HONEY_T = 0.9, RESPAWN_T = 2.0, POP_T = 0.45, START_GRACE = 0.8;
 const HONEY_COL = new THREE.Color(0xe8232b), SIDE_BASE = new THREE.Color(0x5a2a9a), SIDE_RED = new THREE.Color(0xa01018);
 const TOP_COLS = [0xb07cff, 0x8a4fe0, 0x9d66f0];
 const tileGeo = new THREE.CylinderGeometry(TILE_R * TILE_GAP, TILE_R * TILE_GAP, TILE_H, 6);
@@ -575,7 +575,7 @@ function applyRed(t, k) {
   t.dy = -0.16 * e;
   m.position.y = -TILE_H / 2 + t.dy;
   m.rotation.x = Math.sin(t.t * 26) * k * 0.035; m.rotation.z = Math.cos(t.t * 21) * k * 0.035;
-  const sq = 1 + Math.sin(t.t * 26) * 0.025 * k; m.scale.set(sq, 1, sq);
+  const sq = 1 - 0.02 * k * (1 + Math.sin(t.t * 26)); m.scale.set(sq, 1, sq);   // tylko się zwęża, nigdy nie wchodzi na sąsiadów
 }
 let _hq = 0, _hr = 0;
 function hexQR(x, z) {   // punkt -> współrzędne kafelka (zaokrąglanie osiowe)
@@ -611,9 +611,12 @@ function updateTiles(dt) {
       applyRed(t, k);
       if (k >= 1) { m.scale.set(1, 1, 1); startFall(t); }
     } else if (t.state === 2) {   // zapada się w dół
+      t.t += dt;   // kafelek znika dopiero, gdy spadnie poza zasięg mgły (dy < -185), więc nie widać, że znika
+      const sh = 1 - 0.06 * Math.min(1, t.t / 0.15), rk = Math.min(1, t.t / 0.4);   // lekko się zwęża i dopiero po chwili zaczyna się przechylać, więc nie zahacza o sąsiadów
+      m.scale.set(sh, 1, sh);
       t.vy -= GRAVITY * dt; t.dy += t.vy * dt;
-      m.position.y = -TILE_H / 2 + t.dy; m.rotation.x += t.rx * dt; m.rotation.z += t.rz * dt;
-      if (t.dy < -30) { m.visible = false; t.state = 3; t.t = 0; releaseOwn(t); }
+      m.position.y = -TILE_H / 2 + t.dy; m.rotation.x += t.rx * dt * rk; m.rotation.z += t.rz * dt * rk;
+      if (t.dy < -185) { m.visible = false; t.state = 3; t.t = 0; releaseOwn(t); }
     } else if (t.state === 3) {
       if (!t.perm) {
         t.t += dt;
@@ -625,7 +628,8 @@ function updateTiles(dt) {
     } else {   // 4: wyskakuje ze sprężynką
       t.t += dt;
       const k = Math.min(1, t.t / POP_T), c = k - 1;
-      m.scale.setScalar(Math.max(0.01, 1 + 2.70158 * c * c * c + 1.70158 * c * c));
+      const sp = Math.max(0.01, 1 + 2.70158 * c * c * c + 1.70158 * c * c), sw = Math.min(1, sp);
+      m.scale.set(sw, sp, sw);   // sprężynka tylko w pionie, wszerz nigdy nie większy niż kafelek
       if (k >= 1) { t.state = 0; m.scale.set(1, 1, 1); }
     }
   }
@@ -1072,9 +1076,9 @@ const ELIM_TIME = 2.0;
 const WIN_TIME = 180, SHRINK_EVERY = 60, WARN_T = 4, WIN_SHOW = 4;   // 3 min do wygranej, co minutę podłoga się zmniejsza
 let won = false, winTimer = 0, winHop = 0, gameT = 0, ringsNow = RINGS0, shrinkCount = 0, warned = false, lastSec = -1;
 const winEl = document.getElementById('victory'), timerEl = document.getElementById('timer'), toastEl = document.getElementById('toast');
-function setTimer(sec) {
-  sec = Math.floor(sec); if (sec === lastSec) return; lastSec = sec;
-  timerEl.textContent = Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0');
+function setTimer(sec) {   // odliczanie: 3:00 -> 0:00 (sec = czas, który upłynął)
+  const left = Math.max(0, Math.ceil(WIN_TIME - sec)); if (left === lastSec) return; lastSec = left;
+  timerEl.textContent = Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0');
 }
 function resetArena() {
   for (const t of tiles) {
@@ -1102,7 +1106,7 @@ function winGame() {
   won = true; winTimer = WIN_SHOW; winHop = 0.3;
   stats.wins++; saveStats(); renderStats();
   sfx.win(); musicDuck(true);
-  gameT = WIN_TIME; setTimer(WIN_TIME);   // stoper stoi na 3:00 (i jest ukryty)
+  gameT = WIN_TIME; setTimer(WIN_TIME);   // odliczanie stoi na 0:00 (i jest ukryte)
   document.body.classList.add('won'); timerEl.classList.remove('warn'); toastEl.classList.remove('show');
   joyReset(); camId = null; jumpEl.classList.remove('down');
   winEl.classList.remove('show'); void winEl.offsetWidth; winEl.classList.add('show');

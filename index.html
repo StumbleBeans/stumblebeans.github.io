@@ -403,7 +403,7 @@
   body:not(.menu):not(.phone):not(.elimd):not(.won) #emoteSlot.has { display: block; }
   #emoteSlot canvas, #emoteBtn canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   #emoteSlot .key {
-    position: absolute; left: 7px; top: 0; z-index: 2; font-family: 'Arial Black', 'Impact', system-ui, sans-serif; font-weight: 900;
+    position: absolute; left: 9px; top: 6px; line-height: 1; z-index: 2; font-family: 'Arial Black', 'Impact', system-ui, sans-serif; font-weight: 900;   /* trzyma się w środku pierwszego obrysu (4px) razem z grubością napisu */
     font-size: clamp(18px, 4vmin, 32px); color: #fff; -webkit-text-stroke: 7px #1b1b1b; paint-order: stroke fill; text-transform: uppercase;
   }
   .cd {
@@ -439,11 +439,9 @@
   #emoteSlot canvas { inset: auto; left: 4px; top: 4px; width: calc(100% - 8px); height: calc(100% - 8px); border-radius: 9px; }
   #emoteBtn canvas { inset: auto; left: 5px; top: 5px; width: calc(100% - 10px); height: calc(100% - 10px); border-radius: 50%; }
   #emoteSlot.cool, #emoteSlot.cool:hover { background: #5a6385; box-shadow: 0 0 0 4px #98a1c4 inset, 0 7px 0 rgba(0,0,0,.35); }   /* cooldown: szary obrys i tło */
-  #emoteBtn.cool { background: #5a6385; box-shadow: 0 0 0 5px #98a1c4 inset, 0 6px 0 rgba(0,0,0,.35); }
   #emoteSlot.cool canvas, #emoteBtn.cool canvas { filter: brightness(.42) saturate(.3); }   /* tak samo jak zablokowane karty */
-  #emoteSlot .cd, #emoteBtn .cd { background: transparent; }
-  #emoteSlot .cd { inset: 4px; border-radius: 9px; }
-  #emoteBtn .cd { inset: 5px; border-radius: 50%; }
+  #emoteSlot .cd { background: transparent; inset: 4px; border-radius: 9px; }
+  #emoteBtn .cd { background: rgba(11,16,51,.55); inset: 5px; border-radius: 50%; }   /* telefon: tło guzika zostaje to samo, cooldown to tylko przyciemnienie na wierzchu */
 
   /* gładkie obrysy tekstu: zaokrąglone łączenia zamiast ostrych "kolców" w literach */
   #elim span, #victory span, #timer, #toast span, #playBtn, #nameplate, #profileName, .stat .l, .stat .v, #profile, #profile * {
@@ -474,7 +472,7 @@
     </div>
     <div class="setList" id="tab-general">
       <div class="row"><span class="lbl">Gmail</span><button id="connBtn" class="pbtn tog">Connect</button></div>
-      <div class="row" id="fsRow"><span class="lbl">Full screen</span><button id="fsBtn" class="pbtn tog">OFF</button></div>
+      <div class="row" id="fsRow"><span class="lbl">Full screen</span><button id="fsBtn" class="pbtn tog" data-key="fs"></button></div>
     </div>
     <div class="setList" id="tab-gameplay" hidden>
       <div class="row"><span class="lbl">Show nickname</span><button class="pbtn tog" data-key="nick"></button></div>
@@ -1140,7 +1138,7 @@ function triggerEmote() {
 // ---------- Klawisze i guziki dotykowe (zapisywane w profilu) ----------
 const DEFAULT_BINDS = { fwd: 'KeyW', back: 'KeyS', left: 'KeyA', right: 'KeyD', jump: 'Space', emote: 'KeyB' };
 const BIND_NAMES = { fwd: 'Move forward', back: 'Move back', left: 'Move left', right: 'Move right', jump: 'Jump', emote: 'Emote' };
-const DEFAULT_TOUCH = { joy: { x: 16, y: 72, s: 1, o: 1 }, jump: { x: 88, y: 74, s: 1, o: 1 }, emote: { x: 88, y: 46, s: 1, o: 1 } };
+const DEFAULT_TOUCH = { joy: { x: 16, y: 72, s: 1, o: 1 }, jump: { x: 88, y: 74, s: 1, o: 1 }, emote: { x: 88, y: 41, s: 1, o: 1 } };
 const controls = { binds: Object.assign({}, DEFAULT_BINDS), touch: JSON.parse(JSON.stringify(DEFAULT_TOUCH)) };
 const binds = controls.binds;
 function applyControls(c) {
@@ -1150,6 +1148,8 @@ function applyControls(c) {
     const raw = c.touch && c.touch[k] ? c.touch[k][f] : undefined;
     controls.touch[k][f] = typeof raw === 'number' && isFinite(raw) ? raw : DEFAULT_TOUCH[k][f];
   }
+  const et = controls.touch.emote;   // stare domyślne położenie (y = 46) przesuwamy na nowe, własne ustawienia zostają
+  if (et.x === 88 && et.y === 46 && et.s === 1 && et.o === 1) et.y = DEFAULT_TOUCH.emote.y;
 }
 // Data = nickname, settings, wins, losses (win rate is calculated).
 // Not connected -> saved in localStorage. Connected (Google) -> saved in Firebase Firestore.
@@ -1161,7 +1161,7 @@ const FIREBASE_CONFIG = {
   messagingSenderId: "694075324977",
   appId: "1:694075324977:web:22320894d6ed012683b310"
 };
-const DEFAULT_SETTINGS = { music: true, sfx: true, nick: true, timer: true };
+const DEFAULT_SETTINGS = { music: true, sfx: true, nick: true, timer: true, fs: false };
 const settings = Object.assign({}, DEFAULT_SETTINGS);
 const stats = { wins: 0, losses: 0 };
 let playerNick = '';
@@ -1471,16 +1471,19 @@ applySettings();
 // pełny ekran (przeglądarka pozwala go włączyć tylko z kliku; na iPhonie nie ma takiej opcji, więc wiersz się chowa)
 const fsRoot = document.documentElement, fsBtn = document.getElementById('fsBtn');
 const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
-if (!(fsRoot.requestFullscreen || fsRoot.webkitRequestFullscreen)) document.getElementById('fsRow').hidden = true;
-function syncFs() { const on = !!fsEl(); fsBtn.classList.toggle('on', on); fsBtn.textContent = on ? 'ON' : 'OFF'; }
-fsBtn.addEventListener('click', () => {
-  sfx.click();
-  try {
-    if (fsEl()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
-    else { const p = (fsRoot.requestFullscreen || fsRoot.webkitRequestFullscreen).call(fsRoot); if (p && p.catch) p.catch(() => {}); }
-  } catch (err) {}
+const fsRow = document.getElementById('fsRow');
+if (!(fsRoot.requestFullscreen || fsRoot.webkitRequestFullscreen)) fsRow.hidden = true;
+const fsGo = () => { try { const p = (fsRoot.requestFullscreen || fsRoot.webkitRequestFullscreen).call(fsRoot); if (p && p.catch) p.catch(() => {}); } catch (err) {} };
+fsBtn.addEventListener('click', () => {   // (przełącznik data-key="fs" już zmienił settings.fs i zapisał profil)
+  if (settings.fs && !fsEl()) fsGo();
+  else if (!settings.fs && fsEl()) { try { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch (err) {} }
 });
-document.addEventListener('fullscreenchange', syncFs); document.addEventListener('webkitfullscreenchange', syncFs);
+// przeglądarka wpuszcza w pełny ekran tylko po geście, więc zapisane ON włącza się przy pierwszym kliknięciu / klawiszu
+const fsRetry = e => { if (e && e.target && e.target.closest && e.target.closest('#fsRow')) return; if (settings.fs && !fsEl() && !fsRow.hidden) fsGo(); };
+addEventListener('pointerdown', fsRetry, true); addEventListener('keydown', fsRetry, true);
+// wyjście z pełnego ekranu (np. Esc) wyłącza ustawienie
+const fsChanged = () => { if (settings.fs !== !!fsEl()) { settings.fs = !!fsEl(); persist(); applySettings(); } };
+document.addEventListener('fullscreenchange', fsChanged); document.addEventListener('webkitfullscreenchange', fsChanged);
 
 // ---------- Keybinds (PC) / Buttons (telefon) ----------
 function updateLayoutPreview() {   // na telefonie w zakładce Buttons widać guziki na żywo

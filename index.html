@@ -56,7 +56,7 @@
   body.phone #touch { display: block; }
   body.elimd #touch { display: none; }
   body.won #touch { display: none; }
-  #joy, #jumpBtn {
+  #joy, #jumpBtn, #emoteBtn {
     position: absolute; pointer-events: auto; touch-action: none; border-radius: 50%;
     background: rgba(255,255,255,.28); border: 7px solid #1b1b1b; box-sizing: border-box;
     box-shadow: 0 0 0 5px rgba(255,255,255,.85) inset, 0 6px 0 rgba(0,0,0,.35);
@@ -376,6 +376,58 @@
   .bname { font-size: min(12cqw, 22px); letter-spacing: .03em; color: #fff; -webkit-text-stroke: .3em #1b1b1b; paint-order: stroke fill; white-space: nowrap; text-align: center; max-width: 100%; padding-bottom: 2px; }   /* rozmiar liczony od szerokości karty, żeby napis nie wychodził poza obrys */
   #cust, #cust * { stroke-linejoin: round; stroke-linecap: round; text-rendering: geometricPrecision; }
 
+  /* ---------- Emotka: slot na PC (prawy środek) i guzik na telefonie ---------- */
+  #emoteSlot {
+    position: fixed; right: 2.5vmin; top: 50%; transform: translateY(-50%); z-index: 6; display: none; cursor: pointer; touch-action: manipulation;
+    width: clamp(84px, 17vmin, 140px); aspect-ratio: 1; box-sizing: border-box; overflow: hidden;
+    background: #3a7bff; border: 7px solid #1b1b1b; border-radius: 16px; box-shadow: 0 0 0 4px #8fb4ff inset, 0 7px 0 rgba(0,0,0,.35);
+  }
+  #emoteSlot:hover { background: #5590ff; }
+  body:not(.menu):not(.phone):not(.elimd):not(.won) #emoteSlot.has { display: block; }
+  #emoteSlot canvas, #emoteBtn canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  #emoteSlot .key {
+    position: absolute; left: 7px; top: 0; z-index: 2; font-family: 'Arial Black', 'Impact', system-ui, sans-serif; font-weight: 900;
+    font-size: clamp(18px, 4vmin, 32px); color: #fff; -webkit-text-stroke: 7px #1b1b1b; paint-order: stroke fill; text-transform: uppercase;
+  }
+  .cd {
+    position: absolute; inset: 0; z-index: 3; display: none; align-items: center; justify-content: center; background: rgba(11,16,51,.62);
+    font-family: 'Arial Black', 'Impact', system-ui, sans-serif; font-weight: 900; font-size: clamp(24px, 6vmin, 48px);
+    color: #fff; -webkit-text-stroke: 8px #1b1b1b; paint-order: stroke fill;
+  }
+  .cd.on { display: flex; }
+  #emoteBtn { width: clamp(80px, 21vmin, 140px); height: clamp(80px, 21vmin, 140px); overflow: hidden; transition: transform .08s; }
+  #emoteBtn.down { transform: scale(.9); }
+  #emoteBtn:not(.has) { display: none; }
+  /* Settings: Keybinds (PC) / Buttons (telefon) */
+  #setPanel { max-height: 94vh; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; padding: 4px 0 14px; }
+  #setPanel::-webkit-scrollbar { display: none; }
+  .sub { width: 100%; display: flex; flex-direction: column; gap: 2vmin; align-items: stretch; }
+  .sub[hidden] { display: none; }
+  .sub .cats { align-self: center; }
+  .kbBtn { font-size: clamp(16px, 3.4vmin, 26px); min-width: 120px; padding: 4px 14px; -webkit-text-stroke: 6px #1b1b1b; text-transform: none;
+           background: #ffd21f; box-shadow: 0 0 0 4px #fff18a inset, 0 6px 0 rgba(0,0,0,.35); }
+  .kbBtn.listen { background: #e8232b; box-shadow: 0 0 0 4px #ff6b6b inset, 0 6px 0 rgba(0,0,0,.35); }
+  .row input[type=range] { flex: 1; min-width: 0; max-width: 300px; height: 30px; accent-color: #ffd21f; cursor: pointer; }
+  /* podczas ustawiania guzików na telefonie widać je na żywo nad ustawieniami */
+  body.setLayout #touch { display: block !important; z-index: 10; }
+  body.setLayout #touch * { pointer-events: none !important; }
+  body.setLayout #emoteBtn { display: block !important; }
+  body.setLayout #settings { background: rgba(11,16,51,.55); }
+
+  #setPanel { width: min(98vw, 1000px); }
+  #setTabs { width: 100%; flex-wrap: nowrap; }
+  #setTabs .tab { flex: 0 1 auto; font-size: clamp(12px, min(3.6vmin, 2.6vw), 28px); padding: 5px min(22px, 1.8vw); }   /* rozmiar jak w oryginale, wszystkie zakładki w jednej linii */
+  #setPanel .setList { width: min(100%, 620px); }
+  /* widok emotki trzyma się w środku pierwszego (jasnego) obrysu, nie wchodzi na czarną ramkę */
+  #emoteSlot canvas { inset: auto; left: 4px; top: 4px; width: calc(100% - 8px); height: calc(100% - 8px); border-radius: 9px; }
+  #emoteBtn canvas { inset: auto; left: 5px; top: 5px; width: calc(100% - 10px); height: calc(100% - 10px); border-radius: 50%; }
+  #emoteSlot.cool, #emoteSlot.cool:hover { background: #5a6385; box-shadow: 0 0 0 4px #98a1c4 inset, 0 7px 0 rgba(0,0,0,.35); }   /* cooldown: szary obrys i tło */
+  #emoteBtn.cool { background: #5a6385; box-shadow: 0 0 0 5px #98a1c4 inset, 0 6px 0 rgba(0,0,0,.35); }
+  #emoteSlot.cool canvas, #emoteBtn.cool canvas { filter: brightness(.42) saturate(.3); }   /* tak samo jak zablokowane karty */
+  #emoteSlot .cd, #emoteBtn .cd { background: transparent; }
+  #emoteSlot .cd { inset: 4px; border-radius: 9px; }
+  #emoteBtn .cd { inset: 5px; border-radius: 50%; }
+
   /* gładkie obrysy tekstu: zaokrąglone łączenia zamiast ostrych "kolców" w literach */
   #elim span, #victory span, #timer, #toast span, #playBtn, #nameplate, #profileName, .stat .l, .stat .v, #profile, #profile * {
     stroke-linejoin: round; stroke-linecap: round; text-rendering: geometricPrecision;
@@ -400,6 +452,7 @@
     <div id="setTabs">
       <button class="pbtn tab on" data-tab="general">General</button>
       <button class="pbtn tab" data-tab="gameplay">Gameplay</button>
+      <button class="pbtn tab" id="tabKb" data-tab="keybinds">Keybinds</button>
       <button class="pbtn tab" data-tab="audio">Audio</button>
     </div>
     <div class="setList" id="tab-general">
@@ -408,6 +461,17 @@
     <div class="setList" id="tab-gameplay" hidden>
       <div class="row"><span class="lbl">Show nickname</span><button class="pbtn tog" data-key="nick"></button></div>
       <div class="row"><span class="lbl">Show timer</span><button class="pbtn tog" data-key="timer"></button></div>
+    </div>
+    <div class="setList" id="tab-keybinds" hidden>
+      <div class="sub" id="kbPc"></div>
+      <div class="sub" id="kbPhone" hidden>
+        <div class="cats" id="btnPick"><button class="pbtn cat on" data-b="joy">Joystick</button><button class="pbtn cat" data-b="jump">Jump</button><button class="pbtn cat" data-b="emote">Emote</button></div>
+        <div class="row"><span class="lbl">Left / Right</span><input type="range" id="slX" min="0" max="100"></div>
+        <div class="row"><span class="lbl">Up / Down</span><input type="range" id="slY" min="0" max="100"></div>
+        <div class="row"><span class="lbl">Size</span><input type="range" id="slS" min="50" max="160"></div>
+        <div class="row"><span class="lbl">Opacity</span><input type="range" id="slO" min="20" max="100"></div>
+        <div class="row"><span class="lbl">Reset buttons</span><button id="btnReset" class="pbtn tog">Reset</button></div>
+      </div>
     </div>
     <div class="setList" id="tab-audio" hidden>
       <div class="row"><span class="lbl">Music</span><button class="pbtn tog" data-key="music"></button></div>
@@ -445,8 +509,10 @@
     </div>
   </div>
 </div>
+<div id="emoteSlot"><span class="key">1</span><canvas></canvas><div class="cd"></div></div>
 <div id="touch">
   <div id="joy"><div id="knob"></div></div>
+  <div id="emoteBtn"><canvas></canvas><div class="cd"></div></div>
   <div id="jumpBtn"><svg viewBox="0 0 64 64"><path class="o" d="M12 42 L32 20 L52 42"/><path class="i" d="M12 42 L32 20 L52 42"/></svg></div>
 </div>
 
@@ -519,6 +585,13 @@ function noise(t, dur, o = {}) {
 const _gate = {};
 function gate(k, gap) { const t = actx.currentTime; if (t - (_gate[k] || -9) < gap) return false; _gate[k] = t; return true; }
 const sfx = {
+  emote() {   // backflip: przysiad, wybicie, salto, lądowanie
+    if (!audioOn()) return; const t = actx.currentTime;
+    tone(260, t, 0.5, { to: 520, slide: 0.45, vol: 0.14 });
+    tone(320, t + 0.8, 0.9, { to: 900, slide: 0.8, vol: 0.18 });
+    noise(t + 0.9, 0.8, { f: 700, to: 2600, q: 0.8, vol: 0.12, a: 0.08 });
+    [60, 64, 67].forEach((m, i) => tone(mtof(m + 12), t + 2.5 + i * 0.07, 0.25, { type: 'triangle', vol: 0.14 }));
+  },
   honey() {   // dotknięty kafelek robi się lepki: miękkie "bloop"
     if (!audioOn() || !gate('honey', 0.07)) return; const t = actx.currentTime;
     tone(340, t, 0.28, { to: 190, slide: 0.24, vol: 0.2, lp: 1300 });
@@ -858,7 +931,7 @@ function startGame() {
   pvT = 0; resetArena();
   sfx.play();
   inMenu = false; document.body.classList.remove('menu');
-  facing = 0; yaw = 0; pitch = 0.35; tilt.set(0, 0); squash = 0; camBaseY = pos.y; visOff = 0;
+  facing = 0; yaw = 0; pitch = 0.35; tilt.set(0, 0); squash = 0; camBaseY = pos.y; visOff = 0; emoteT = -1; emoteCd = 0;
 }
 let phone = false;
 const joy = { x: 0, y: 0, id: null };
@@ -871,10 +944,11 @@ function pressJump() {
 }
 addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT') return;   // pisanie nicku
-  if (e.code === 'Space') e.preventDefault();
+  if (e.code === binds.jump) e.preventDefault();
   if (e.repeat) return;
   keys[e.code] = true;
-  if (e.code === 'Space') pressJump();
+  if (e.code === binds.jump) pressJump();
+  if (e.code === binds.emote) triggerEmote();
 });
 addEventListener('keyup', e => keys[e.code] = false);
 document.getElementById('playBtn').addEventListener('click', startGame);
@@ -930,6 +1004,7 @@ document.addEventListener('contextmenu', e => { if (phone) e.preventDefault(); }
 function setMode(m) {
   phone = m === 'phone';
   document.body.classList.toggle('phone', phone);
+  onModeChange();
   if (phone && document.pointerLockElement) document.exitPointerLock();
   joyReset(); camId = null;
 }
@@ -946,6 +1021,41 @@ const BEANS = [
 const beanById = id => BEANS.find(b => b.id === id) || BEANS[0];
 let ownedBeans = ['red'], equipBean = 'red', gems = 0;
 const WIN_GEMS = 10;   // gemy za wygraną (bez żadnego napisu)
+// ---------- Emotki ----------
+const EMOTES = [{ id: 'backflip', name: 'Backflip', price: 20 }];   // cena Backflipa w gemach
+const EMOTE_TIME = 4.5, EMOTE_CD = 6;   // czas trwania emotki i cooldown (s)
+let ownedEmotes = [], equipEmote = null, emoteT = -1, emoteCd = 0;
+const emoteById = id => EMOTES.find(e => e.id === id);
+function emotePose(t) {   // czysty backflip: 0-0.9 przysiad, 0.9-2.1 jedno salto w tył, 2.1-2.5 lądowanie, 2.5-4.5 ukłon i stanie
+  let rx = 0, rz = 0, y = 0, sq = 0;
+  const ss = k => k * k * (3 - 2 * k);
+  if (t < 0.9) sq = 0.2 * ss(t / 0.9);
+  else if (t < 2.1) {
+    const k = (t - 0.9) / 1.2;
+    y = 2.2 * 4 * k * (1 - k); rx = -Math.PI * 2 * ss(k);
+    sq = 0.2 * (1 - Math.min(1, k * 6));
+  } else if (t < 2.5) sq = 0.2 * (1 - ss((t - 2.1) / 0.4));
+  else if (t < 4.1) rx = 0.18 * Math.sin(Math.PI * (t - 2.5) / 1.6);
+  return { rx, rz, y, sq };
+}
+function triggerEmote() {
+  if (inMenu || eliminated || won || !grounded || emoteT >= 0 || emoteCd > 0 || !equipEmote) return;
+  emoteT = 0; emoteCd = EMOTE_CD; sfx.emote();
+}
+// ---------- Klawisze i guziki dotykowe (zapisywane w profilu) ----------
+const DEFAULT_BINDS = { fwd: 'KeyW', back: 'KeyS', left: 'KeyA', right: 'KeyD', jump: 'Space', emote: 'KeyB' };
+const BIND_NAMES = { fwd: 'Move forward', back: 'Move back', left: 'Move left', right: 'Move right', jump: 'Jump', emote: 'Emote' };
+const DEFAULT_TOUCH = { joy: { x: 16, y: 72, s: 1, o: 1 }, jump: { x: 88, y: 74, s: 1, o: 1 }, emote: { x: 88, y: 46, s: 1, o: 1 } };
+const controls = { binds: Object.assign({}, DEFAULT_BINDS), touch: JSON.parse(JSON.stringify(DEFAULT_TOUCH)) };
+const binds = controls.binds;
+function applyControls(c) {
+  c = c || {};
+  for (const k in DEFAULT_BINDS) controls.binds[k] = c.binds && typeof c.binds[k] === 'string' ? c.binds[k] : DEFAULT_BINDS[k];
+  for (const k in DEFAULT_TOUCH) for (const f in DEFAULT_TOUCH[k]) {
+    const raw = c.touch && c.touch[k] ? c.touch[k][f] : undefined;
+    controls.touch[k][f] = typeof raw === 'number' && isFinite(raw) ? raw : DEFAULT_TOUCH[k][f];
+  }
+}
 // Data = nickname, settings, wins, losses (win rate is calculated).
 // Not connected -> saved in localStorage. Connected (Google) -> saved in Firebase Firestore.
 const FIREBASE_CONFIG = {
@@ -1043,11 +1153,12 @@ async function freshNick(uid) {      // random free Bean_N for a connected accou
 }
 
 function readGuest() {
-  const g = { nick: '', wins: 0, losses: 0, settings: {}, owned: ['red'], equip: 'red', gems: 0 };
+  const g = { nick: '', wins: 0, losses: 0, settings: {}, owned: ['red'], equip: 'red', gems: 0, emotes: [], emEquip: null, controls: null };
   try { const n = localStorage.getItem('stumbleBeansNick'); if (n) g.nick = nickCanon(n); } catch (err) {}
   try { const t = JSON.parse(localStorage.getItem('stumbleBeansStats')); if (t) { g.wins = t.wins | 0; g.losses = t.losses | 0; } } catch (err) {}
   try { const t = JSON.parse(localStorage.getItem('stumbleBeansSettings')); if (t) g.settings = t; } catch (err) {}
-  try { const t = JSON.parse(localStorage.getItem('stumbleBeansBeans')); if (t) { g.owned = t.owned; g.equip = t.equip; g.gems = t.gems | 0; } } catch (err) {}
+  try { const t = JSON.parse(localStorage.getItem('stumbleBeansBeans')); if (t) { g.owned = t.owned; g.equip = t.equip; g.gems = t.gems | 0; g.emotes = t.emotes || []; g.emEquip = t.emEquip || null; } } catch (err) {}
+  try { g.controls = JSON.parse(localStorage.getItem('stumbleBeansControls')); } catch (err) {}
   return g;
 }
 function saveGuest() {
@@ -1055,11 +1166,12 @@ function saveGuest() {
     localStorage.setItem('stumbleBeansNick', playerNick);
     localStorage.setItem('stumbleBeansStats', JSON.stringify(stats));
     localStorage.setItem('stumbleBeansSettings', JSON.stringify(settings));
-    localStorage.setItem('stumbleBeansBeans', JSON.stringify({ owned: ownedBeans, equip: equipBean, gems }));
+    localStorage.setItem('stumbleBeansBeans', JSON.stringify({ owned: ownedBeans, equip: equipBean, gems, emotes: ownedEmotes, emEquip: equipEmote }));
+    localStorage.setItem('stumbleBeansControls', JSON.stringify(controls));
   } catch (err) {}
 }
 function clearGuest() {
-  try { ['stumbleBeansNick', 'stumbleBeansStats', 'stumbleBeansSettings', 'stumbleBeansBeans'].forEach(k => localStorage.removeItem(k)); } catch (err) {}
+  try { ['stumbleBeansNick', 'stumbleBeansStats', 'stumbleBeansSettings', 'stumbleBeansBeans', 'stumbleBeansControls'].forEach(k => localStorage.removeItem(k)); } catch (err) {}
 }
 function applyProfile(d) {
   playerNick = nickCanon(d.nick || '');
@@ -1068,11 +1180,14 @@ function applyProfile(d) {
   if (!ownedBeans.includes('red')) ownedBeans.unshift('red');
   equipBean = ownedBeans.includes(d.equip) ? d.equip : 'red';
   gems = Math.max(0, d.gems | 0);
+  ownedEmotes = (Array.isArray(d.emotes) ? d.emotes : []).filter(id => emoteById(id));
+  equipEmote = ownedEmotes.includes(d.emEquip) ? d.emEquip : (ownedEmotes[0] || null);
+  applyControls(d.controls);
   for (const k in DEFAULT_SETTINGS) settings[k] = d.settings && typeof d.settings[k] === 'boolean' ? d.settings[k] : DEFAULT_SETTINGS[k];
 }
 function snapshot() {
   const total = stats.wins + stats.losses;
-  return { nick: playerNick, settings: Object.assign({}, settings), wins: stats.wins, losses: stats.losses, owned: ownedBeans.slice(), equip: equipBean, gems, winRate: total ? Math.round(stats.wins / total * 100) : 0 };
+  return { nick: playerNick, settings: Object.assign({}, settings), wins: stats.wins, losses: stats.losses, owned: ownedBeans.slice(), equip: equipBean, gems, emotes: ownedEmotes.slice(), emEquip: equipEmote, controls: JSON.parse(JSON.stringify(controls)), winRate: total ? Math.round(stats.wins / total * 100) : 0 };
 }
 function loadGuest() {               // guest profile from localStorage; no profile yet -> brand new one
   const g = readGuest(); const fresh = !g.nick;
@@ -1125,7 +1240,7 @@ async function onAuth(user) {
     if (nick) { try { await claimNick(nick, null, user.uid); } catch (err) { if (err.message === 'taken') nick = ''; } }
     if (!nick) nick = await freshNick(user.uid);
     if (my !== authSeq) return;
-    const keep = { nick, wins: g.wins, losses: g.losses, settings: g.settings, owned: g.owned, equip: g.equip, gems: g.gems };
+    const keep = { nick, wins: g.wins, losses: g.losses, settings: g.settings, owned: g.owned, equip: g.equip, gems: g.gems, emotes: g.emotes, emEquip: g.emEquip, controls: g.controls };
     applyProfile(keep);
     try { await ref.set(snapshot()); clearGuest(); cacheSave(); }
     catch (err) { acct = null; fbAuth.signOut().catch(() => {}); applyProfile(g); refreshProfileUI(); return; }
@@ -1238,8 +1353,8 @@ function applySettings() {
   document.querySelectorAll('.tog[data-key]').forEach(b => { const on = settings[b.dataset.key]; b.classList.toggle('on', on); b.textContent = on ? 'ON' : 'OFF'; });
   applyAudioSettings();
 }
-function openSettings() { if (!inMenu || profileOpen || shopOpen || custOpen) return; sfx.click(); settingsOpen = true; document.body.classList.add('settings'); }
-function closeSettings() { sfx.click(); settingsOpen = false; document.body.classList.remove('settings'); }
+function openSettings() { if (!inMenu || profileOpen || shopOpen || custOpen) return; sfx.click(); settingsOpen = true; document.body.classList.add('settings'); updateLayoutPreview(); }
+function closeSettings() { sfx.click(); settingsOpen = false; rebinding = null; buildKeybinds(); document.body.classList.remove('settings'); updateLayoutPreview(); }
 document.getElementById('setBtn').addEventListener('click', openSettings);
 document.getElementById('setBack').addEventListener('click', closeSettings);
 addEventListener('keydown', e => { if (e.code === 'Escape' && settingsOpen) closeSettings(); });
@@ -1254,6 +1369,76 @@ document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () =>
   document.querySelectorAll('.setList').forEach(l => l.hidden = l.id !== 'tab-' + b.dataset.tab);
 }));
 applySettings();
+
+// ---------- Keybinds (PC) / Buttons (telefon) ----------
+function updateLayoutPreview() {   // na telefonie w zakładce Buttons widać guziki na żywo
+  const on = document.querySelector('.tab.on');
+  document.body.classList.toggle('setLayout', phone && document.body.classList.contains('settings') && !!on && on.dataset.tab === 'keybinds');
+}
+function onModeChange() {
+  const tk = document.getElementById('tabKb'); if (tk) tk.textContent = phone ? 'Buttons' : 'Keybinds';
+  const a = document.getElementById('kbPc'), b = document.getElementById('kbPhone'); if (a) a.hidden = phone; if (b) b.hidden = !phone;
+  const t = document.getElementById('phoneTest'); if (t) { t.classList.toggle('on', phone); t.textContent = phone ? 'ON' : 'OFF'; }
+  updateLayoutPreview();
+}
+document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', updateLayoutPreview));
+let rebinding = null;
+const keyLabel = c => String(c).replace(/^Key/, '').replace(/^Digit/, '').replace(/^Arrow/, '');
+const kbPc = document.getElementById('kbPc');
+function buildKeybinds() {
+  kbPc.textContent = '';
+  for (const act in BIND_NAMES) {
+    const row = document.createElement('div'); row.className = 'row';
+    row.innerHTML = '<span class="lbl"></span><button class="pbtn kbBtn"></button>';
+    row.firstChild.textContent = BIND_NAMES[act];
+    const btn = row.lastChild, on = rebinding === act;
+    btn.textContent = on ? '...' : keyLabel(binds[act]); btn.classList.toggle('listen', on);
+    btn.addEventListener('click', () => { sfx.click(); rebinding = rebinding === act ? null : act; buildKeybinds(); });
+    kbPc.appendChild(row);
+  }
+  const r = document.createElement('div'); r.className = 'row';
+  r.innerHTML = '<span class="lbl">Reset keybinds</span><button class="pbtn tog">Reset</button>';
+  r.lastChild.addEventListener('click', () => { sfx.click(); Object.assign(binds, DEFAULT_BINDS); rebinding = null; persist(); buildKeybinds(); });
+  kbPc.appendChild(r);
+}
+addEventListener('keydown', e => {   // przypisywanie klawisza (Esc anuluje); zamiana miejscami, gdy klawisz jest już zajęty
+  if (!rebinding) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  if (e.code !== 'Escape' && e.code !== 'Enter') {
+    for (const k in binds) if (k !== rebinding && binds[k] === e.code) binds[k] = binds[rebinding];
+    binds[rebinding] = e.code; persist();
+  }
+  rebinding = null; buildKeybinds();
+}, true);
+// guziki dotykowe: pozycja, rozmiar, przezroczystość
+const emSlot = document.getElementById('emoteSlot'), emBtn = document.getElementById('emoteBtn');
+const TB = { joy: [document.getElementById('joy'), 'clamp(130px, 32vmin, 220px)'], jump: [jumpEl, 'clamp(110px, 28vmin, 190px)'], emote: [emBtn, 'clamp(80px, 21vmin, 140px)'] };
+function applyTouchLayout() {
+  for (const k in TB) {
+    const el = TB[k][0], c = controls.touch[k];
+    el.style.left = c.x + '%'; el.style.top = c.y + '%'; el.style.right = 'auto'; el.style.bottom = 'auto'; el.style.translate = '-50% -50%';
+    el.style.width = el.style.height = 'calc(' + TB[k][1] + ' * ' + c.s + ')'; el.style.opacity = c.o;
+  }
+}
+let curBtn = 'joy';
+const slX = document.getElementById('slX'), slY = document.getElementById('slY'), slS = document.getElementById('slS'), slO = document.getElementById('slO');
+function syncSliders() { const c = controls.touch[curBtn]; slX.value = c.x; slY.value = c.y; slS.value = Math.round(c.s * 100); slO.value = Math.round(c.o * 100); }
+[[slX, 'x', 1], [slY, 'y', 1], [slS, 's', 100], [slO, 'o', 100]].forEach(([el, f, d]) => {
+  el.addEventListener('input', () => { controls.touch[curBtn][f] = el.value / d; applyTouchLayout(); });
+  el.addEventListener('change', () => persist());
+});
+document.querySelectorAll('#btnPick .cat').forEach(b => b.addEventListener('click', () => {
+  sfx.click(); curBtn = b.dataset.b; syncSliders();
+  document.querySelectorAll('#btnPick .cat').forEach(x => x.classList.toggle('on', x === b));
+}));
+document.getElementById('btnReset').addEventListener('click', () => {
+  sfx.click(); for (const k in DEFAULT_TOUCH) Object.assign(controls.touch[k], DEFAULT_TOUCH[k]);
+  applyTouchLayout(); syncSliders(); persist();
+});
+emBtn.addEventListener('pointerdown', e => { e.preventDefault(); emBtn.classList.add('down'); triggerEmote(); });
+['pointerup', 'pointercancel', 'pointerleave'].forEach(t => emBtn.addEventListener(t, () => emBtn.classList.remove('down')));
+emSlot.addEventListener('click', triggerEmote);
+applyTouchLayout(); buildKeybinds(); syncSliders(); onModeChange();
 
 // ---------- Shop ----------
 let shopOpen = false;
@@ -1274,14 +1459,15 @@ gemInfoEl.addEventListener('click', e => { if (e.target === gemInfoEl) closeGemI
 function closeShop() { sfx.click(); shopOpen = false; gemInfoEl.classList.remove('show'); document.body.classList.remove('shop'); }
 document.getElementById('shopBtn').addEventListener('click', openShop);
 document.getElementById('shopBack').addEventListener('click', closeShop);
-let previewOpen = false;
-function openPreview(color) { sfx.click(); previewOpen = true; body.material.color.setHex(color); document.body.classList.add('preview'); }
-function closePreview() { sfx.click(); previewOpen = false; applyBeanColor(); document.body.classList.remove('preview'); }
+let previewOpen = false, previewEmote = false;
+function openPreview(color, emote) { sfx.click(); previewOpen = true; previewEmote = !!emote; if (color != null) body.material.color.setHex(color); document.body.classList.add('preview'); }
+function closePreview() { sfx.click(); previewOpen = false; previewEmote = false; applyBeanColor(); document.body.classList.remove('preview'); }
 document.getElementById('prevBack').addEventListener('click', closePreview);
 addEventListener('keydown', e => { if (e.code === 'Escape') { if (gemInfoOpen()) closeGemInfo(); else if (previewOpen) closePreview(); else if (shopOpen) closeShop(); } });
 // lista sklepu budowana z katalogu BEANS (wszystko, co ma cenę); podgląd 3D rysuje wspólny renderer z Customize
 const shopList = document.getElementById('shopList');
-const shopItems = BEANS.filter(b => b.price != null).map(b => {
+const shopSrc = [...BEANS.filter(b => b.price != null).map(b => ({ kind: 'bean', b })), ...EMOTES.map(e => ({ kind: 'emote', b: e }))];
+const shopItems = shopSrc.map(({ kind, b }) => {
   const row = document.createElement('div'); row.className = 'row shopItem';
   const view = document.createElement('div'); view.className = 'shopView';
   const cv = document.createElement('canvas'); view.appendChild(cv);
@@ -1291,32 +1477,42 @@ const shopItems = BEANS.filter(b => b.price != null).map(b => {
   info.querySelector('.itemPrice span:last-child').textContent = b.price;
   const btn = document.createElement('button'); btn.className = 'pbtn tog on buyBtn'; btn.textContent = 'BUY';
   row.append(view, info, btn); shopList.appendChild(row);
-  view.addEventListener('click', () => openPreview(b.color));
+  view.addEventListener('click', () => { openPreview(kind === 'bean' ? b.color : null, kind === 'emote'); });
   btn.addEventListener('click', () => {
     sfx.click();
-    if (ownedBeans.includes(b.id) || gems < b.price) return;
-    gems -= b.price; updateGemsUI();
-    ownedBeans.push(b.id); persist(); updateBuyBtn();
+    const list = kind === 'bean' ? ownedBeans : ownedEmotes;
+    if (list.includes(b.id) || gems < b.price) return;
+    gems -= b.price; updateGemsUI(); list.push(b.id);
+    if (kind === 'emote' && !equipEmote) equipEmote = b.id;
+    persist(); updateBuyBtn();
   });
-  return { b, cv, ctx: cv.getContext('2d'), btn };
+  return { b, kind, row, cv, ctx: cv.getContext('2d'), btn };
 });
 function updateBuyBtn() {
-  shopItems.forEach(it => { it.btn.textContent = ownedBeans.includes(it.b.id) ? 'OWNED' : 'BUY'; });
+  shopItems.forEach(it => { it.btn.textContent = (it.kind === 'bean' ? ownedBeans : ownedEmotes).includes(it.b.id) ? 'OWNED' : 'BUY'; });
 }
 updateBuyBtn();
 let shAng = 0;
+function setPose(p) {   // poza fasolki w podglądach (null = zwykła, obracająca się)
+  if (!p) { cuBean.position.y = 0; cuBean.rotation.set(0, 0, 0); cuBean.scale.set(1, STRETCH, 0.9); return; }
+  cuBean.rotation.set(p.rx, 0.6, p.rz, 'YXZ'); cuBean.position.y = p.y * 0.28;
+  cuBean.scale.set(1 + p.sq * 0.6, STRETCH * (1 - p.sq), 0.9 + p.sq * 0.6);
+}
 function renderShop() {
   if (!shopOpen) return;
-  shAng += 0.015; cuBean.rotation.y = shAng;
-  const dpr = Math.min(devicePixelRatio || 1, 2);
+  shAng += 0.015;
+  const dpr = Math.min(devicePixelRatio || 1, 2), tp = (performance.now() / 1000) % EMOTE_TIME;
   for (const it of shopItems) {
+    if (it.row.style.display === 'none') continue;
     const w = it.cv.clientWidth; if (!w) continue;
     const px = Math.min(384, Math.round(w * dpr));
     if (it.cv.width !== px) { it.cv.width = px; it.cv.height = px; }
-    cuBean.material.color.setHex(it.b.color);
+    if (it.kind === 'emote') { cuBean.material.color.setHex(beanById(equipBean).color); setPose(emotePose(tp)); }
+    else { cuBean.material.color.setHex(it.b.color); setPose(null); cuBean.rotation.y = shAng; }
     cuRenderer.render(cuScene, cuCam);
     it.ctx.clearRect(0, 0, px, px); it.ctx.drawImage(cuRenderer.domElement, 0, 0, px, px);
   }
+  setPose(null);
 }
 
 // ---------- Customize ----------
@@ -1324,34 +1520,44 @@ const cgrid = document.getElementById('cgrid');
 let cuCards = [], cuAng = 0;
 function buildCust() {
   cgrid.textContent = ''; cuCards = [];
-  // najpierw te, które masz; zablokowane na dole
-  const list = BEANS.map((b, i) => ({ b, i, own: ownedBeans.includes(b.id) })).sort((x, y) => (y.own - x.own) || (x.i - y.i));
-  list.forEach(({ b, own }) => {
+  const mk = (kind, id, name, own, sel, color, onPick) => {
     const card = document.createElement('div');
-    card.className = 'bcard' + (own ? '' : ' locked') + (own && b.id === equipBean ? ' sel' : '');
+    card.className = 'bcard' + (own ? '' : ' locked') + (sel ? ' sel' : '');
     const view = document.createElement('div'); view.className = 'bview';
     const cv = document.createElement('canvas'); view.appendChild(cv);
     if (!own) view.insertAdjacentHTML('beforeend', '<svg class="lockI"><use href="#lockIcon"/></svg>');
-    const nm = document.createElement('div'); nm.className = 'bname'; nm.textContent = b.name;
+    const nm = document.createElement('div'); nm.className = 'bname'; nm.textContent = name;
     card.append(view, nm);
-    card.addEventListener('click', () => {
-      sfx.click();
-      if (!own) return;
-      equipBean = b.id; persist(); applyBeanColor();
-      cuCards.forEach(c => c.card.classList.toggle('sel', c.own && c.id === equipBean));
-    });
+    card.addEventListener('click', () => { sfx.click(); if (own) onPick(); });
     cgrid.appendChild(card);
-    cuCards.push({ id: b.id, own, card, cv, ctx: cv.getContext('2d'), color: b.color });
-  });
+    cuCards.push({ kind, id, own, card, cv, ctx: cv.getContext('2d'), color });
+  };
+  // najpierw te, które masz; zablokowane na dole
+  BEANS.map((b, i) => ({ b, i, own: ownedBeans.includes(b.id) })).sort((x, y) => (y.own - x.own) || (x.i - y.i)).forEach(({ b, own }) =>
+    mk('bean', b.id, b.name, own, own && b.id === equipBean, b.color, () => {
+      equipBean = b.id; persist(); applyBeanColor();
+      cuCards.forEach(c => c.kind === 'bean' && c.card.classList.toggle('sel', c.own && c.id === equipBean));
+    }));
+  EMOTES.slice().sort((x, y) => ownedEmotes.includes(y.id) - ownedEmotes.includes(x.id)).forEach(e =>
+    mk('emote', e.id, e.name, ownedEmotes.includes(e.id), e.id === equipEmote, 0, () => {
+      equipEmote = e.id; persist();
+      cuCards.forEach(c => c.kind === 'emote' && c.card.classList.toggle('sel', c.own && c.id === equipEmote));
+    }));
+  applyCats();
 }
-// przełączanie kategorii (Emotes na razie puste: lista się chowa, ale zajmuje miejsce, żeby zakładki nie skakały)
-document.querySelectorAll('.cat').forEach(b => b.addEventListener('click', () => {
+// kategorie Beans / Emotes (osobno w Shopie i w Customize)
+let shopCat = 'beans', custCat = 'beans';
+function applyCats() {
+  shopItems.forEach(it => it.row.style.display = it.kind === (shopCat === 'beans' ? 'bean' : 'emote') ? '' : 'none');
+  cuCards.forEach(c => c.card.style.display = c.kind === (custCat === 'beans' ? 'bean' : 'emote') ? '' : 'none');
+}
+document.querySelectorAll('#shop .cat, #cust .cat').forEach(b => b.addEventListener('click', () => {
   sfx.click();
-  const group = b.parentElement;
-  group.querySelectorAll('.cat').forEach(x => x.classList.toggle('on', x === b));
-  const list = group.parentElement.querySelector('#cgrid, #shopList');
-  if (list) list.style.visibility = b.dataset.cat === 'beans' ? '' : 'hidden';
+  if (b.closest('#shop')) shopCat = b.dataset.cat; else custCat = b.dataset.cat;
+  b.parentElement.querySelectorAll('.cat').forEach(x => x.classList.toggle('on', x === b));
+  applyCats();
 }));
+applyCats();
 function openCust() {
   if (!inMenu || profileOpen || settingsOpen || shopOpen) return;
   sfx.click(); buildCust(); custOpen = true; document.body.classList.add('cust'); cgrid.scrollTop = 0;
@@ -1372,22 +1578,46 @@ const cuCam = new THREE.PerspectiveCamera(30, 1, 0.1, 80);
 cuCam.position.set(0, 0.3, 4.2); cuCam.lookAt(0, 0, 0);
 function renderCust() {
   if (!custOpen) return;
-  cuAng += 0.015; cuBean.rotation.y = cuAng;
-  const dpr = Math.min(devicePixelRatio || 1, 2);
+  cuAng += 0.015;
+  const dpr = Math.min(devicePixelRatio || 1, 2), tp = (performance.now() / 1000) % EMOTE_TIME;
   for (const c of cuCards) {
+    if (c.card.style.display === 'none') continue;
     const w = c.cv.clientWidth; if (!w) continue;
     const px = Math.min(384, Math.round(w * dpr));
     if (c.cv.width !== px) { c.cv.width = px; c.cv.height = px; }
-    cuBean.material.color.setHex(c.color);
+    if (c.kind === 'emote') { cuBean.material.color.setHex(beanById(equipBean).color); setPose(emotePose(tp)); }
+    else { cuBean.material.color.setHex(c.color); setPose(null); cuBean.rotation.y = cuAng; }
     cuRenderer.render(cuScene, cuCam);
     c.ctx.clearRect(0, 0, px, px); c.ctx.drawImage(cuRenderer.domElement, 0, 0, px, px);
   }
+  setPose(null);
+}
+// podgląd emotki w grze: slot "1" na PC (prawy środek) i guzik na telefonie; fasolka robi backflipa w pętli
+const emViews = [emSlot, emBtn].map(el => ({ el, cv: el.querySelector('canvas'), cd: el.querySelector('.cd'), ctx: el.querySelector('canvas').getContext('2d') }));
+const emKey = emSlot.querySelector('.key');
+function renderEmoteViews() {
+  emSlot.classList.toggle('has', !!equipEmote); emBtn.classList.toggle('has', !!equipEmote);
+  const lbl = keyLabel(binds.emote); if (emKey.textContent !== lbl) emKey.textContent = lbl;
+  const live = (!inMenu && !eliminated) || document.body.classList.contains('setLayout');
+  if (inMenu) for (const v of emViews) { v.cd.classList.remove('on'); v.el.classList.remove('cool'); }   // w menu / podglądzie guzików nie ma cooldownu
+  if (!equipEmote || !live) return;
+  const dpr = Math.min(devicePixelRatio || 1, 2), p = emotePose((performance.now() / 1000) % EMOTE_TIME);
+  for (const v of emViews) {
+    const w = v.cv.clientWidth; if (!w) continue;
+    const px = Math.min(256, Math.round(w * dpr));
+    if (v.cv.width !== px) { v.cv.width = px; v.cv.height = px; }
+    cuBean.material.color.setHex(beanById(equipBean).color); setPose(p);
+    cuRenderer.render(cuScene, cuCam);
+    v.ctx.clearRect(0, 0, px, px); v.ctx.drawImage(cuRenderer.domElement, 0, 0, px, px);
+    const showCd = emoteCd > 0 && !inMenu; v.cd.classList.toggle('on', showCd); v.el.classList.toggle('cool', showCd); if (showCd) v.cd.textContent = Math.ceil(emoteCd);
+  }
+  setPose(null);
 }
 
 // ---------- Account (General tab) ----------
 const connBtn = document.getElementById('connBtn');
 function updateConnUI() { connBtn.classList.toggle('on', !!acct); connBtn.textContent = acct ? 'Connected' : 'Connect'; }
-function refreshProfileUI() { updateGemsUI(); updateBuyBtn(); applyNick(); renderStats(); applySettings(); updateConnUI(); applyBeanColor(); }
+function refreshProfileUI() { updateGemsUI(); updateBuyBtn(); applyNick(); renderStats(); applySettings(); updateConnUI(); applyBeanColor(); applyTouchLayout(); buildKeybinds(); syncSliders(); }
 connBtn.addEventListener('click', async () => {
   sfx.click();
   if (!fbAuth) return;
@@ -1487,6 +1717,11 @@ function update(dt) {
     bean.position.set(0, HALF_H, 0);
     bean.rotation.set(0, facing, 0, 'YXZ');
     body.scale.set(1 - br * 0.5, STRETCH * (1 + br), 0.9 - br * 0.5);
+    if (previewEmote) {   // podgląd emotki: prawdziwa fasolka robi backflipa w pętli
+      facing = 0; const p = emotePose((performance.now() / 1000) % EMOTE_TIME);
+      bean.position.y += p.y; bean.rotation.set(p.rx, 0, p.rz, 'YXZ');
+      body.scale.set(1 + p.sq * 0.6, STRETCH * (1 - p.sq), 0.9 + p.sq * 0.6);
+    }
     // przejście do profilu: kamera jedzie w górę, tło zmienia się w niebo
     pvT = Math.max(0, Math.min(1, pvT + ((profileOpen || custOpen) ? 1 : -1) * dt / 1.1));
     const pv = pvT * pvT * (3 - 2 * pvT);
@@ -1522,17 +1757,19 @@ function update(dt) {
   if (keys.ArrowDown)  pitch = Math.min(1.2, pitch + 1.5 * dt);
 
   // kierunek względem kamery
-  let ix = (keys.KeyD ? 1 : 0) - (keys.KeyA ? 1 : 0);
-  let iz = (keys.KeyW ? 1 : 0) - (keys.KeyS ? 1 : 0);
+  let ix = (keys[binds.right] ? 1 : 0) - (keys[binds.left] ? 1 : 0);
+  let iz = (keys[binds.fwd] ? 1 : 0) - (keys[binds.back] ? 1 : 0);
   ix += joy.x; iz += joy.y;
   const fwd = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
   const right = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw));
   const wish = new THREE.Vector3().addScaledVector(fwd, iz).addScaledVector(right, ix);
   const hasInput = !won && wish.lengthSq() > 0.04;   // martwa strefa joysticka
   if (hasInput) wish.normalize();
-  if (won) {   // po wygranej fasolka się cieszy: kręci się i skacze
-    jumpBuffer = 0; diveBuffer = 0; facing += dt * 5; winHop -= dt;
-    if (grounded && winHop <= 0) { vel.y = 9; grounded = false; coyote = 0; squash = -0.25; sfx.jump(); winHop = 0.8; }
+  if (won) { jumpBuffer = 0; diveBuffer = 0; facing += dt * 5; }   // po wygranej fasolka tylko się kręci
+  emoteCd = Math.max(0, emoteCd - dt);
+  if (emoteT >= 0) {   // emotkę przerywa ruch, skok, dive albo utrata gruntu
+    emoteT += dt;
+    if (hasInput || jumpBuffer > 0 || diveBuffer > 0 || !grounded || won || emoteT >= EMOTE_TIME) emoteT = -1;
   }
 
   // dive
@@ -1638,7 +1875,9 @@ function update(dt) {
   visOff *= Math.exp(-dt * 14);
   bean.position.copy(pos); bean.position.y += visOff;
   bean.rotation.set(tilt.x, facing, tilt.y, 'YXZ');
-  body.scale.set(1 + squash * 0.6 - stretchAir * 0.3, STRETCH * (1 - squash + stretchAir), 0.9 + squash * 0.6);
+  let sqv = squash;
+  if (emoteT >= 0) { const p = emotePose(emoteT); bean.position.y += p.y; bean.rotation.set(p.rx, facing, p.rz, 'YXZ'); sqv = p.sq; }
+  body.scale.set(1 + sqv * 0.6 - stretchAir * 0.3, STRETCH * (1 - sqv + stretchAir), 0.9 + sqv * 0.6);
 
   // kamera trzecioosobowa
   const dist = 8;
@@ -1681,6 +1920,7 @@ function loop() {
   renderAvatar();
   renderShop();
   renderCust();
+  renderEmoteViews();
 }
 loop();
 (function backgroundTicker() {

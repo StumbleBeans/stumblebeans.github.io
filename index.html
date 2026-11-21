@@ -194,6 +194,99 @@
   #setBtn path { fill-rule: evenodd; }
   #setBtn .o { fill: #1b1b1b; stroke: #1b1b1b; stroke-width: 11; stroke-linejoin: round; }
   #setBtn .i { fill: #fff; stroke: none; }
+  /* ---------- Customize (przycisk w menu) ---------- */
+  #custBtn {
+    --cs: clamp(64px, 14vmin, 110px);
+    position: absolute; left: 3vmin; top: calc(50% - var(--cs) / 2 + 9vmin); padding: 0; border-radius: 50%; box-sizing: border-box;
+    width: var(--cs); height: var(--cs); background: #3a7bff; box-shadow: 0 0 0 5px #8fb4ff inset, 0 6px 0 rgba(0,0,0,.35);
+  }
+  #custBtn:hover { background: #5590ff; }
+  /* ---------- Shop (przycisk nad Customize) ---------- */
+  #shopBtn {
+    --cs: clamp(64px, 14vmin, 110px);
+    position: absolute; left: 3vmin; top: calc(50% - var(--cs) / 2 + 9vmin - var(--cs) - 2.5vmin); padding: 0; border-radius: 50%; box-sizing: border-box;
+    width: var(--cs); height: var(--cs); background: #3a7bff; box-shadow: 0 0 0 5px #8fb4ff inset, 0 6px 0 rgba(0,0,0,.35);
+  }
+  #shopBtn:hover { background: #5590ff; }
+  #shopBtn svg { position: absolute; inset: 0; margin: auto; width: calc(var(--cs) - 30px); height: calc(var(--cs) - 30px); overflow: visible; pointer-events: none; }
+  #shopBtn .d { fill: none; stroke: #1b1b1b; stroke-width: 17; stroke-linejoin: round; stroke-linecap: round; }
+  #shopBtn .b { fill: #1b1b1b; stroke: #1b1b1b; stroke-width: 9; stroke-linejoin: round; }
+  #shopBtn .w { fill: none; stroke: #fff; stroke-width: 8; stroke-linejoin: round; stroke-linecap: round; }
+  #shopBtn .bw { fill: #fff; stroke: #fff; stroke-width: 1; stroke-linejoin: round; }
+  #shopBtn .dc { fill: #1b1b1b; stroke: none; }
+  #shopBtn .wc { fill: #fff; stroke: none; }
+  #nameplate span, #profileName span { color: inherit; }
+  #custBtn svg { position: absolute; inset: 0; margin: auto; width: calc(var(--cs) - 30px); height: calc(var(--cs) - 30px); overflow: visible; pointer-events: none; }   /* ikona mieści się w środku jasnoniebieskiego obrysu */
+  #custBtn .o { fill: #1b1b1b; stroke: #1b1b1b; stroke-width: 9; stroke-linejoin: round; }
+  #custBtn .i { fill: #fff; stroke: none; }
+
+  /* ---------- Shop (ekran jak Ustawienia) ---------- */
+  #shop {
+    position: fixed; inset: 0; z-index: 9; display: none; overflow: auto; background: rgba(11,16,51,.88);
+    font-family: 'Arial Black', 'Impact', system-ui, sans-serif; font-weight: 900; text-transform: uppercase;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body.shop #shop { display: block; }
+  body.shop #menu { display: none; }
+  #shop, #shop * { stroke-linejoin: round; stroke-linecap: round; text-rendering: geometricPrecision; }
+  #prevBack { display: none; }
+  body.preview #shop { display: none; }
+  body.preview #prevBack { display: block; }
+  #shopBack, #prevBack {
+    position: absolute; padding: 0; border-radius: 50%; box-sizing: border-box; top: 3vmin; left: 3vmin;
+    width: clamp(56px, 12vmin, 92px); height: clamp(56px, 12vmin, 92px);
+    background: #e8232b; box-shadow: 0 0 0 5px #ff6b6b inset, 0 6px 0 rgba(0,0,0,.35);
+  }
+  #shopBack:hover, #prevBack:hover { background: #ff3b43; }
+  #shopBack svg, #prevBack svg { position: absolute; inset: 14%; width: 72%; height: 72%; pointer-events: none; }
+  #shopBack path, #prevBack path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  #shopBack .o, #prevBack .o { stroke: #1b1b1b; stroke-width: 22; }
+  #shopBack .i, #prevBack .i { stroke: #fff; stroke-width: 11; }
+  #shopTop {
+    position: absolute; right: 3vmin; display: flex; align-items: center; gap: clamp(8px, 1.8vmin, 16px);
+    top: calc(3vmin + (clamp(56px, 12vmin, 92px) - clamp(44px, 9vmin, 70px)) / 2);
+  }
+  #gemHelp {
+    flex: none; padding: 0; border-radius: 50%; box-sizing: border-box; line-height: 1; display: flex; align-items: center; justify-content: center;
+    position: relative; width: clamp(44px, 9vmin, 70px); height: clamp(44px, 9vmin, 70px);
+    background: #3a7bff; box-shadow: 0 0 0 4px #8fb4ff inset, 0 6px 0 rgba(0,0,0,.35);
+  }
+  #gemHelp:hover { background: #5590ff; }
+  #gemHelp svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+  #gemHelp text { font-family: 'Arial Black', 'Impact', system-ui, sans-serif; font-weight: 900; font-size: 40px; fill: #fff; stroke: #1b1b1b; stroke-width: 9px; paint-order: stroke fill; stroke-linejoin: round; text-transform: none; }
+  #shopGems {
+    box-sizing: border-box; display: flex; align-items: center; gap: 10px;
+    height: clamp(44px, 9vmin, 70px);
+    padding: 0 18px; background: #3a7bff; border: 7px solid #1b1b1b; border-radius: 16px;
+    box-shadow: 0 0 0 4px #8fb4ff inset, 0 7px 0 rgba(0,0,0,.35);
+    font-size: clamp(18px, 4vmin, 32px); letter-spacing: 2px; color: #fff; -webkit-text-stroke: 7px #1b1b1b; paint-order: stroke fill;
+  }
+  .gem { width: 1.3em; height: 1.3em; flex: none; overflow: visible; }
+  #shopPanel {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(96vw, 720px);
+    display: flex; flex-direction: column; align-items: center; gap: 2vmin;
+  }
+  .shopItem { width: 100%; gap: clamp(10px, 2.4vmin, 20px); padding: 12px 18px; }
+  #shopList { width: 100%; display: flex; flex-direction: column; gap: 2vmin; max-height: calc(100vh - 30vmin); overflow-y: auto; overflow-x: hidden; padding: 0 0 12px; scrollbar-width: none; }
+  #shopList::-webkit-scrollbar { display: none; }
+  #shopList .row { flex: none; }
+  .shopView {
+    position: relative; flex: none; width: clamp(72px, 17vmin, 130px); height: clamp(72px, 17vmin, 130px);
+    pointer-events: auto; cursor: pointer; touch-action: manipulation;
+  }
+  .shopView canvas { display: block; width: 100%; height: 100%; }
+  .itemInfo { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+  .itemName { font-size: clamp(18px, 4.2vmin, 34px); color: #fff; -webkit-text-stroke: 8px #1b1b1b; paint-order: stroke fill; letter-spacing: 2px; white-space: nowrap; }
+  .itemPrice { display: flex; align-items: center; gap: 8px; font-size: clamp(16px, 3.6vmin, 28px); color: #fff; -webkit-text-stroke: 7px #1b1b1b; paint-order: stroke fill; letter-spacing: 2px; }
+  .buyBtn { font-size: clamp(18px, 4vmin, 32px); }
+
+  #gemInfo { position: absolute; inset: 0; z-index: 5; display: none; align-items: center; justify-content: center; background: rgba(11,16,51,.78); }
+  #gemInfo.show { display: flex; }
+  #gemCard { width: min(92vw, 520px); display: flex; flex-direction: column; align-items: center; gap: 2.6vmin; animation: pIn .3s cubic-bezier(.2,1.4,.4,1) both; }
+  #gemList { width: 100%; display: flex; flex-direction: column; gap: 2vmin; }
+  #gemList .row .val { display: flex; align-items: center; gap: 8px; flex: none; font-size: clamp(16px, 3.6vmin, 28px); color: #fff; -webkit-text-stroke: 7px #1b1b1b; paint-order: stroke fill; letter-spacing: 2px; }
+  #gemOk { font-size: clamp(18px, 4vmin, 32px); padding: 6px 30px; }
+
   #settings {
     position: fixed; inset: 0; z-index: 9; display: none; overflow: auto; background: rgba(11,16,51,.88);
     font-family: 'Arial Black', 'Impact', system-ui, sans-serif; font-weight: 900; text-transform: uppercase;
@@ -228,6 +321,61 @@
   body.notimer #timer { display: none !important; }
   #settings, #settings * { stroke-linejoin: round; stroke-linecap: round; text-rendering: geometricPrecision; }
 
+
+  /* ---------- Customize (ekran jak profil: ta sama animacja kamery, po prawej Twoje fasolki) ---------- */
+  #cust {
+    position: fixed; inset: 0; z-index: 9; display: none; overflow: hidden; pointer-events: none;
+    font-family: 'Arial Black', 'Impact', system-ui, sans-serif; font-weight: 900; text-transform: uppercase;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body.cust #cust { display: block; }
+  body.cust #menu { display: none; }
+  body.cust #nameplate { display: none !important; }
+  #cuBack {
+    position: absolute; left: 3vmin; top: 3vmin; padding: 0; border-radius: 50%; box-sizing: border-box;
+    width: clamp(56px, 12vmin, 92px); height: clamp(56px, 12vmin, 92px);
+    background: #e8232b; box-shadow: 0 0 0 5px #ff6b6b inset, 0 6px 0 rgba(0,0,0,.35);
+  }
+  #cuBack:hover { background: #ff3b43; }
+  #cuBack svg { position: absolute; inset: 14%; width: 72%; height: 72%; pointer-events: none; }
+  #cuBack path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  #cuBack .o { stroke: #1b1b1b; stroke-width: 22; }
+  #cuBack .i { stroke: #fff; stroke-width: 11; }
+  .cats { display: flex; gap: min(2vmin, 1.5vw); flex-wrap: nowrap; justify-content: center; white-space: nowrap; flex: none; }
+  .cat { font-size: clamp(12px, min(3.6vmin, 3.6vw), 28px); padding: 5px min(22px, 2.4vw); -webkit-text-stroke: 7px #1b1b1b;
+         background: #3a7bff; box-shadow: 0 0 0 4px #8fb4ff inset, 0 6px 0 rgba(0,0,0,.35); }
+  .cat:hover { background: #5590ff; }
+  .cat.on { background: #ffd21f; box-shadow: 0 0 0 4px #fff18a inset, 0 6px 0 rgba(0,0,0,.35); }
+  #cwrap { position: absolute; right: 2vw; top: 0; bottom: 0; width: 42vw; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.4vmin; }
+  body.cust #cwrap { animation: pIn .55s .45s cubic-bezier(.2,1.4,.4,1) both; }
+  @media (max-aspect-ratio: 1/1) {
+    #cwrap { left: 0; right: 0; top: auto; bottom: 3vh; width: auto; height: 54vh; justify-content: flex-start; }
+  }
+  #cgrid {
+    pointer-events: auto; width: 100%; max-height: 100%; box-sizing: border-box; overflow-y: auto; overflow-x: hidden;
+    display: flex; flex-wrap: wrap; justify-content: center; align-content: flex-start; gap: clamp(12px, 2.6vmin, 24px);
+    padding: 10px 14px 20px; scrollbar-width: none; flex: 0 1 auto; min-height: 0;
+  }
+  #cgrid::-webkit-scrollbar { display: none; }
+  .bcard {
+    position: relative; width: clamp(104px, 23vmin, 168px); box-sizing: border-box; padding: 8px 6px 10px; container-type: inline-size; cursor: pointer; touch-action: manipulation;
+    display: flex; flex-direction: column; align-items: center; gap: 2px; flex: none;
+    background: #3a7bff; border: 7px solid #1b1b1b; border-radius: 16px;
+    box-shadow: 0 0 0 4px #8fb4ff inset, 0 7px 0 rgba(0,0,0,.35); transition: transform .08s;
+  }
+  .bcard:hover { background: #5590ff; }
+  .bcard:active { transform: scale(.92); }
+  .bcard.sel { background: #ffd21f; box-shadow: 0 0 0 4px #fff18a inset, 0 7px 0 rgba(0,0,0,.35); }
+  .bcard.sel:hover { background: #ffe14d; }
+  .bcard.locked { background: #5a6385; box-shadow: 0 0 0 4px #98a1c4 inset, 0 7px 0 rgba(0,0,0,.35); }
+  .bcard.locked:hover { background: #6a7396; }
+  .bview { position: relative; width: 100%; aspect-ratio: 1; }
+  .bview canvas { display: block; width: 100%; height: 100%; }
+  .bcard.locked .bview canvas { filter: brightness(.42) saturate(.3); }
+  .lockI { position: absolute; left: 50%; top: 50%; width: 52%; height: 52%; transform: translate(-50%, -50%); overflow: visible; pointer-events: none; }
+  .bname { font-size: min(12cqw, 22px); letter-spacing: .03em; color: #fff; -webkit-text-stroke: .3em #1b1b1b; paint-order: stroke fill; white-space: nowrap; text-align: center; max-width: 100%; padding-bottom: 2px; }   /* rozmiar liczony od szerokości karty, żeby napis nie wychodził poza obrys */
+  #cust, #cust * { stroke-linejoin: round; stroke-linecap: round; text-rendering: geometricPrecision; }
+
   /* gładkie obrysy tekstu: zaokrąglone łączenia zamiast ostrych "kolców" w literach */
   #elim span, #victory span, #timer, #toast span, #playBtn, #nameplate, #profileName, .stat .l, .stat .v, #profile, #profile * {
     stroke-linejoin: round; stroke-linecap: round; text-rendering: geometricPrecision;
@@ -243,6 +391,8 @@
   <button id="profileBtn" title="Profile"><div class="avatar"></div><span id="profileName"></span></button>
   <button id="playBtn">PLAY</button>
   <button id="setBtn" class="pbtn" title="Settings"><svg viewBox="0 0 64 64"><path class="o" d="M39.48 13.95 L39.79 14.08 L40.11 14.21 L40.43 14.34 L40.75 14.45 L41.10 14.53 L41.49 14.53 L41.98 14.36 L42.70 13.83 L43.75 12.83 L45.02 11.57 L46.15 10.62 L46.97 10.23 L47.54 10.21 L48.00 10.37 L48.41 10.61 L48.80 10.88 L49.17 11.17 L49.53 11.47 L49.89 11.78 L50.24 12.09 L50.58 12.42 L50.92 12.74 L51.26 13.08 L51.58 13.42 L51.91 13.76 L52.22 14.11 L52.53 14.47 L52.83 14.83 L53.12 15.20 L53.39 15.59 L53.63 16.00 L53.79 16.46 L53.77 17.03 L53.38 17.85 L52.43 18.98 L51.17 20.25 L50.17 21.30 L49.64 22.02 L49.47 22.51 L49.47 22.90 L49.55 23.25 L49.66 23.57 L49.79 23.89 L49.92 24.21 L50.05 24.52 L50.18 24.84 L50.31 25.15 L50.45 25.47 L50.60 25.78 L50.79 26.08 L51.06 26.35 L51.54 26.58 L52.41 26.72 L53.86 26.75 L55.65 26.76 L57.12 26.89 L57.98 27.19 L58.40 27.58 L58.61 28.02 L58.73 28.48 L58.81 28.95 L58.87 29.41 L58.91 29.88 L58.95 30.35 L58.97 30.82 L58.99 31.29 L59.00 31.76 L59.00 32.24 L58.99 32.71 L58.97 33.18 L58.95 33.65 L58.91 34.12 L58.87 34.59 L58.81 35.05 L58.73 35.52 L58.61 35.98 L58.40 36.42 L57.98 36.81 L57.12 37.11 L55.65 37.24 L53.86 37.25 L52.41 37.28 L51.54 37.42 L51.06 37.65 L50.79 37.92 L50.60 38.22 L50.45 38.53 L50.31 38.85 L50.18 39.16 L50.05 39.48 L49.92 39.79 L49.79 40.11 L49.66 40.43 L49.55 40.75 L49.47 41.10 L49.47 41.49 L49.64 41.98 L50.17 42.70 L51.17 43.75 L52.43 45.02 L53.38 46.15 L53.77 46.97 L53.79 47.54 L53.63 48.00 L53.39 48.41 L53.12 48.80 L52.83 49.17 L52.53 49.53 L52.22 49.89 L51.91 50.24 L51.58 50.58 L51.26 50.92 L50.92 51.26 L50.58 51.58 L50.24 51.91 L49.89 52.22 L49.53 52.53 L49.17 52.83 L48.80 53.12 L48.41 53.39 L48.00 53.63 L47.54 53.79 L46.97 53.77 L46.15 53.38 L45.02 52.43 L43.75 51.17 L42.70 50.17 L41.98 49.64 L41.49 49.47 L41.10 49.47 L40.75 49.55 L40.43 49.66 L40.11 49.79 L39.79 49.92 L39.48 50.05 L39.16 50.18 L38.85 50.31 L38.53 50.45 L38.22 50.60 L37.92 50.79 L37.65 51.06 L37.42 51.54 L37.28 52.41 L37.25 53.86 L37.24 55.65 L37.11 57.12 L36.81 57.98 L36.42 58.40 L35.98 58.61 L35.52 58.73 L35.05 58.81 L34.59 58.87 L34.12 58.91 L33.65 58.95 L33.18 58.97 L32.71 58.99 L32.24 59.00 L31.76 59.00 L31.29 58.99 L30.82 58.97 L30.35 58.95 L29.88 58.91 L29.41 58.87 L28.95 58.81 L28.48 58.73 L28.02 58.61 L27.58 58.40 L27.19 57.98 L26.89 57.12 L26.76 55.65 L26.75 53.86 L26.72 52.41 L26.58 51.54 L26.35 51.06 L26.08 50.79 L25.78 50.60 L25.47 50.45 L25.15 50.31 L24.84 50.18 L24.52 50.05 L24.21 49.92 L23.89 49.79 L23.57 49.66 L23.25 49.55 L22.90 49.47 L22.51 49.47 L22.02 49.64 L21.30 50.17 L20.25 51.17 L18.98 52.43 L17.85 53.38 L17.03 53.77 L16.46 53.79 L16.00 53.63 L15.59 53.39 L15.20 53.12 L14.83 52.83 L14.47 52.53 L14.11 52.22 L13.76 51.91 L13.42 51.58 L13.08 51.26 L12.74 50.92 L12.42 50.58 L12.09 50.24 L11.78 49.89 L11.47 49.53 L11.17 49.17 L10.88 48.80 L10.61 48.41 L10.37 48.00 L10.21 47.54 L10.23 46.97 L10.62 46.15 L11.57 45.02 L12.83 43.75 L13.83 42.70 L14.36 41.98 L14.53 41.49 L14.53 41.10 L14.45 40.75 L14.34 40.43 L14.21 40.11 L14.08 39.79 L13.95 39.48 L13.82 39.16 L13.69 38.85 L13.55 38.53 L13.40 38.22 L13.21 37.92 L12.94 37.65 L12.46 37.42 L11.59 37.28 L10.14 37.25 L8.35 37.24 L6.88 37.11 L6.02 36.81 L5.60 36.42 L5.39 35.98 L5.27 35.52 L5.19 35.05 L5.13 34.59 L5.09 34.12 L5.05 33.65 L5.03 33.18 L5.01 32.71 L5.00 32.24 L5.00 31.76 L5.01 31.29 L5.03 30.82 L5.05 30.35 L5.09 29.88 L5.13 29.41 L5.19 28.95 L5.27 28.48 L5.39 28.02 L5.60 27.58 L6.02 27.19 L6.88 26.89 L8.35 26.76 L10.14 26.75 L11.59 26.72 L12.46 26.58 L12.94 26.35 L13.21 26.08 L13.40 25.78 L13.55 25.47 L13.69 25.15 L13.82 24.84 L13.95 24.52 L14.08 24.21 L14.21 23.89 L14.34 23.57 L14.45 23.25 L14.53 22.90 L14.53 22.51 L14.36 22.02 L13.83 21.30 L12.83 20.25 L11.57 18.98 L10.62 17.85 L10.23 17.03 L10.21 16.46 L10.37 16.00 L10.61 15.59 L10.88 15.20 L11.17 14.83 L11.47 14.47 L11.78 14.11 L12.09 13.76 L12.42 13.42 L12.74 13.08 L13.08 12.74 L13.42 12.42 L13.76 12.09 L14.11 11.78 L14.47 11.47 L14.83 11.17 L15.20 10.88 L15.59 10.61 L16.00 10.37 L16.46 10.21 L17.03 10.23 L17.85 10.62 L18.98 11.57 L20.25 12.83 L21.30 13.83 L22.02 14.36 L22.51 14.53 L22.90 14.53 L23.25 14.45 L23.57 14.34 L23.89 14.21 L24.21 14.08 L24.52 13.95 L24.84 13.82 L25.15 13.69 L25.47 13.55 L25.78 13.40 L26.08 13.21 L26.35 12.94 L26.58 12.46 L26.72 11.59 L26.75 10.14 L26.76 8.35 L26.89 6.88 L27.19 6.02 L27.58 5.60 L28.02 5.39 L28.48 5.27 L28.95 5.19 L29.41 5.13 L29.88 5.09 L30.35 5.05 L30.82 5.03 L31.29 5.01 L31.76 5.00 L32.24 5.00 L32.71 5.01 L33.18 5.03 L33.65 5.05 L34.12 5.09 L34.59 5.13 L35.05 5.19 L35.52 5.27 L35.98 5.39 L36.42 5.60 L36.81 6.02 L37.11 6.88 L37.24 8.35 L37.25 10.14 L37.28 11.59 L37.42 12.46 L37.65 12.94 L37.92 13.21 L38.22 13.40 L38.53 13.55 L38.85 13.69 L39.16 13.82Z M21 32a11 11 0 1 0 22 0a11 11 0 1 0 -22 0Z"/><path class="i" d="M39.48 13.95 L39.79 14.08 L40.11 14.21 L40.43 14.34 L40.75 14.45 L41.10 14.53 L41.49 14.53 L41.98 14.36 L42.70 13.83 L43.75 12.83 L45.02 11.57 L46.15 10.62 L46.97 10.23 L47.54 10.21 L48.00 10.37 L48.41 10.61 L48.80 10.88 L49.17 11.17 L49.53 11.47 L49.89 11.78 L50.24 12.09 L50.58 12.42 L50.92 12.74 L51.26 13.08 L51.58 13.42 L51.91 13.76 L52.22 14.11 L52.53 14.47 L52.83 14.83 L53.12 15.20 L53.39 15.59 L53.63 16.00 L53.79 16.46 L53.77 17.03 L53.38 17.85 L52.43 18.98 L51.17 20.25 L50.17 21.30 L49.64 22.02 L49.47 22.51 L49.47 22.90 L49.55 23.25 L49.66 23.57 L49.79 23.89 L49.92 24.21 L50.05 24.52 L50.18 24.84 L50.31 25.15 L50.45 25.47 L50.60 25.78 L50.79 26.08 L51.06 26.35 L51.54 26.58 L52.41 26.72 L53.86 26.75 L55.65 26.76 L57.12 26.89 L57.98 27.19 L58.40 27.58 L58.61 28.02 L58.73 28.48 L58.81 28.95 L58.87 29.41 L58.91 29.88 L58.95 30.35 L58.97 30.82 L58.99 31.29 L59.00 31.76 L59.00 32.24 L58.99 32.71 L58.97 33.18 L58.95 33.65 L58.91 34.12 L58.87 34.59 L58.81 35.05 L58.73 35.52 L58.61 35.98 L58.40 36.42 L57.98 36.81 L57.12 37.11 L55.65 37.24 L53.86 37.25 L52.41 37.28 L51.54 37.42 L51.06 37.65 L50.79 37.92 L50.60 38.22 L50.45 38.53 L50.31 38.85 L50.18 39.16 L50.05 39.48 L49.92 39.79 L49.79 40.11 L49.66 40.43 L49.55 40.75 L49.47 41.10 L49.47 41.49 L49.64 41.98 L50.17 42.70 L51.17 43.75 L52.43 45.02 L53.38 46.15 L53.77 46.97 L53.79 47.54 L53.63 48.00 L53.39 48.41 L53.12 48.80 L52.83 49.17 L52.53 49.53 L52.22 49.89 L51.91 50.24 L51.58 50.58 L51.26 50.92 L50.92 51.26 L50.58 51.58 L50.24 51.91 L49.89 52.22 L49.53 52.53 L49.17 52.83 L48.80 53.12 L48.41 53.39 L48.00 53.63 L47.54 53.79 L46.97 53.77 L46.15 53.38 L45.02 52.43 L43.75 51.17 L42.70 50.17 L41.98 49.64 L41.49 49.47 L41.10 49.47 L40.75 49.55 L40.43 49.66 L40.11 49.79 L39.79 49.92 L39.48 50.05 L39.16 50.18 L38.85 50.31 L38.53 50.45 L38.22 50.60 L37.92 50.79 L37.65 51.06 L37.42 51.54 L37.28 52.41 L37.25 53.86 L37.24 55.65 L37.11 57.12 L36.81 57.98 L36.42 58.40 L35.98 58.61 L35.52 58.73 L35.05 58.81 L34.59 58.87 L34.12 58.91 L33.65 58.95 L33.18 58.97 L32.71 58.99 L32.24 59.00 L31.76 59.00 L31.29 58.99 L30.82 58.97 L30.35 58.95 L29.88 58.91 L29.41 58.87 L28.95 58.81 L28.48 58.73 L28.02 58.61 L27.58 58.40 L27.19 57.98 L26.89 57.12 L26.76 55.65 L26.75 53.86 L26.72 52.41 L26.58 51.54 L26.35 51.06 L26.08 50.79 L25.78 50.60 L25.47 50.45 L25.15 50.31 L24.84 50.18 L24.52 50.05 L24.21 49.92 L23.89 49.79 L23.57 49.66 L23.25 49.55 L22.90 49.47 L22.51 49.47 L22.02 49.64 L21.30 50.17 L20.25 51.17 L18.98 52.43 L17.85 53.38 L17.03 53.77 L16.46 53.79 L16.00 53.63 L15.59 53.39 L15.20 53.12 L14.83 52.83 L14.47 52.53 L14.11 52.22 L13.76 51.91 L13.42 51.58 L13.08 51.26 L12.74 50.92 L12.42 50.58 L12.09 50.24 L11.78 49.89 L11.47 49.53 L11.17 49.17 L10.88 48.80 L10.61 48.41 L10.37 48.00 L10.21 47.54 L10.23 46.97 L10.62 46.15 L11.57 45.02 L12.83 43.75 L13.83 42.70 L14.36 41.98 L14.53 41.49 L14.53 41.10 L14.45 40.75 L14.34 40.43 L14.21 40.11 L14.08 39.79 L13.95 39.48 L13.82 39.16 L13.69 38.85 L13.55 38.53 L13.40 38.22 L13.21 37.92 L12.94 37.65 L12.46 37.42 L11.59 37.28 L10.14 37.25 L8.35 37.24 L6.88 37.11 L6.02 36.81 L5.60 36.42 L5.39 35.98 L5.27 35.52 L5.19 35.05 L5.13 34.59 L5.09 34.12 L5.05 33.65 L5.03 33.18 L5.01 32.71 L5.00 32.24 L5.00 31.76 L5.01 31.29 L5.03 30.82 L5.05 30.35 L5.09 29.88 L5.13 29.41 L5.19 28.95 L5.27 28.48 L5.39 28.02 L5.60 27.58 L6.02 27.19 L6.88 26.89 L8.35 26.76 L10.14 26.75 L11.59 26.72 L12.46 26.58 L12.94 26.35 L13.21 26.08 L13.40 25.78 L13.55 25.47 L13.69 25.15 L13.82 24.84 L13.95 24.52 L14.08 24.21 L14.21 23.89 L14.34 23.57 L14.45 23.25 L14.53 22.90 L14.53 22.51 L14.36 22.02 L13.83 21.30 L12.83 20.25 L11.57 18.98 L10.62 17.85 L10.23 17.03 L10.21 16.46 L10.37 16.00 L10.61 15.59 L10.88 15.20 L11.17 14.83 L11.47 14.47 L11.78 14.11 L12.09 13.76 L12.42 13.42 L12.74 13.08 L13.08 12.74 L13.42 12.42 L13.76 12.09 L14.11 11.78 L14.47 11.47 L14.83 11.17 L15.20 10.88 L15.59 10.61 L16.00 10.37 L16.46 10.21 L17.03 10.23 L17.85 10.62 L18.98 11.57 L20.25 12.83 L21.30 13.83 L22.02 14.36 L22.51 14.53 L22.90 14.53 L23.25 14.45 L23.57 14.34 L23.89 14.21 L24.21 14.08 L24.52 13.95 L24.84 13.82 L25.15 13.69 L25.47 13.55 L25.78 13.40 L26.08 13.21 L26.35 12.94 L26.58 12.46 L26.72 11.59 L26.75 10.14 L26.76 8.35 L26.89 6.88 L27.19 6.02 L27.58 5.60 L28.02 5.39 L28.48 5.27 L28.95 5.19 L29.41 5.13 L29.88 5.09 L30.35 5.05 L30.82 5.03 L31.29 5.01 L31.76 5.00 L32.24 5.00 L32.71 5.01 L33.18 5.03 L33.65 5.05 L34.12 5.09 L34.59 5.13 L35.05 5.19 L35.52 5.27 L35.98 5.39 L36.42 5.60 L36.81 6.02 L37.11 6.88 L37.24 8.35 L37.25 10.14 L37.28 11.59 L37.42 12.46 L37.65 12.94 L37.92 13.21 L38.22 13.40 L38.53 13.55 L38.85 13.69 L39.16 13.82Z M21 32a11 11 0 1 0 22 0a11 11 0 1 0 -22 0Z"/></svg></button>
+  <button id="shopBtn" class="pbtn" title="Shop"><svg viewBox="-11 -12.5 84 84"><path class="d" d="M4 8 H13 L21.2 34"/><path class="b" d="M15.9 17 H58 L52 38 H21 Z"/><circle class="dc" cx="25" cy="50" r="10"/><circle class="dc" cx="49" cy="50" r="10"/><path class="w" d="M4 8 H13 L21.2 34"/><path class="bw" d="M15.9 17 H58 L52 38 H21 Z"/><circle class="wc" cx="25" cy="50" r="5.5"/><circle class="wc" cx="49" cy="50" r="5.5"/></svg></button>
+  <button id="custBtn" class="pbtn" title="Customize"><svg viewBox="-14.5 -11.5 91 91"><path class="o" d="M37 30 L59 30 L61 62 L52 62 L48 42 L44 62 L35 62 Z"/><path class="i" d="M37 30 L59 30 L61 62 L52 62 L48 42 L44 62 L35 62 Z"/><path class="o" d="M15 6 Q21 13 27 6 L35 9 L41 17 L36 22 L32 19 L32 36 L10 36 L10 19 L6 22 L1 17 L7 9 Z"/><path class="i" d="M15 6 Q21 13 27 6 L35 9 L41 17 L36 22 L32 19 L32 36 L10 36 L10 19 L6 22 L1 17 L7 9 Z"/></svg></button>
 </div>
 <div id="settings">
   <button id="setBack" class="pbtn" title="Back"><svg viewBox="0 0 64 64"><path class="o" d="M40 12 L20 32 L40 52"/><path class="i" d="M40 12 L20 32 L40 52"/></svg></button>
@@ -265,12 +415,27 @@
     </div>
   </div>
 </div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="gemIcon" viewBox="-3 -1 38 34"><path d="M9 4 H23 L30 12 L16 29 L2 12 Z" fill="#1b1b1b" stroke="#1b1b1b" stroke-width="9" stroke-linejoin="round"/><path d="M9 4 H23 L30 12 L16 29 L2 12 Z" fill="#fff" stroke="none"/></symbol><symbol id="lockIcon" viewBox="0 0 64 64"><path d="M20 29 V21 a12 12 0 0 1 24 0 V29" fill="none" stroke="#1b1b1b" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 29 V21 a12 12 0 0 1 24 0 V29" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><rect x="12" y="28" width="40" height="28" rx="7" fill="#1b1b1b" stroke="#1b1b1b" stroke-width="9" stroke-linejoin="round"/><rect x="12" y="28" width="40" height="28" rx="7" fill="#fff"/></symbol></svg>
+<div id="shop">
+  <button id="shopBack" class="pbtn" title="Back"><svg viewBox="0 0 64 64"><path class="o" d="M40 12 L20 32 L40 52"/><path class="i" d="M40 12 L20 32 L40 52"/></svg></button>
+  <div id="shopTop"><button id="gemHelp" class="pbtn" title="How to get gems"><svg viewBox="0 0 64 64"><text x="32" y="46.5" text-anchor="middle">?</text></svg></button><div id="shopGems"><svg class="gem"><use href="#gemIcon"/></svg><span id="shopGemCount">0</span></div></div>
+  <div id="gemInfo"><div id="gemCard"><div id="gemList"></div><button id="gemOk" class="pbtn tog on">OK</button></div></div>
+  <div id="shopPanel">
+    <div class="cats"><button class="pbtn cat on" data-cat="beans">Beans</button><button class="pbtn cat" data-cat="emotes">Emotes</button></div>
+    <div id="shopList"></div>
+  </div>
+</div>
+<button id="prevBack" class="pbtn" title="Back" style="z-index:9"><svg viewBox="0 0 64 64"><path class="o" d="M40 12 L20 32 L40 52"/><path class="i" d="M40 12 L20 32 L40 52"/></svg></button>
 <div id="nameplate"></div>
+<div id="cust">
+  <button id="cuBack" class="pbtn" title="Back"><svg viewBox="0 0 64 64"><path class="o" d="M40 12 L20 32 L40 52"/><path class="i" d="M40 12 L20 32 L40 52"/></svg></button>
+  <div id="cwrap"><div class="cats"><button class="pbtn cat on" data-cat="beans">Beans</button><button class="pbtn cat" data-cat="emotes">Emotes</button></div><div id="cgrid"></div></div>
+</div>
 <div id="profile">
   <button id="backBtn" class="pbtn" title="Back"><svg viewBox="0 0 64 64"><path class="o" d="M40 12 L20 32 L40 52"/><path class="i" d="M40 12 L20 32 L40 52"/></svg></button>
   <div id="pwrap">
     <div id="nickRow">
-      <input id="nickInput" type="text" maxlength="14" spellcheck="false" autocomplete="off" placeholder="Nickname">
+      <input id="nickInput" type="text" maxlength="200" spellcheck="false" autocomplete="off" placeholder="Nickname">
       <button id="saveBtn" class="pbtn">Save</button>
     </div>
     <div id="stats">
@@ -689,7 +854,7 @@ let lastSpace = -1, diveBuffer = 0;
 let inMenu = true;
 camera.position.set(0, 1.9, 5.2);
 function startGame() {
-  if (!inMenu || profileOpen || settingsOpen) return;
+  if (!inMenu || profileOpen || settingsOpen || shopOpen || custOpen) return;
   pvT = 0; resetArena();
   sfx.play();
   inMenu = false; document.body.classList.remove('menu');
@@ -713,7 +878,7 @@ addEventListener('keydown', e => {
 });
 addEventListener('keyup', e => keys[e.code] = false);
 document.getElementById('playBtn').addEventListener('click', startGame);
-addEventListener('keydown', e => { if (inMenu && !profileOpen && !settingsOpen && e.target.tagName !== 'INPUT' && e.code === 'Enter') startGame(); });
+addEventListener('keydown', e => { if (inMenu && !profileOpen && !settingsOpen && !shopOpen && !custOpen && e.target.tagName !== 'INPUT' && e.code === 'Enter') startGame(); });
 
 const cv = renderer.domElement;
 cv.style.touchAction = 'none';
@@ -771,7 +936,16 @@ function setMode(m) {
 setMode(matchMedia('(pointer: coarse)').matches ? 'phone' : 'pc');
 
 // ---------- Profil gracza ----------
-let profileOpen = false, pvT = 0;
+let profileOpen = false, custOpen = false, pvT = 0;
+// Katalog fasolek. 'red' jest domyślna, reszta do kupienia w shopie.
+const BEANS = [
+  { id: 'red',  name: 'Red Bean',  color: 0xe8453c },
+  { id: 'purple', name: 'Purple Bean', color: 0xa24bf0, price: 30 },
+  { id: 'white',  name: 'White Bean',  color: 0xf4f4f4, price: 30 }
+];
+const beanById = id => BEANS.find(b => b.id === id) || BEANS[0];
+let ownedBeans = ['red'], equipBean = 'red', gems = 0;
+const WIN_GEMS = 10;   // gemy za wygraną (bez żadnego napisu)
 // Data = nickname, settings, wins, losses (win rate is calculated).
 // Not connected -> saved in localStorage. Connected (Google) -> saved in Firebase Firestore.
 const FIREBASE_CONFIG = {
@@ -795,7 +969,52 @@ try {
   }
 } catch (err) { fbAuth = null; fbDb = null; }
 const CLOUD_KEY = 'stumbleBeansCloud';   // local copy of the connected profile (instant load, works offline)
-const nickKey = n => 'n_' + encodeURIComponent(n.toLowerCase());
+// ---------- Kolorowe nicki: <clr/red>BEA<clr/white>N ----------
+const NICK_MAX = 14;   // limit WIDOCZNYCH znaków (tagi się nie liczą)
+const NICK_COLORS = { red:'#ff3b3b', blue:'#3a7bff', white:'#ffffff', green:'#2bd44b', yellow:'#ffd21f', orange:'#ff9a1f', purple:'#a855f7', pink:'#ff7ac8', cyan:'#22e0ff', black:'#000000', gray:'#9aa0a6', grey:'#9aa0a6', lime:'#b6ff2b', brown:'#a0643a', gold:'#ffc400', magenta:'#ff2bd6', teal:'#14b8a6', navy:'#1e3a8a', violet:'#8b5cf6', silver:'#cfd4da', maroon:'#a01030', turquoise:'#30d5c8', crimson:'#e0143c', indigo:'#4b3fd1' };
+function nickColor(name) {
+  name = String(name).toLowerCase();
+  if (NICK_COLORS[name]) return NICK_COLORS[name];
+  if (/^#([0-9a-f]{3}|[0-9a-f]{6})$/.test(name)) return name;
+  return null;
+}
+function parseNick(raw) {   // -> [{t: tekst, c: kolor|null}], widoczny tekst obcięty do NICK_MAX
+  const re = /<clr\/([^<>\s\/]+)>/gi;
+  const segs = []; let color = null, last = 0, count = 0, m;
+  const push = t => {
+    if (!t || count >= NICK_MAX) return;
+    t = Array.from(t).slice(0, NICK_MAX - count).join('');
+    count += Array.from(t).length;
+    const prev = segs[segs.length - 1];
+    if (prev && prev.c === color) prev.t += t; else segs.push({ t, c: color });
+  };
+  raw = String(raw || '');
+  while ((m = re.exec(raw))) {
+    const c = nickColor(m[1]);
+    if (!c) continue;                       // nieznany kolor = zwykły tekst
+    push(raw.slice(last, m.index));
+    color = c; last = m.index + m[0].length;
+  }
+  push(raw.slice(last));
+  return segs;
+}
+function nickPlain(raw) { return parseNick(raw).map(s => s.t).join('').trim(); }
+function nickCanon(raw) {   // zapisujemy czystą wersję: bez zbędnych tagów, max NICK_MAX widocznych znaków
+  const segs = parseNick(raw); if (!segs.length) return '';
+  const lead = segs[0].t.match(/^\s*/)[0].length, tail = segs[segs.length - 1].t.match(/\s*$/)[0].length;
+  segs[0].t = segs[0].t.slice(lead); segs[segs.length - 1].t = segs[segs.length - 1].t.slice(0, segs[segs.length - 1].t.length - tail);
+  return segs.filter(s => s.t).map(s => (s.c ? '<clr/' + s.c + '>' : '') + s.t).join('').slice(0, 400);
+}
+function renderNick(el, raw) {
+  el.textContent = '';
+  parseNick(raw).forEach((s, i, a) => {
+    let t = s.t; if (i === 0) t = t.replace(/^\s+/, ''); if (i === a.length - 1) t = t.replace(/\s+$/, '');
+    if (!t) return;
+    const sp = document.createElement('span'); sp.textContent = t; if (s.c) sp.style.color = s.c; el.appendChild(sp);
+  });
+}
+// klucz = sam widoczny tekst (małe litery, bez kolorów) => BEAN zajęty w KAŻDYM kolorze
+const nickKey = n => 'n_' + encodeURIComponent(nickPlain(n).replace(/\s+/g, ' ').toLowerCase());
 function randomBean(tries) { return 'Bean_' + (1 + Math.floor(Math.random() * (60 + (tries | 0) * 40))); }
 
 async function nickOwner(n) {        // uid of whoever owns this nickname (or null)
@@ -824,10 +1043,11 @@ async function freshNick(uid) {      // random free Bean_N for a connected accou
 }
 
 function readGuest() {
-  const g = { nick: '', wins: 0, losses: 0, settings: {} };
-  try { const n = localStorage.getItem('stumbleBeansNick'); if (n) g.nick = n.slice(0, 14); } catch (err) {}
+  const g = { nick: '', wins: 0, losses: 0, settings: {}, owned: ['red'], equip: 'red', gems: 0 };
+  try { const n = localStorage.getItem('stumbleBeansNick'); if (n) g.nick = nickCanon(n); } catch (err) {}
   try { const t = JSON.parse(localStorage.getItem('stumbleBeansStats')); if (t) { g.wins = t.wins | 0; g.losses = t.losses | 0; } } catch (err) {}
   try { const t = JSON.parse(localStorage.getItem('stumbleBeansSettings')); if (t) g.settings = t; } catch (err) {}
+  try { const t = JSON.parse(localStorage.getItem('stumbleBeansBeans')); if (t) { g.owned = t.owned; g.equip = t.equip; g.gems = t.gems | 0; } } catch (err) {}
   return g;
 }
 function saveGuest() {
@@ -835,19 +1055,24 @@ function saveGuest() {
     localStorage.setItem('stumbleBeansNick', playerNick);
     localStorage.setItem('stumbleBeansStats', JSON.stringify(stats));
     localStorage.setItem('stumbleBeansSettings', JSON.stringify(settings));
+    localStorage.setItem('stumbleBeansBeans', JSON.stringify({ owned: ownedBeans, equip: equipBean, gems }));
   } catch (err) {}
 }
 function clearGuest() {
-  try { ['stumbleBeansNick', 'stumbleBeansStats', 'stumbleBeansSettings'].forEach(k => localStorage.removeItem(k)); } catch (err) {}
+  try { ['stumbleBeansNick', 'stumbleBeansStats', 'stumbleBeansSettings', 'stumbleBeansBeans'].forEach(k => localStorage.removeItem(k)); } catch (err) {}
 }
 function applyProfile(d) {
-  playerNick = String(d.nick || '').slice(0, 14);
+  playerNick = nickCanon(d.nick || '');
   stats.wins = d.wins | 0; stats.losses = d.losses | 0;
+  ownedBeans = (Array.isArray(d.owned) ? d.owned : []).filter(id => BEANS.some(b => b.id === id));
+  if (!ownedBeans.includes('red')) ownedBeans.unshift('red');
+  equipBean = ownedBeans.includes(d.equip) ? d.equip : 'red';
+  gems = Math.max(0, d.gems | 0);
   for (const k in DEFAULT_SETTINGS) settings[k] = d.settings && typeof d.settings[k] === 'boolean' ? d.settings[k] : DEFAULT_SETTINGS[k];
 }
 function snapshot() {
   const total = stats.wins + stats.losses;
-  return { nick: playerNick, settings: Object.assign({}, settings), wins: stats.wins, losses: stats.losses, winRate: total ? Math.round(stats.wins / total * 100) : 0 };
+  return { nick: playerNick, settings: Object.assign({}, settings), wins: stats.wins, losses: stats.losses, owned: ownedBeans.slice(), equip: equipBean, gems, winRate: total ? Math.round(stats.wins / total * 100) : 0 };
 }
 function loadGuest() {               // guest profile from localStorage; no profile yet -> brand new one
   const g = readGuest(); const fresh = !g.nick;
@@ -900,7 +1125,7 @@ async function onAuth(user) {
     if (nick) { try { await claimNick(nick, null, user.uid); } catch (err) { if (err.message === 'taken') nick = ''; } }
     if (!nick) nick = await freshNick(user.uid);
     if (my !== authSeq) return;
-    const keep = { nick, wins: g.wins, losses: g.losses, settings: g.settings };
+    const keep = { nick, wins: g.wins, losses: g.losses, settings: g.settings, owned: g.owned, equip: g.equip, gems: g.gems };
     applyProfile(keep);
     try { await ref.set(snapshot()); clearGuest(); cacheSave(); }
     catch (err) { acct = null; fbAuth.signOut().catch(() => {}); applyProfile(g); refreshProfileUI(); return; }
@@ -952,11 +1177,13 @@ const avBean = new THREE.Mesh(
   new THREE.MeshStandardMaterial({ color: 0xe8453c, roughness: 0.45 })
 );
 avBean.scale.set(1, STRETCH, 0.9); avBean.castShadow = true; avScene.add(avBean);
+function applyBeanColor() { const c = beanById(equipBean).color; body.material.color.setHex(c); avBean.material.color.setHex(c); }
+applyBeanColor();
 const avCam = new THREE.PerspectiveCamera(30, 1, 0.1, 80);
 avCam.position.set(0, 0.5, 3.9); avCam.lookAt(0, 0.3, 0);   // fasolka mniejsza, cała widoczna w kółku
 let avSize = 0;
 function renderAvatar() {
-  if (!inMenu || profileOpen || settingsOpen) return;
+  if (!inMenu || profileOpen || settingsOpen || shopOpen || custOpen) return;
   const w = avEl.clientWidth; if (!w) return;
   if (w !== avSize) { avSize = w; avRenderer.setPixelRatio(Math.min(devicePixelRatio, 2)); avRenderer.setSize(w, w, false); }
   avBean.rotation.y = 0;   // profilowe się nie kręci
@@ -967,8 +1194,8 @@ const nameplateEl = document.getElementById('nameplate');
 const profileNameEl = document.getElementById('profileName');
 const nickInput = document.getElementById('nickInput');
 function applyNick() {
-  nameplateEl.textContent = playerNick;
-  profileNameEl.textContent = playerNick;
+  renderNick(nameplateEl, playerNick);
+  renderNick(profileNameEl, playerNick);
 }
 function renderStats() {
   const total = stats.wins + stats.losses;
@@ -977,7 +1204,7 @@ function renderStats() {
   document.getElementById('stRate').textContent = (total ? Math.round(stats.wins / total * 100) : 0) + '%';
 }
 function openProfile() {
-  if (!inMenu) return;
+  if (!inMenu || shopOpen || custOpen) return;
   sfx.click();
   profileOpen = true; document.body.classList.add('profile');
   nickInput.value = playerNick; renderStats();
@@ -987,9 +1214,9 @@ function closeProfile() {
   profileOpen = false; document.body.classList.remove('profile'); nickInput.blur();
 }
 async function saveNick() {
-  const n = nickInput.value.trim().slice(0, 14);
+  const n = nickCanon(nickInput.value);
   sfx.click();
-  if (n && n !== playerNick) {
+  if (nickPlain(n) && n !== playerNick) {
     let ok = true;
     if (acct && fbDb) { try { await claimNick(n, playerNick, acct.uid); } catch (err) { ok = false; } }
     else if (fbDb) { if (await nickOwner(n)) ok = false; }
@@ -1011,7 +1238,7 @@ function applySettings() {
   document.querySelectorAll('.tog[data-key]').forEach(b => { const on = settings[b.dataset.key]; b.classList.toggle('on', on); b.textContent = on ? 'ON' : 'OFF'; });
   applyAudioSettings();
 }
-function openSettings() { if (!inMenu || profileOpen) return; sfx.click(); settingsOpen = true; document.body.classList.add('settings'); }
+function openSettings() { if (!inMenu || profileOpen || shopOpen || custOpen) return; sfx.click(); settingsOpen = true; document.body.classList.add('settings'); }
 function closeSettings() { sfx.click(); settingsOpen = false; document.body.classList.remove('settings'); }
 document.getElementById('setBtn').addEventListener('click', openSettings);
 document.getElementById('setBack').addEventListener('click', closeSettings);
@@ -1028,10 +1255,139 @@ document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () =>
 }));
 applySettings();
 
+// ---------- Shop ----------
+let shopOpen = false;
+function updateGemsUI() { document.getElementById('shopGemCount').textContent = gems; }
+updateGemsUI();
+function openShop() { if (!inMenu || profileOpen || settingsOpen || custOpen) return; sfx.click(); updateBuyBtn(); shopOpen = true; document.body.classList.add('shop'); }
+// za co są gemy (na razie tylko wygrana); kolejne źródła dopisz do GEM_SOURCES
+const GEM_SOURCES = [{ label: 'Win a match', gems: WIN_GEMS }];
+const gemInfoEl = document.getElementById('gemInfo');
+document.getElementById('gemList').innerHTML = GEM_SOURCES.map(g =>
+  '<div class="row"><span class="lbl">' + g.label + '</span><span class="val"><svg class="gem"><use href="#gemIcon"/></svg>+' + g.gems + '</span></div>').join('');
+const gemInfoOpen = () => gemInfoEl.classList.contains('show');
+function openGemInfo() { sfx.click(); gemInfoEl.classList.add('show'); }
+function closeGemInfo() { sfx.click(); gemInfoEl.classList.remove('show'); }
+document.getElementById('gemHelp').addEventListener('click', openGemInfo);
+document.getElementById('gemOk').addEventListener('click', closeGemInfo);
+gemInfoEl.addEventListener('click', e => { if (e.target === gemInfoEl) closeGemInfo(); });
+function closeShop() { sfx.click(); shopOpen = false; gemInfoEl.classList.remove('show'); document.body.classList.remove('shop'); }
+document.getElementById('shopBtn').addEventListener('click', openShop);
+document.getElementById('shopBack').addEventListener('click', closeShop);
+let previewOpen = false;
+function openPreview(color) { sfx.click(); previewOpen = true; body.material.color.setHex(color); document.body.classList.add('preview'); }
+function closePreview() { sfx.click(); previewOpen = false; applyBeanColor(); document.body.classList.remove('preview'); }
+document.getElementById('prevBack').addEventListener('click', closePreview);
+addEventListener('keydown', e => { if (e.code === 'Escape') { if (gemInfoOpen()) closeGemInfo(); else if (previewOpen) closePreview(); else if (shopOpen) closeShop(); } });
+// lista sklepu budowana z katalogu BEANS (wszystko, co ma cenę); podgląd 3D rysuje wspólny renderer z Customize
+const shopList = document.getElementById('shopList');
+const shopItems = BEANS.filter(b => b.price != null).map(b => {
+  const row = document.createElement('div'); row.className = 'row shopItem';
+  const view = document.createElement('div'); view.className = 'shopView';
+  const cv = document.createElement('canvas'); view.appendChild(cv);
+  const info = document.createElement('div'); info.className = 'itemInfo';
+  info.innerHTML = '<span class="itemName"></span><span class="itemPrice"><svg class="gem"><use href="#gemIcon"/></svg><span></span></span>';
+  info.querySelector('.itemName').textContent = b.name;
+  info.querySelector('.itemPrice span:last-child').textContent = b.price;
+  const btn = document.createElement('button'); btn.className = 'pbtn tog on buyBtn'; btn.textContent = 'BUY';
+  row.append(view, info, btn); shopList.appendChild(row);
+  view.addEventListener('click', () => openPreview(b.color));
+  btn.addEventListener('click', () => {
+    sfx.click();
+    if (ownedBeans.includes(b.id) || gems < b.price) return;
+    gems -= b.price; updateGemsUI();
+    ownedBeans.push(b.id); persist(); updateBuyBtn();
+  });
+  return { b, cv, ctx: cv.getContext('2d'), btn };
+});
+function updateBuyBtn() {
+  shopItems.forEach(it => { it.btn.textContent = ownedBeans.includes(it.b.id) ? 'OWNED' : 'BUY'; });
+}
+updateBuyBtn();
+let shAng = 0;
+function renderShop() {
+  if (!shopOpen) return;
+  shAng += 0.015; cuBean.rotation.y = shAng;
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  for (const it of shopItems) {
+    const w = it.cv.clientWidth; if (!w) continue;
+    const px = Math.min(384, Math.round(w * dpr));
+    if (it.cv.width !== px) { it.cv.width = px; it.cv.height = px; }
+    cuBean.material.color.setHex(it.b.color);
+    cuRenderer.render(cuScene, cuCam);
+    it.ctx.clearRect(0, 0, px, px); it.ctx.drawImage(cuRenderer.domElement, 0, 0, px, px);
+  }
+}
+
+// ---------- Customize ----------
+const cgrid = document.getElementById('cgrid');
+let cuCards = [], cuAng = 0;
+function buildCust() {
+  cgrid.textContent = ''; cuCards = [];
+  // najpierw te, które masz; zablokowane na dole
+  const list = BEANS.map((b, i) => ({ b, i, own: ownedBeans.includes(b.id) })).sort((x, y) => (y.own - x.own) || (x.i - y.i));
+  list.forEach(({ b, own }) => {
+    const card = document.createElement('div');
+    card.className = 'bcard' + (own ? '' : ' locked') + (own && b.id === equipBean ? ' sel' : '');
+    const view = document.createElement('div'); view.className = 'bview';
+    const cv = document.createElement('canvas'); view.appendChild(cv);
+    if (!own) view.insertAdjacentHTML('beforeend', '<svg class="lockI"><use href="#lockIcon"/></svg>');
+    const nm = document.createElement('div'); nm.className = 'bname'; nm.textContent = b.name;
+    card.append(view, nm);
+    card.addEventListener('click', () => {
+      sfx.click();
+      if (!own) return;
+      equipBean = b.id; persist(); applyBeanColor();
+      cuCards.forEach(c => c.card.classList.toggle('sel', c.own && c.id === equipBean));
+    });
+    cgrid.appendChild(card);
+    cuCards.push({ id: b.id, own, card, cv, ctx: cv.getContext('2d'), color: b.color });
+  });
+}
+// przełączanie kategorii (Emotes na razie puste: lista się chowa, ale zajmuje miejsce, żeby zakładki nie skakały)
+document.querySelectorAll('.cat').forEach(b => b.addEventListener('click', () => {
+  sfx.click();
+  const group = b.parentElement;
+  group.querySelectorAll('.cat').forEach(x => x.classList.toggle('on', x === b));
+  const list = group.parentElement.querySelector('#cgrid, #shopList');
+  if (list) list.style.visibility = b.dataset.cat === 'beans' ? '' : 'hidden';
+}));
+function openCust() {
+  if (!inMenu || profileOpen || settingsOpen || shopOpen) return;
+  sfx.click(); buildCust(); custOpen = true; document.body.classList.add('cust'); cgrid.scrollTop = 0;
+}
+function closeCust() { sfx.click(); custOpen = false; document.body.classList.remove('cust'); }
+document.getElementById('custBtn').addEventListener('click', openCust);
+document.getElementById('cuBack').addEventListener('click', closeCust);
+addEventListener('keydown', e => { if (e.code === 'Escape' && custOpen) closeCust(); });
+// jeden wspólny renderer 3D dla wszystkich kart (zamiast osobnego kontekstu WebGL na każdą fasolkę)
+const cuRenderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+cuRenderer.setClearColor(0x000000, 0); cuRenderer.setPixelRatio(1); cuRenderer.setSize(384, 384, false);
+const cuScene = new THREE.Scene();
+cuScene.add(new THREE.HemisphereLight(0xaab8ff, 0x445577, 0.9));
+const cuSun = new THREE.DirectionalLight(0xdde4ff, 0.8); cuSun.position.set(2, 4, 3); cuScene.add(cuSun);
+const cuBean = new THREE.Mesh(new THREE.SphereGeometry(RADIUS, 32, 24), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.45 }));
+cuBean.scale.set(1, STRETCH, 0.9); cuScene.add(cuBean);
+const cuCam = new THREE.PerspectiveCamera(30, 1, 0.1, 80);
+cuCam.position.set(0, 0.3, 4.2); cuCam.lookAt(0, 0, 0);
+function renderCust() {
+  if (!custOpen) return;
+  cuAng += 0.015; cuBean.rotation.y = cuAng;
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  for (const c of cuCards) {
+    const w = c.cv.clientWidth; if (!w) continue;
+    const px = Math.min(384, Math.round(w * dpr));
+    if (c.cv.width !== px) { c.cv.width = px; c.cv.height = px; }
+    cuBean.material.color.setHex(c.color);
+    cuRenderer.render(cuScene, cuCam);
+    c.ctx.clearRect(0, 0, px, px); c.ctx.drawImage(cuRenderer.domElement, 0, 0, px, px);
+  }
+}
+
 // ---------- Account (General tab) ----------
 const connBtn = document.getElementById('connBtn');
 function updateConnUI() { connBtn.classList.toggle('on', !!acct); connBtn.textContent = acct ? 'Connected' : 'Connect'; }
-function refreshProfileUI() { applyNick(); renderStats(); applySettings(); updateConnUI(); }
+function refreshProfileUI() { updateGemsUI(); updateBuyBtn(); applyNick(); renderStats(); applySettings(); updateConnUI(); applyBeanColor(); }
 connBtn.addEventListener('click', async () => {
   sfx.click();
   if (!fbAuth) return;
@@ -1052,7 +1408,7 @@ if (fbAuth) fbAuth.onAuthStateChanged(onAuth);
 // nick unosi się nad fasolką (w menu i w grze)
 const _np = new THREE.Vector3();
 function updateNameplate() {
-  if ((eliminated && !inMenu) || profileOpen || !settings.nick) { nameplateEl.style.display = 'none'; return; }
+  if ((eliminated && !inMenu) || profileOpen || custOpen || !settings.nick) { nameplateEl.style.display = 'none'; return; }
   camera.updateMatrixWorld();
   _np.set(bean.position.x, bean.position.y + HALF_H, bean.position.z).project(camera);
   if (_np.z > 1 || _np.z < -1) { nameplateEl.style.display = 'none'; return; }
@@ -1104,7 +1460,7 @@ function arenaEvents() {   // co minutę zewnętrzny pierścień kafelków miga 
 }
 function winGame() {
   won = true; winTimer = WIN_SHOW; winHop = 0.3;
-  stats.wins++; saveStats(); renderStats();
+  stats.wins++; gems += WIN_GEMS; saveStats(); renderStats(); updateGemsUI();
   sfx.win(); musicDuck(true);
   gameT = WIN_TIME; setTimer(WIN_TIME);   // odliczanie stoi na 0:00 (i jest ukryte)
   document.body.classList.add('won'); timerEl.classList.remove('warn'); toastEl.classList.remove('show');
@@ -1132,7 +1488,7 @@ function update(dt) {
     bean.rotation.set(0, facing, 0, 'YXZ');
     body.scale.set(1 - br * 0.5, STRETCH * (1 + br), 0.9 - br * 0.5);
     // przejście do profilu: kamera jedzie w górę, tło zmienia się w niebo
-    pvT = Math.max(0, Math.min(1, pvT + (profileOpen ? 1 : -1) * dt / 1.1));
+    pvT = Math.max(0, Math.min(1, pvT + ((profileOpen || custOpen) ? 1 : -1) * dt / 1.1));
     const pv = pvT * pvT * (3 - 2 * pvT);
     const asp = innerWidth / innerHeight, portrait = asp < 1;
     const pd = 5.4, halfH = pd * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)), halfW = halfH * asp;
@@ -1323,6 +1679,8 @@ function loop() {
   renderer.render(scene, camera);
   updateNameplate();
   renderAvatar();
+  renderShop();
+  renderCust();
 }
 loop();
 (function backgroundTicker() {

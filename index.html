@@ -609,15 +609,24 @@ function noise(t, dur, o = {}) {
 }
 
 // efekty w stylu kreskówkowej gry: "boing", "pop", smutna trąbka
+let emoteBus = null;
 const _gate = {};
 function gate(k, gap) { const t = actx.currentTime; if (t - (_gate[k] || -9) < gap) return false; _gate[k] = t; return true; }
 const sfx = {
   emote() {   // backflip: przysiad, wybicie, salto, lądowanie
     if (!audioOn()) return; const t = actx.currentTime;
-    tone(260, t, 0.5, { to: 520, slide: 0.45, vol: 0.14 });
-    tone(320, t + 0.8, 0.9, { to: 900, slide: 0.8, vol: 0.18 });
-    noise(t + 0.9, 0.8, { f: 700, to: 2600, q: 0.8, vol: 0.12, a: 0.08 });
-    [60, 64, 67].forEach((m, i) => tone(mtof(m + 12), t + 2.5 + i * 0.07, 0.25, { type: 'triangle', vol: 0.14 }));
+    sfx.emoteStop();
+    const bus = actx.createGain(); bus.connect(sfxBus); emoteBus = bus;   // osobna szyna, żeby dało się przerwać cały dźwięk naraz
+    tone(260, t, 0.5, { to: 520, slide: 0.45, vol: 0.14, bus });
+    tone(320, t + 0.8, 0.9, { to: 900, slide: 0.8, vol: 0.18, bus });
+    noise(t + 0.9, 0.8, { f: 700, to: 2600, q: 0.8, vol: 0.12, a: 0.08, bus });
+    [60, 64, 67].forEach((m, i) => tone(mtof(m + 12), t + 2.5 + i * 0.07, 0.25, { type: 'triangle', vol: 0.14, bus }));
+  },
+  emoteStop() {   // emotka przerwana -> jej dźwięk (też ten zaplanowany na później) gaśnie od razu
+    if (!emoteBus || !actx) return;
+    const b = emoteBus; emoteBus = null; const t = actx.currentTime;
+    try { b.gain.cancelScheduledValues(t); b.gain.setTargetAtTime(0, t, 0.015); } catch (err) {}
+    setTimeout(() => { try { b.disconnect(); } catch (err) {} }, 500);
   },
   honey() {   // dotknięty kafelek robi się lepki: miękkie "bloop"
     if (!audioOn() || !gate('honey', 0.07)) return; const t = actx.currentTime;
@@ -1015,7 +1024,7 @@ function startGame() {
   pvT = 0; resetArena();
   sfx.play();
   inMenu = false; document.body.classList.remove('menu');
-  facing = 0; yaw = 0; pitch = 0.35; tilt.set(0, 0); squash = 0; camBaseY = pos.y; visOff = 0; emoteT = -1; emoteCd = 0;
+  facing = 0; yaw = 0; pitch = 0.35; tilt.set(0, 0); squash = 0; camBaseY = pos.y; visOff = 0; emoteT = -1; emoteCd = 0; sfx.emoteStop();
 }
 let phone = false;
 const joy = { x: 0, y: 0, id: null };
@@ -1132,7 +1141,7 @@ function emotePose(t) {   // czysty backflip: 0-0.9 przysiad, 0.9-2.1 jedno salt
   return { rx, rz, y, sq };
 }
 function triggerEmote() {
-  if (inMenu || eliminated || won || !grounded || emoteT >= 0 || emoteCd > 0 || !equipEmote) return;
+  if (inMenu || eliminated || won || !grounded || diving || diveBuffer > 0 || jumpBuffer > 0 || emoteT >= 0 || emoteCd > 0 || !equipEmote) return;
   emoteT = 0; emoteCd = EMOTE_CD; sfx.emote();
 }
 // ---------- Klawisze i guziki dotykowe (zapisywane w profilu) ----------
@@ -2043,7 +2052,7 @@ function update(dt) {
   emoteCd = Math.max(0, emoteCd - dt);
   if (emoteT >= 0) {   // emotkę przerywa ruch, skok, dive albo utrata gruntu
     emoteT += dt;
-    if (hasInput || jumpBuffer > 0 || diveBuffer > 0 || !grounded || won || emoteT >= EMOTE_TIME) emoteT = -1;
+    if (hasInput || jumpBuffer > 0 || diveBuffer > 0 || diving || !grounded || won || emoteT >= EMOTE_TIME) { emoteT = -1; sfx.emoteStop(); }
   }
 
   // dive

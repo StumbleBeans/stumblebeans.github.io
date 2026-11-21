@@ -266,13 +266,30 @@
     position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(96vw, 720px);
     display: flex; flex-direction: column; align-items: center; gap: 2vmin;
   }
+  #creatorBox { width: 100%; display: flex; flex-direction: column; gap: 2vmin; align-items: stretch; }
+  #creatorBox[hidden], #crActive[hidden] { display: none; }
+  .crText { text-align: center; color: #fff; -webkit-text-stroke: 6px #1b1b1b; paint-order: stroke fill; letter-spacing: 2px; font-size: clamp(13px, 2.8vmin, 21px); line-height: 1.35; }
+  .crBig { font-size: clamp(22px, 5.4vmin, 44px); -webkit-text-stroke: 8px #1b1b1b; }
+  #crForm { gap: clamp(8px, 2vmin, 16px); }
+  #crInput {
+    pointer-events: auto; flex: 1; min-width: 0; font-family: inherit; font-weight: 900; letter-spacing: 3px; text-transform: uppercase;
+    font-size: clamp(18px, 4vmin, 32px); color: #1b1b1b; text-align: center; background: #fff; border: 7px solid #1b1b1b; border-radius: 16px;
+    padding: 6px 12px; box-sizing: border-box; box-shadow: 0 0 0 4px #d8d8ff inset, 0 5px 0 rgba(0,0,0,.35); outline: none;
+  }
+  #crInput:-webkit-autofill { -webkit-box-shadow: 0 0 0 4px #d8d8ff inset, 0 0 0 100px #fff inset; }
+  #crActive { flex-direction: column; justify-content: center; gap: 4px; padding: 14px 18px 18px; }
+  .crStar { width: clamp(34px, 8vmin, 60px); height: clamp(34px, 8vmin, 60px); overflow: visible; }
+  #crActive .tog { margin-top: 8px; }
+  #shopToast { position: absolute; left: 0; right: 0; bottom: 5vmin; text-align: center; z-index: 5; display: none; pointer-events: none; }
+  #shopToast span { display: inline-block; padding: 8px 22px; background: #2bbf4b; border: 7px solid #1b1b1b; border-radius: 16px; box-shadow: 0 0 0 4px #7dff9a inset, 0 7px 0 rgba(0,0,0,.35); color: #fff; -webkit-text-stroke: 6px #1b1b1b; paint-order: stroke fill; letter-spacing: 2px; font-size: clamp(16px, 3.6vmin, 28px); }
+  #shopToast.show { display: block; animation: toastIn 2.8s both; }
   .shopItem { width: 100%; gap: clamp(10px, 2.4vmin, 20px); padding: 12px 18px; }
   #shopList { width: 100%; display: flex; flex-direction: column; gap: 2vmin; max-height: calc(100vh - 30vmin); overflow-y: auto; overflow-x: hidden; padding: 0 0 12px; scrollbar-width: none; }
   #shopList::-webkit-scrollbar { display: none; }
   #shopList .row { flex: none; }
   .shopView {
     position: relative; flex: none; width: clamp(72px, 17vmin, 130px); height: clamp(72px, 17vmin, 130px);
-    pointer-events: auto; cursor: pointer; touch-action: manipulation;
+    pointer-events: none;
   }
   .shopView canvas { display: block; width: 100%; height: 100%; }
   .itemInfo { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
@@ -457,6 +474,7 @@
     </div>
     <div class="setList" id="tab-general">
       <div class="row"><span class="lbl">Gmail</span><button id="connBtn" class="pbtn tog">Connect</button></div>
+      <div class="row" id="fsRow"><span class="lbl">Full screen</span><button id="fsBtn" class="pbtn tog">OFF</button></div>
     </div>
     <div class="setList" id="tab-gameplay" hidden>
       <div class="row"><span class="lbl">Show nickname</span><button class="pbtn tog" data-key="nick"></button></div>
@@ -483,17 +501,28 @@
 <div id="shop">
   <button id="shopBack" class="pbtn" title="Back"><svg viewBox="0 0 64 64"><path class="o" d="M40 12 L20 32 L40 52"/><path class="i" d="M40 12 L20 32 L40 52"/></svg></button>
   <div id="shopTop"><button id="gemHelp" class="pbtn" title="How to get gems"><svg viewBox="0 0 64 64"><text x="32" y="46.5" text-anchor="middle">?</text></svg></button><div id="shopGems"><svg class="gem"><use href="#gemIcon"/></svg><span id="shopGemCount">0</span></div></div>
+  <div id="shopToast"><span></span></div>
   <div id="gemInfo"><div id="gemCard"><div id="gemList"></div><button id="gemOk" class="pbtn tog on">OK</button></div></div>
   <div id="shopPanel">
-    <div class="cats"><button class="pbtn cat on" data-cat="beans">Beans</button><button class="pbtn cat" data-cat="emotes">Emotes</button></div>
+    <div class="cats"><button class="pbtn cat on" data-cat="beans">Beans</button><button class="pbtn cat" data-cat="emotes">Emotes</button><button class="pbtn cat" data-cat="footsteps">Footsteps</button><button class="pbtn cat" data-cat="creator">Creator</button></div>
     <div id="shopList"></div>
+    <div id="creatorBox" hidden>
+      <div class="row" id="crForm"><input id="crInput" type="text" maxlength="24" spellcheck="false" autocomplete="off" placeholder="Enter code"><button id="crApply" class="pbtn tog on">Apply</button></div>
+      <div class="row" id="crActive" hidden>
+        <svg class="crStar" viewBox="0 0 24 24"><path d="M12 2l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 18l-6.4 3.6L7 14.5 1.7 9.5l7.2-.9z" fill="#fff" stroke="#1b1b1b" stroke-width="3.4" stroke-linejoin="round" style="paint-order:stroke fill"/></svg>
+        <div class="crText">Supporting</div>
+        <div class="crText crBig" id="crNick"></div>
+        <div class="crText" id="crInfo"></div>
+        <button id="crRemove" class="pbtn tog">Remove</button>
+      </div>
+    </div>
   </div>
 </div>
 <button id="prevBack" class="pbtn" title="Back" style="z-index:9"><svg viewBox="0 0 64 64"><path class="o" d="M40 12 L20 32 L40 52"/><path class="i" d="M40 12 L20 32 L40 52"/></svg></button>
 <div id="nameplate"></div>
 <div id="cust">
   <button id="cuBack" class="pbtn" title="Back"><svg viewBox="0 0 64 64"><path class="o" d="M40 12 L20 32 L40 52"/><path class="i" d="M40 12 L20 32 L40 52"/></svg></button>
-  <div id="cwrap"><div class="cats"><button class="pbtn cat on" data-cat="beans">Beans</button><button class="pbtn cat" data-cat="emotes">Emotes</button></div><div id="cgrid"></div></div>
+  <div id="cwrap"><div class="cats"><button class="pbtn cat on" data-cat="beans">Beans</button><button class="pbtn cat" data-cat="emotes">Emotes</button><button class="pbtn cat" data-cat="footsteps">Footsteps</button></div><div id="cgrid"></div></div>
 </div>
 <div id="profile">
   <button id="backBtn" class="pbtn" title="Back"><svg viewBox="0 0 64 64"><path class="o" d="M40 12 L20 32 L40 52"/><path class="i" d="M40 12 L20 32 L40 52"/></svg></button>
@@ -900,9 +929,66 @@ function tileWalls() {   // boki kafelków: spadając w dziurę nie wchodzisz "w
 // ---------- Fasolka ----------
 const RADIUS = 0.6, STRETCH = 1.3;
 const HALF_H = RADIUS * STRETCH;           // połowa wysokości fasolki
+// kształty fasolek: zwykła kula (rozciągana skalą) albo serce (wycentrowane, wymiary już po uwzględnieniu skali body)
+const SPHERE_GEO = new THREE.SphereGeometry(RADIUS, 32, 24);
+const HEART_GEO = (() => {
+  // serce "ulepione z plasteliny": dwa tłuste płaty + zaokrąglony czubek, zlane miękko (smooth-union), z lekką nierównością
+  // jak ręcznie lepione. Siatka powstaje przez rzut promieni z środka na powierzchnię, a normalne z gradientu – wszystko gładkie.
+  // 2D kontur serca (czubek w (0,0), płaty u góry); wygładzony abs(x) zaokrągla wcięcie między płatami
+  const d2 = (x, y) => x * x + y * y;
+  const heart2 = (px, py) => {
+    const x = Math.sqrt(px * px + 0.0016), y = py;   // gładkie |x|
+    if (y + x > 1) return Math.sqrt(d2(x - 0.25, y - 0.75)) - Math.SQRT2 / 4;
+    const t = 0.5 * Math.max(x + y, 0);
+    return Math.sqrt(Math.min(d2(x, y - 1), d2(x - t, y - t))) * Math.sign(x - y);
+  };
+  const HH = 0.26, RR = 0.17;   // połowa grubości i promień zaokrąglenia krawędzi (puchata "poduszka")
+  const sdf = (x, y, z) => {
+    const wx = heart2(x, y) + RR, wy = Math.abs(z) - (HH - RR);
+    let d = Math.min(Math.max(wx, wy), 0) + Math.hypot(Math.max(wx, 0), Math.max(wy, 0)) - RR;
+    d += 0.012 * Math.sin(5.1 * x + 0.7) * Math.sin(4.3 * y + 1.3) * Math.sin(4.7 * z + 0.2);   // miękkie, ręczne nierówności
+    return d;
+  };
+  const OY = 0.5;   // środek, z którego rzutujemy promienie (wewnątrz serca)
+  const SEG_W = 96, SEG_H = 64, MAXR = 1.4;
+  const g = new THREE.SphereGeometry(1, SEG_W, SEG_H);
+  const pos = g.attributes.position, nor = g.attributes.normal;
+  const P = new Float32Array(pos.count * 3), N = new Float32Array(pos.count * 3);
+  for (let i = 0; i < pos.count; i++) {
+    // oś biegunowa kuli -> głębokość serca (obrót o 90° wokół X: (x,y,z) -> (x,z,-y))
+    const vx = pos.getX(i), vy = pos.getY(i), vz = pos.getZ(i);
+    const dx = vx, dy = vz, dz = -vy;
+    let lo = 0, hi = MAXR;
+    for (let r = 0.02; r <= MAXR; r += 0.02) { if (sdf(dx * r, OY + dy * r, dz * r) > 0) { hi = r; break; } lo = r; }
+    for (let it = 0; it < 22; it++) { const m = (lo + hi) / 2; if (sdf(dx * m, OY + dy * m, dz * m) > 0) hi = m; else lo = m; }
+    const r = (lo + hi) / 2, x = dx * r, y = OY + dy * r, z = dz * r, e = 0.004;
+    let nx = sdf(x + e, y, z) - sdf(x - e, y, z), ny = sdf(x, y + e, z) - sdf(x, y - e, z), nz = sdf(x, y, z + e) - sdf(x, y, z - e);
+    const nl = Math.hypot(nx, ny, nz) || 1;
+    P[i * 3] = x; P[i * 3 + 1] = y; P[i * 3 + 2] = z; N[i * 3] = nx / nl; N[i * 3 + 1] = ny / nl; N[i * 3 + 2] = nz / nl;
+  }
+  let mnx = 1e9, mxx = -1e9, mny = 1e9, mxy = -1e9, mnz = 1e9, mxz = -1e9;
+  for (let i = 0; i < pos.count; i++) {
+    mnx = Math.min(mnx, P[i * 3]); mxx = Math.max(mxx, P[i * 3]); mny = Math.min(mny, P[i * 3 + 1]); mxy = Math.max(mxy, P[i * 3 + 1]); mnz = Math.min(mnz, P[i * 3 + 2]); mxz = Math.max(mxz, P[i * 3 + 2]);
+  }
+  const cx = (mxx + mnx) / 2, cyy = (mxy + mny) / 2;
+  const sx = RADIUS * 2.3 / (mxx - mnx), sy = (HALF_H * 2 * 0.95) / (mxy - mny) / STRETCH, sz = RADIUS * 1.35 / (mxz - mnz) / 0.9;
+  for (let i = 0; i < pos.count; i++) {
+    pos.setXYZ(i, (P[i * 3] - cx) * sx, (P[i * 3 + 1] - cyy) * sy, P[i * 3 + 2] * sz);
+    const nx = N[i * 3] / sx, ny = N[i * 3 + 1] / sy, nz = N[i * 3 + 2] / sz, nl = Math.hypot(nx, ny, nz) || 1;
+    nor.setXYZ(i, nx / nl, ny / nl, nz / nl);
+  }
+  pos.needsUpdate = true; nor.needsUpdate = true;
+  g.computeBoundingBox(); g.computeBoundingSphere();
+  return g;
+})();
+const beanGeo = id => (beanById(id).shape === 'heart' ? HEART_GEO : SPHERE_GEO);
+const beanRough = id => (beanById(id).shape === 'heart' ? 0.85 : 0.45);   // serce matowe jak plastelina
+const HEART_SPIN = 0.3;   // serce jest płaskie, więc każdy obrót widać wyraźnie (zwykłe fasolki prawie nie zmieniają wyglądu) – kręci się wolniej, żeby wrażenie tempa było takie samo
+const beanSpin = (id, ang) => (beanById(id).shape === 'heart' ? ang * HEART_SPIN : ang);
+const setBeanLook = (m, id) => { m.geometry = beanGeo(id); m.material.roughness = beanRough(id); };
 const bean = new THREE.Group();
 const body = new THREE.Mesh(
-  new THREE.SphereGeometry(RADIUS, 32, 24),
+  SPHERE_GEO,
   new THREE.MeshStandardMaterial({ color: 0xe8453c, roughness: 0.45 })
 );
 body.scale.set(1, STRETCH, 0.9);
@@ -1015,17 +1101,26 @@ let profileOpen = false, custOpen = false, pvT = 0;
 // Katalog fasolek. 'red' jest domyślna, reszta do kupienia w shopie.
 const BEANS = [
   { id: 'red',  name: 'Red Bean',  color: 0xe8453c },
-  { id: 'purple', name: 'Purple Bean', color: 0xa24bf0, price: 30 },
-  { id: 'white',  name: 'White Bean',  color: 0xf4f4f4, price: 30 }
+  { id: 'purple', name: 'Purple Bean', color: 0xa24bf0, price: 30, noShop: true },
+  { id: 'white',  name: 'White Bean',  color: 0xf4f4f4, price: 30, noShop: true },
+  { id: 'heart',  name: 'Heart Bean',  color: 0xff7ac8, price: 50, shape: 'heart' }
 ];
 const beanById = id => BEANS.find(b => b.id === id) || BEANS[0];
 let ownedBeans = ['red'], equipBean = 'red', gems = 0;
+// Kody twórców: wpisujesz kod w Shopie -> przez 7 dni połowa gemów wydanych na zakupy trafia do twórcy (ciebie to nic nie kosztuje)
+const CREATOR_CODES = { antxo: { nick: '<clr/#3a7bff>CODE: Antxo' } };   // kod (małymi literami) -> konto, które dostaje gemy
+const CREATOR_DAYS = 7, CREATOR_SHARE = 0.5;
+let creator = null;   // aktywny kod: { code, until (ms) } albo null
 const WIN_GEMS = 10;   // gemy za wygraną (bez żadnego napisu)
 // ---------- Emotki ----------
-const EMOTES = [{ id: 'backflip', name: 'Backflip', price: 20 }];   // cena Backflipa w gemach
+const EMOTES = [{ id: 'backflip', name: 'Backflip', price: 20, noShop: true }];   // cena Backflipa w gemach
 const EMOTE_TIME = 4.5, EMOTE_CD = 6;   // czas trwania emotki i cooldown (s)
 let ownedEmotes = [], equipEmote = null, emoteT = -1, emoteCd = 0;
 const emoteById = id => EMOTES.find(e => e.id === id);
+// ---------- Footsteps (ślady za fasolką) ----------
+const FOOTSTEPS = [{ id: 'hearts', name: 'Hearts', price: 30 }];
+let ownedSteps = [], equipStep = null;
+const stepById = id => FOOTSTEPS.find(f => f.id === id);
 function emotePose(t) {   // czysty backflip: 0-0.9 przysiad, 0.9-2.1 jedno salto w tył, 2.1-2.5 lądowanie, 2.5-4.5 ukłon i stanie
   let rx = 0, rz = 0, y = 0, sq = 0;
   const ss = k => k * k * (3 - 2 * k);
@@ -1080,7 +1175,7 @@ try {
 } catch (err) { fbAuth = null; fbDb = null; }
 const CLOUD_KEY = 'stumbleBeansCloud';   // local copy of the connected profile (instant load, works offline)
 // ---------- Kolorowe nicki: <clr/red>BEA<clr/white>N ----------
-const NICK_MAX = 14;   // limit WIDOCZNYCH znaków (tagi się nie liczą)
+const NICK_MIN = 2, NICK_MAX = 20;   // limity WIDOCZNYCH znaków (tagi się nie liczą)
 const NICK_COLORS = { red:'#ff3b3b', blue:'#3a7bff', white:'#ffffff', green:'#2bd44b', yellow:'#ffd21f', orange:'#ff9a1f', purple:'#a855f7', pink:'#ff7ac8', cyan:'#22e0ff', black:'#000000', gray:'#9aa0a6', grey:'#9aa0a6', lime:'#b6ff2b', brown:'#a0643a', gold:'#ffc400', magenta:'#ff2bd6', teal:'#14b8a6', navy:'#1e3a8a', violet:'#8b5cf6', silver:'#cfd4da', maroon:'#a01030', turquoise:'#30d5c8', crimson:'#e0143c', indigo:'#4b3fd1' };
 function nickColor(name) {
   name = String(name).toLowerCase();
@@ -1153,11 +1248,11 @@ async function freshNick(uid) {      // random free Bean_N for a connected accou
 }
 
 function readGuest() {
-  const g = { nick: '', wins: 0, losses: 0, settings: {}, owned: ['red'], equip: 'red', gems: 0, emotes: [], emEquip: null, controls: null };
+  const g = { nick: '', wins: 0, losses: 0, settings: {}, owned: ['red'], equip: 'red', gems: 0, emotes: [], emEquip: null, steps: [], stEquip: null, controls: null };
   try { const n = localStorage.getItem('stumbleBeansNick'); if (n) g.nick = nickCanon(n); } catch (err) {}
   try { const t = JSON.parse(localStorage.getItem('stumbleBeansStats')); if (t) { g.wins = t.wins | 0; g.losses = t.losses | 0; } } catch (err) {}
   try { const t = JSON.parse(localStorage.getItem('stumbleBeansSettings')); if (t) g.settings = t; } catch (err) {}
-  try { const t = JSON.parse(localStorage.getItem('stumbleBeansBeans')); if (t) { g.owned = t.owned; g.equip = t.equip; g.gems = t.gems | 0; g.emotes = t.emotes || []; g.emEquip = t.emEquip || null; } } catch (err) {}
+  try { const t = JSON.parse(localStorage.getItem('stumbleBeansBeans')); if (t) { g.owned = t.owned; g.equip = t.equip; g.gems = t.gems | 0; g.emotes = t.emotes || []; g.emEquip = t.emEquip || null; g.steps = t.steps || []; g.stEquip = t.stEquip || null; g.creator = t.creator || null; } } catch (err) {}
   try { g.controls = JSON.parse(localStorage.getItem('stumbleBeansControls')); } catch (err) {}
   return g;
 }
@@ -1166,7 +1261,7 @@ function saveGuest() {
     localStorage.setItem('stumbleBeansNick', playerNick);
     localStorage.setItem('stumbleBeansStats', JSON.stringify(stats));
     localStorage.setItem('stumbleBeansSettings', JSON.stringify(settings));
-    localStorage.setItem('stumbleBeansBeans', JSON.stringify({ owned: ownedBeans, equip: equipBean, gems, emotes: ownedEmotes, emEquip: equipEmote }));
+    localStorage.setItem('stumbleBeansBeans', JSON.stringify({ owned: ownedBeans, equip: equipBean, gems, emotes: ownedEmotes, emEquip: equipEmote, steps: ownedSteps, stEquip: equipStep, creator }));
     localStorage.setItem('stumbleBeansControls', JSON.stringify(controls));
   } catch (err) {}
 }
@@ -1181,13 +1276,16 @@ function applyProfile(d) {
   equipBean = ownedBeans.includes(d.equip) ? d.equip : 'red';
   gems = Math.max(0, d.gems | 0);
   ownedEmotes = (Array.isArray(d.emotes) ? d.emotes : []).filter(id => emoteById(id));
-  equipEmote = ownedEmotes.includes(d.emEquip) ? d.emEquip : (ownedEmotes[0] || null);
+  equipEmote = d.emEquip === null ? null : (ownedEmotes.includes(d.emEquip) ? d.emEquip : (ownedEmotes[0] || null));
+  ownedSteps = (Array.isArray(d.steps) ? d.steps : []).filter(id => stepById(id));
+  equipStep = d.stEquip === null ? null : (ownedSteps.includes(d.stEquip) ? d.stEquip : (ownedSteps[0] || null));
+  creator = d.creator && typeof d.creator.code === 'string' && Object.prototype.hasOwnProperty.call(CREATOR_CODES, d.creator.code) && d.creator.until > Date.now() ? { code: d.creator.code, until: d.creator.until } : null;
   applyControls(d.controls);
   for (const k in DEFAULT_SETTINGS) settings[k] = d.settings && typeof d.settings[k] === 'boolean' ? d.settings[k] : DEFAULT_SETTINGS[k];
 }
 function snapshot() {
   const total = stats.wins + stats.losses;
-  return { nick: playerNick, settings: Object.assign({}, settings), wins: stats.wins, losses: stats.losses, owned: ownedBeans.slice(), equip: equipBean, gems, emotes: ownedEmotes.slice(), emEquip: equipEmote, controls: JSON.parse(JSON.stringify(controls)), winRate: total ? Math.round(stats.wins / total * 100) : 0 };
+  return { nick: playerNick, settings: Object.assign({}, settings), wins: stats.wins, losses: stats.losses, owned: ownedBeans.slice(), equip: equipBean, gems, emotes: ownedEmotes.slice(), emEquip: equipEmote, steps: ownedSteps.slice(), stEquip: equipStep, creator: creator ? { code: creator.code, until: creator.until } : null, controls: JSON.parse(JSON.stringify(controls)), winRate: total ? Math.round(stats.wins / total * 100) : 0 };
 }
 function loadGuest() {               // guest profile from localStorage; no profile yet -> brand new one
   const g = readGuest(); const fresh = !g.nick;
@@ -1240,12 +1338,13 @@ async function onAuth(user) {
     if (nick) { try { await claimNick(nick, null, user.uid); } catch (err) { if (err.message === 'taken') nick = ''; } }
     if (!nick) nick = await freshNick(user.uid);
     if (my !== authSeq) return;
-    const keep = { nick, wins: g.wins, losses: g.losses, settings: g.settings, owned: g.owned, equip: g.equip, gems: g.gems, emotes: g.emotes, emEquip: g.emEquip, controls: g.controls };
+    const keep = { nick, wins: g.wins, losses: g.losses, settings: g.settings, owned: g.owned, equip: g.equip, gems: g.gems, emotes: g.emotes, emEquip: g.emEquip, steps: g.steps, stEquip: g.stEquip, creator: g.creator || null, controls: g.controls };
     applyProfile(keep);
     try { await ref.set(snapshot()); clearGuest(); cacheSave(); }
     catch (err) { acct = null; fbAuth.signOut().catch(() => {}); applyProfile(g); refreshProfileUI(); return; }
   }
   refreshProfileUI();
+  claimCreatorGems(); flushCreatorQueue();
 }
 if (fbAuth) {                        // show the connected profile instantly from the local copy, Firebase confirms it right after
   try { const c = JSON.parse(localStorage.getItem(CLOUD_KEY)); if (c && c.uid && c.data) { acct = { uid: c.uid }; applyProfile(c.data); } } catch (err) {}
@@ -1288,11 +1387,11 @@ avRenderer.shadowMap.enabled = true; avRenderer.shadowMap.type = THREE.PCFSoftSh
   }
 })();
 const avBean = new THREE.Mesh(
-  new THREE.SphereGeometry(RADIUS, 32, 24),
+  SPHERE_GEO,
   new THREE.MeshStandardMaterial({ color: 0xe8453c, roughness: 0.45 })
 );
 avBean.scale.set(1, STRETCH, 0.9); avBean.castShadow = true; avScene.add(avBean);
-function applyBeanColor() { const c = beanById(equipBean).color; body.material.color.setHex(c); avBean.material.color.setHex(c); }
+function applyBeanColor() { const c = beanById(equipBean).color; body.material.color.setHex(c); avBean.material.color.setHex(c); setBeanLook(body, equipBean); setBeanLook(avBean, equipBean); }
 applyBeanColor();
 const avCam = new THREE.PerspectiveCamera(30, 1, 0.1, 80);
 avCam.position.set(0, 0.5, 3.9); avCam.lookAt(0, 0.3, 0);   // fasolka mniejsza, cała widoczna w kółku
@@ -1331,7 +1430,7 @@ function closeProfile() {
 async function saveNick() {
   const n = nickCanon(nickInput.value);
   sfx.click();
-  if (nickPlain(n) && n !== playerNick) {
+  if (Array.from(nickPlain(n)).length >= NICK_MIN && n !== playerNick) {
     let ok = true;
     if (acct && fbDb) { try { await claimNick(n, playerNick, acct.uid); } catch (err) { ok = false; } }
     else if (fbDb) { if (await nickOwner(n)) ok = false; }
@@ -1369,6 +1468,19 @@ document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', () =>
   document.querySelectorAll('.setList').forEach(l => l.hidden = l.id !== 'tab-' + b.dataset.tab);
 }));
 applySettings();
+// pełny ekran (przeglądarka pozwala go włączyć tylko z kliku; na iPhonie nie ma takiej opcji, więc wiersz się chowa)
+const fsRoot = document.documentElement, fsBtn = document.getElementById('fsBtn');
+const fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
+if (!(fsRoot.requestFullscreen || fsRoot.webkitRequestFullscreen)) document.getElementById('fsRow').hidden = true;
+function syncFs() { const on = !!fsEl(); fsBtn.classList.toggle('on', on); fsBtn.textContent = on ? 'ON' : 'OFF'; }
+fsBtn.addEventListener('click', () => {
+  sfx.click();
+  try {
+    if (fsEl()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+    else { const p = (fsRoot.requestFullscreen || fsRoot.webkitRequestFullscreen).call(fsRoot); if (p && p.catch) p.catch(() => {}); }
+  } catch (err) {}
+});
+document.addEventListener('fullscreenchange', syncFs); document.addEventListener('webkitfullscreenchange', syncFs);
 
 // ---------- Keybinds (PC) / Buttons (telefon) ----------
 function updateLayoutPreview() {   // na telefonie w zakładce Buttons widać guziki na żywo
@@ -1444,7 +1556,7 @@ applyTouchLayout(); buildKeybinds(); syncSliders(); onModeChange();
 let shopOpen = false;
 function updateGemsUI() { document.getElementById('shopGemCount').textContent = gems; }
 updateGemsUI();
-function openShop() { if (!inMenu || profileOpen || settingsOpen || custOpen) return; sfx.click(); updateBuyBtn(); shopOpen = true; document.body.classList.add('shop'); }
+function openShop() { if (!inMenu || profileOpen || settingsOpen || custOpen) return; sfx.click(); updateBuyBtn(); shopOpen = true; document.body.classList.add('shop'); renderCreator(); claimCreatorGems(); flushCreatorQueue(); if (shopNoteQ) { const q = shopNoteQ; shopNoteQ = ''; shopNote(q); } }
 // za co są gemy (na razie tylko wygrana); kolejne źródła dopisz do GEM_SOURCES
 const GEM_SOURCES = [{ label: 'Win a match', gems: WIN_GEMS }];
 const gemInfoEl = document.getElementById('gemInfo');
@@ -1460,13 +1572,14 @@ function closeShop() { sfx.click(); shopOpen = false; gemInfoEl.classList.remove
 document.getElementById('shopBtn').addEventListener('click', openShop);
 document.getElementById('shopBack').addEventListener('click', closeShop);
 let previewOpen = false, previewEmote = false;
-function openPreview(color, emote) { sfx.click(); previewOpen = true; previewEmote = !!emote; if (color != null) body.material.color.setHex(color); document.body.classList.add('preview'); }
+function openPreview(color, emote, id) { sfx.click(); previewOpen = true; previewEmote = !!emote; if (color != null) body.material.color.setHex(color); if (id) setBeanLook(body, id); document.body.classList.add('preview'); }
 function closePreview() { sfx.click(); previewOpen = false; previewEmote = false; applyBeanColor(); document.body.classList.remove('preview'); }
 document.getElementById('prevBack').addEventListener('click', closePreview);
 addEventListener('keydown', e => { if (e.code === 'Escape') { if (gemInfoOpen()) closeGemInfo(); else if (previewOpen) closePreview(); else if (shopOpen) closeShop(); } });
 // lista sklepu budowana z katalogu BEANS (wszystko, co ma cenę); podgląd 3D rysuje wspólny renderer z Customize
+const ownedList = kind => kind === 'bean' ? ownedBeans : kind === 'emote' ? ownedEmotes : ownedSteps;
 const shopList = document.getElementById('shopList');
-const shopSrc = [...BEANS.filter(b => b.price != null).map(b => ({ kind: 'bean', b })), ...EMOTES.map(e => ({ kind: 'emote', b: e }))];
+const shopSrc = [...BEANS.filter(b => b.price != null && !b.noShop).map(b => ({ kind: 'bean', b })), ...EMOTES.filter(e => !e.noShop).map(e => ({ kind: 'emote', b: e })), ...FOOTSTEPS.filter(f => !f.noShop).map(f => ({ kind: 'footstep', b: f }))];
 const shopItems = shopSrc.map(({ kind, b }) => {
   const row = document.createElement('div'); row.className = 'row shopItem';
   const view = document.createElement('div'); view.className = 'shopView';
@@ -1477,21 +1590,92 @@ const shopItems = shopSrc.map(({ kind, b }) => {
   info.querySelector('.itemPrice span:last-child').textContent = b.price;
   const btn = document.createElement('button'); btn.className = 'pbtn tog on buyBtn'; btn.textContent = 'BUY';
   row.append(view, info, btn); shopList.appendChild(row);
-  view.addEventListener('click', () => { openPreview(kind === 'bean' ? b.color : null, kind === 'emote'); });
   btn.addEventListener('click', () => {
     sfx.click();
-    const list = kind === 'bean' ? ownedBeans : ownedEmotes;
+    const list = ownedList(kind);
     if (list.includes(b.id) || gems < b.price) return;
     gems -= b.price; updateGemsUI(); list.push(b.id);
+    const cr = activeCreator();   // kod twórcy: połowa wydanych gemów leci do niego
+    if (cr && !isOwnCreator(cr)) { const n = Math.floor(b.price * CREATOR_SHARE); if (n > 0) { sendCreatorGems(cr.nick, n); shopNote('+' + n + ' gems for ' + nickPlain(cr.nick) + '!'); } }
     if (kind === 'emote' && !equipEmote) equipEmote = b.id;
+    if (kind === 'footstep' && !equipStep) equipStep = b.id;
     persist(); updateBuyBtn();
   });
   return { b, kind, row, cv, ctx: cv.getContext('2d'), btn };
 });
 function updateBuyBtn() {
-  shopItems.forEach(it => { it.btn.textContent = (it.kind === 'bean' ? ownedBeans : ownedEmotes).includes(it.b.id) ? 'OWNED' : 'BUY'; });
+  shopItems.forEach(it => { it.btn.textContent = ownedList(it.kind).includes(it.b.id) ? 'OWNED' : 'BUY'; });
 }
 updateBuyBtn();
+// ---------- Kody twórców ----------
+const crBox = document.getElementById('creatorBox'), crInput = document.getElementById('crInput');
+const crForm = document.getElementById('crForm'), crActiveEl = document.getElementById('crActive');
+function activeCreator() {   // aktywny kod albo null (wygasły znika sam)
+  if (creator && creator.until <= Date.now()) { creator = null; persist(); }
+  return creator ? { code: creator.code, until: creator.until, nick: CREATOR_CODES[creator.code].nick } : null;
+}
+const isOwnCreator = cr => !!cr && !!playerNick && nickKey(playerNick) === nickKey(cr.nick);   // twórca kupujący ze swoim kodem nie dostaje gemów sam od siebie
+let shopNoteQ = '', shopNoteT = 0;
+function shopNote(txt) {   // zielony dymek w sklepie (jak nie jest otwarty, pokaże się po wejściu)
+  if (!shopOpen) { shopNoteQ = txt; return; }
+  const t = document.getElementById('shopToast'); t.firstElementChild.textContent = txt;
+  t.classList.remove('show'); void t.offsetWidth; t.classList.add('show');
+  clearTimeout(shopNoteT); shopNoteT = setTimeout(() => t.classList.remove('show'), 2900);
+}
+function crLeft(ms) {
+  const d = Math.floor(ms / 864e5), h = Math.floor(ms / 36e5) % 24, m = Math.floor(ms / 6e4) % 60, s = Math.floor(ms / 1e3) % 60;
+  return d ? d + 'd ' + h + 'h' : h ? h + 'h ' + m + 'm' : m + 'm ' + s + 's';
+}
+function renderCreator() {
+  const cr = activeCreator();
+  crForm.hidden = !!cr; crActiveEl.hidden = !cr;
+  if (cr) {
+    renderNick(document.getElementById('crNick'), cr.nick);
+    document.getElementById('crInfo').textContent = 'Code ' + cr.code + '  ·  ' + crLeft(cr.until - Date.now()) + ' left';
+  }
+}
+setInterval(() => { if (shopOpen && shopCat === 'creator') renderCreator(); }, 1000);
+function applyCreatorCode() {
+  sfx.click();
+  const raw = crInput.value.trim().toLowerCase().replace(/\s+/g, '');
+  if (!raw || !Object.prototype.hasOwnProperty.call(CREATOR_CODES, raw)) return;   // zły/pusty kod: nic się nie dzieje
+  creator = { code: raw, until: Date.now() + CREATOR_DAYS * 864e5 }; persist();
+  crInput.value = ''; crInput.blur(); renderCreator();
+}
+document.getElementById('crApply').addEventListener('click', applyCreatorCode);
+crInput.addEventListener('keydown', e => { if (e.key !== 'Escape') e.stopPropagation(); if (e.key === 'Enter') applyCreatorCode(); });
+document.getElementById('crRemove').addEventListener('click', () => { sfx.click(); creator = null; persist(); renderCreator(); });
+// wypłata dla twórcy: kolejka lokalna + licznik w Firestore (creators/<nick>), twórca odbiera po zalogowaniu na swoje konto
+const CR_Q = 'stumbleBeansCreatorQueue';
+const crQueue = () => { try { return JSON.parse(localStorage.getItem(CR_Q)) || []; } catch (err) { return []; } };
+const crQueueSave = q => { try { localStorage.setItem(CR_Q, JSON.stringify(q)); } catch (err) {} };
+let crFlushing = false;
+async function flushCreatorQueue() {
+  if (crFlushing || !fbDb) return; crFlushing = true;
+  try {
+    while (crQueue().length) {
+      const it = crQueue()[0], inc = firebase.firestore.FieldValue.increment;
+      await fbDb.collection('creators').doc(nickKey(it.nick)).set({ nick: it.nick, pending: inc(it.n), total: inc(it.n) }, { merge: true });
+      const q = crQueue(); q.shift(); crQueueSave(q);
+    }
+  } catch (err) {} finally { crFlushing = false; }
+}
+function sendCreatorGems(nick, n) { const q = crQueue(); q.push({ nick, n }); crQueueSave(q); flushCreatorQueue(); }
+let crClaiming = false;
+async function claimCreatorGems() {   // tylko zalogowane konto (to ono jest właścicielem swojego nicku)
+  if (!acct || !fbDb || !playerNick || crClaiming) return; crClaiming = true;
+  try {
+    const ref = fbDb.collection('creators').doc(nickKey(playerNick));
+    const n = await fbDb.runTransaction(async tx => {
+      const s = await tx.get(ref), p = s.exists ? (s.data().pending | 0) : 0;
+      if (p > 0) tx.update(ref, { pending: 0 });
+      return p;
+    });
+    if (n > 0) { gems += n; persist(); updateGemsUI(); shopNote('Creator code: +' + n + ' gems!'); }
+  } catch (err) {} finally { crClaiming = false; }
+}
+flushCreatorQueue();
+
 let shAng = 0;
 function setPose(p) {   // poza fasolki w podglądach (null = zwykła, obracająca się)
   if (!p) { cuBean.position.y = 0; cuBean.rotation.set(0, 0, 0); cuBean.scale.set(1, STRETCH, 0.9); return; }
@@ -1500,15 +1684,16 @@ function setPose(p) {   // poza fasolki w podglądach (null = zwykła, obracają
 }
 function renderShop() {
   if (!shopOpen) return;
-  shAng += 0.015;
+  shAng = performance.now() / 1000 * 0.9;   // 0.9 rad/s – tyle co w lobby, niezależnie od liczby FPS
   const dpr = Math.min(devicePixelRatio || 1, 2), tp = (performance.now() / 1000) % EMOTE_TIME;
   for (const it of shopItems) {
     if (it.row.style.display === 'none') continue;
     const w = it.cv.clientWidth; if (!w) continue;
     const px = Math.min(384, Math.round(w * dpr));
     if (it.cv.width !== px) { it.cv.width = px; it.cv.height = px; }
-    if (it.kind === 'emote') { cuBean.material.color.setHex(beanById(equipBean).color); setPose(emotePose(tp)); }
-    else { cuBean.material.color.setHex(it.b.color); setPose(null); cuBean.rotation.y = shAng; }
+    if (it.kind === 'footstep') { renderStepPreview(it.ctx, px); continue; }
+    if (it.kind === 'emote') { setBeanLook(cuBean, equipBean); cuBean.material.color.setHex(beanById(equipBean).color); setPose(emotePose(tp)); }
+    else { setBeanLook(cuBean, it.b.id); cuBean.material.color.setHex(it.b.color); setPose(null); cuBean.rotation.y = beanSpin(it.b.id, shAng); }
     cuRenderer.render(cuScene, cuCam);
     it.ctx.clearRect(0, 0, px, px); it.ctx.drawImage(cuRenderer.domElement, 0, 0, px, px);
   }
@@ -1540,16 +1725,24 @@ function buildCust() {
     }));
   EMOTES.slice().sort((x, y) => ownedEmotes.includes(y.id) - ownedEmotes.includes(x.id)).forEach(e =>
     mk('emote', e.id, e.name, ownedEmotes.includes(e.id), e.id === equipEmote, 0, () => {
-      equipEmote = e.id; persist();
+      equipEmote = equipEmote === e.id ? null : e.id; persist();   // ponowne kliknięcie zdejmuje
       cuCards.forEach(c => c.kind === 'emote' && c.card.classList.toggle('sel', c.own && c.id === equipEmote));
+    }));
+  FOOTSTEPS.slice().sort((x, y) => ownedSteps.includes(y.id) - ownedSteps.includes(x.id)).forEach(f =>
+    mk('footstep', f.id, f.name, ownedSteps.includes(f.id), f.id === equipStep, 0, () => {
+      equipStep = equipStep === f.id ? null : f.id; persist();   // ponowne kliknięcie zdejmuje
+      cuCards.forEach(c => c.kind === 'footstep' && c.card.classList.toggle('sel', c.own && c.id === equipStep));
     }));
   applyCats();
 }
 // kategorie Beans / Emotes (osobno w Shopie i w Customize)
 let shopCat = 'beans', custCat = 'beans';
 function applyCats() {
-  shopItems.forEach(it => it.row.style.display = it.kind === (shopCat === 'beans' ? 'bean' : 'emote') ? '' : 'none');
-  cuCards.forEach(c => c.card.style.display = c.kind === (custCat === 'beans' ? 'bean' : 'emote') ? '' : 'none');
+  shopItems.forEach(it => it.row.style.display = it.kind === ({ beans: 'bean', emotes: 'emote', footsteps: 'footstep' })[shopCat] ? '' : 'none');
+  cuCards.forEach(c => c.card.style.display = c.kind === ({ beans: 'bean', emotes: 'emote', footsteps: 'footstep' })[custCat] ? '' : 'none');
+  shopList.style.display = shopCat === 'creator' ? 'none' : '';
+  crBox.hidden = shopCat !== 'creator';
+  if (shopCat === 'creator') renderCreator();
 }
 document.querySelectorAll('#shop .cat, #cust .cat').forEach(b => b.addEventListener('click', () => {
   sfx.click();
@@ -1572,21 +1765,68 @@ cuRenderer.setClearColor(0x000000, 0); cuRenderer.setPixelRatio(1); cuRenderer.s
 const cuScene = new THREE.Scene();
 cuScene.add(new THREE.HemisphereLight(0xaab8ff, 0x445577, 0.9));
 const cuSun = new THREE.DirectionalLight(0xdde4ff, 0.8); cuSun.position.set(2, 4, 3); cuScene.add(cuSun);
-const cuBean = new THREE.Mesh(new THREE.SphereGeometry(RADIUS, 32, 24), new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.45 }));
+const cuBean = new THREE.Mesh(SPHERE_GEO, new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.45 }));
 cuBean.scale.set(1, STRETCH, 0.9); cuScene.add(cuBean);
 const cuCam = new THREE.PerspectiveCamera(30, 1, 0.1, 80);
 cuCam.position.set(0, 0.3, 4.2); cuCam.lookAt(0, 0, 0);
+// płaskie serduszko (kształt śladu) – używane w grze i w podglądzie
+const STEP_HEART_GEO = (() => {
+  const sh = new THREE.Shape();
+  sh.moveTo(0, -0.5);
+  sh.bezierCurveTo(-0.7, 0.05, -0.35, 0.55, 0, 0.22);
+  sh.bezierCurveTo(0.35, 0.55, 0.7, 0.05, 0, -0.5);
+  return new THREE.ShapeGeometry(sh, 24);
+})();
+// podgląd Footsteps: kamera z ukosa (jak w grze, zza fasolki), fasolka biegnie w dal po przewijanej podłodze,
+// a z jej stóp tryskają serduszka, spadają na podłogę, odjeżdżają z nią do tyłu i gasną (wszystko liczone z czasu, bez stanu)
+const FP_INT = 0.30, FP_RATE = 13, FP_LIFE = 1.7, FP_G = 7, FP_N = Math.ceil(FP_RATE * FP_LIFE) + 2, FP_SPEED = 3.2, FP_FY = -0.6;   // FP_FY: niewidzialny poziom, na który spadają serduszka
+const fpHearts = [];
+for (let i = 0; i < FP_N; i++) {
+  const m = new THREE.Mesh(STEP_HEART_GEO, new THREE.MeshBasicMaterial({ color: 0xff7ac8, transparent: true, side: THREE.DoubleSide, depthWrite: false }));
+  m.renderOrder = 3; m.visible = false; cuScene.add(m); fpHearts.push(m);
+}
+const fpRand = (k, n) => { const v = Math.sin(k * 12.9898 + n * 78.233) * 43758.5453; return v - Math.floor(v); };
+function renderStepPreview(ctx, px) {
+  const T = performance.now() / 1000, ph = (T / FP_INT) % 1, hop = Math.abs(Math.sin(Math.PI * ph)), land = Math.cos(2 * Math.PI * ph);
+  setBeanLook(cuBean, equipBean); cuBean.material.color.setHex(beanById(equipBean).color);
+  const k = 0.7, sq = 0.06 * land;
+  cuBean.rotation.set(-0.2, 0, Math.sin(Math.PI * T / FP_INT) * 0.08, 'YXZ');   // pochylona do przodu, lekko się kołysze
+  cuBean.scale.set(k * (1 + sq), k * STRETCH * (1 - sq), k * 0.9 * (1 + sq));
+  cuBean.position.set(0, FP_FY + HALF_H * k + hop * 0.2, 0);
+  cuCam.fov = 38; cuCam.updateProjectionMatrix();
+  cuCam.position.set(3.0, 1.75, 4.1); cuCam.lookAt(-0.55, -0.12, 0.7); cuCam.updateMatrixWorld();
+  const k0 = Math.floor(T * FP_RATE);
+  for (let i = 0; i < FP_N; i++) {   // serca wypadają ze stóp (na przemian lewa/prawa), spadają na podłogę i odjeżdżają z nią do tyłu
+    const n = k0 - i, age = T - n / FP_RATE, m = fpHearts[i];
+    if (age < 0 || age > FP_LIFE) { m.visible = false; continue; }
+    const foot = (n % 2 ? 1 : -1) * 0.17, x0 = foot + (fpRand(n, 1) - 0.5) * 0.12, vx = (fpRand(n, 2) - 0.5) * 1.5 + foot * 2.2;
+    const vy = 1.7 + fpRand(n, 3) * 1.3, vz = 1.0 + fpRand(n, 4) * 1.4, y0 = FP_FY + 0.12, size = 0.34 + fpRand(n, 5) * 0.16;
+    const tl = (vy + Math.sqrt(vy * vy + 2 * FP_G * (y0 - FP_FY))) / FP_G, a = Math.min(age, tl);
+    const y = Math.max(FP_FY + 0.03, y0 + vy * a - 0.5 * FP_G * a * a), kk = age / FP_LIFE, pop = Math.min(1, age / 0.1);
+    m.visible = true; m.position.set(x0 + vx * a, y, 0.1 + vz * a + FP_SPEED * Math.max(0, age - tl));
+    m.scale.setScalar(size * (1 - Math.pow(1 - pop, 3)) * (1 - Math.max(0, kk - 0.7) * 0.8));
+    m.material.opacity = kk < 0.55 ? 1 : Math.max(0, 1 - (kk - 0.55) / 0.45);
+    m.quaternion.copy(cuCam.quaternion); m.rotateZ((fpRand(n, 6) - 0.5) * 1.2 + (fpRand(n, 7) - 0.5) * 5 * a);
+  }
+  cuRenderer.render(cuScene, cuCam);
+  ctx.clearRect(0, 0, px, px); ctx.drawImage(cuRenderer.domElement, 0, 0, px, px);
+  fpHearts.forEach(m => { m.visible = false; });
+  cuCam.fov = 30; cuCam.updateProjectionMatrix();
+  cuCam.position.set(0, 0.3, 4.2); cuCam.lookAt(0, 0, 0);
+  cuBean.position.set(0, 0, 0); setPose(null);
+}
 function renderCust() {
   if (!custOpen) return;
-  cuAng += 0.015;
+  cuAng = performance.now() / 1000 * 0.9;   // 0.9 rad/s – tyle co w lobby, niezależnie od liczby FPS
   const dpr = Math.min(devicePixelRatio || 1, 2), tp = (performance.now() / 1000) % EMOTE_TIME;
   for (const c of cuCards) {
     if (c.card.style.display === 'none') continue;
     const w = c.cv.clientWidth; if (!w) continue;
     const px = Math.min(384, Math.round(w * dpr));
     if (c.cv.width !== px) { c.cv.width = px; c.cv.height = px; }
-    if (c.kind === 'emote') { cuBean.material.color.setHex(beanById(equipBean).color); setPose(emotePose(tp)); }
-    else { cuBean.material.color.setHex(c.color); setPose(null); cuBean.rotation.y = cuAng; }
+    if (c.kind === 'footstep') { renderStepPreview(c.ctx, px); continue; }
+    if (c.kind === 'emote') { setBeanLook(cuBean, equipBean); cuBean.material.color.setHex(beanById(equipBean).color); setPose(emotePose(tp)); }
+    else { setBeanLook(cuBean, c.id); cuBean.material.color.setHex(c.color); setPose(null); cuBean.rotation.y = beanSpin(c.id, cuAng); }
     cuRenderer.render(cuScene, cuCam);
     c.ctx.clearRect(0, 0, px, px); c.ctx.drawImage(cuRenderer.domElement, 0, 0, px, px);
   }
@@ -1606,7 +1846,7 @@ function renderEmoteViews() {
     const w = v.cv.clientWidth; if (!w) continue;
     const px = Math.min(256, Math.round(w * dpr));
     if (v.cv.width !== px) { v.cv.width = px; v.cv.height = px; }
-    cuBean.material.color.setHex(beanById(equipBean).color); setPose(p);
+    setBeanLook(cuBean, equipBean); cuBean.material.color.setHex(beanById(equipBean).color); setPose(p);
     cuRenderer.render(cuScene, cuCam);
     v.ctx.clearRect(0, 0, px, px); v.ctx.drawImage(cuRenderer.domElement, 0, 0, px, px);
     const showCd = emoteCd > 0 && !inMenu; v.cd.classList.toggle('on', showCd); v.el.classList.toggle('cool', showCd); if (showCd) v.cd.textContent = Math.ceil(emoteCd);
@@ -1709,13 +1949,44 @@ function respawn() {   // po eliminacji wracamy do menu głównego
   if (document.pointerLockElement) document.exitPointerLock();   // oddaj kursor, żeby kliknąć PLAY
 }
 
+// ślady: płaskie różowe serduszka (bez obrysu) zostawiane przy krokach, znikają po chwili
+
+const stepHearts = [];
+let trailAcc = 0;
+const STEP_RATE = 15, STEP_LIFE = 1.6, STEP_GRAV = 6;   // ile serc na sekundę przy pełnej prędkości, czas życia, grawitacja
+function spawnStepHeart() {
+  const tile = tileAtXZ(pos.x, pos.z); if (!tile || !isSolid(tile)) return;
+  const m = new THREE.Mesh(STEP_HEART_GEO, new THREE.MeshBasicMaterial({ color: 0xff7ac8, transparent: true, side: THREE.DoubleSide, depthWrite: false }));
+  const sp = Math.hypot(vel.x, vel.z) || 1, mx = vel.x / sp, mz = vel.z / sp, r = () => Math.random() - 0.5, side = r() * 0.5, back = 0.6 + Math.random() * 0.9;
+  m.position.set(pos.x - mz * side - mx * 0.1, tile.dy + 0.12, pos.z + mx * side - mz * 0.1);
+  m.scale.setScalar(0.01); m.renderOrder = 5; scene.add(m);
+  stepHearts.push({ m, t: 0, tile, vx: -mx * back - mz * r() * 1.2, vz: -mz * back + mx * r() * 1.2, vy: 1.6 + Math.random() * 1.3,
+    rot: r() * 1.2, spin: r() * 5, size: 0.32 + Math.random() * 0.14, landed: false });
+  if (stepHearts.length > 70) { const o = stepHearts.shift(); scene.remove(o.m); o.m.material.dispose(); }
+}
+function updateStepHearts(dt) {
+  for (let i = stepHearts.length - 1; i >= 0; i--) {
+    const h = stepHearts[i], p = h.m.position; h.t += dt;
+    const ground = h.tile.dy + 0.05;
+    if (!h.landed) {   // wypada ze stopy: leci do góry i do tyłu, kręci się, spada
+      h.vy -= STEP_GRAV * dt; p.x += h.vx * dt; p.z += h.vz * dt; p.y += h.vy * dt; h.rot += h.spin * dt;
+      if (p.y <= ground && h.vy < 0) { p.y = ground; h.landed = true; }
+    } else p.y = ground;   // leży na kafelku (jedzie z nim, jak się zapada)
+    const k = h.t / STEP_LIFE, pop = Math.min(1, h.t / 0.1);
+    h.m.scale.setScalar(h.size * (1 - Math.pow(1 - pop, 3)) * (1 - Math.max(0, k - 0.7) * 0.8));
+    h.m.material.opacity = k < 0.6 ? 1 : Math.max(0, 1 - (k - 0.6) / 0.4);
+    h.m.quaternion.copy(camera.quaternion); h.m.rotateZ(h.rot);   // zawsze twarzą do kamery
+    if (k >= 1 || !h.tile.mesh.visible || h.tile.state === 3) { scene.remove(h.m); h.m.material.dispose(); stepHearts.splice(i, 1); }
+  }
+}
 function update(dt) {
   updateTiles(dt);
+  updateStepHearts(dt);
   if (inMenu) {   // menu główne: fasolka kręci się na środku
     facing += dt * 0.9;
     const br = Math.sin(performance.now() / 500) * 0.04;
     bean.position.set(0, HALF_H, 0);
-    bean.rotation.set(0, facing, 0, 'YXZ');
+    bean.rotation.set(0, body.geometry === HEART_GEO ? facing * HEART_SPIN : facing, 0, 'YXZ');
     body.scale.set(1 - br * 0.5, STRETCH * (1 + br), 0.9 - br * 0.5);
     if (previewEmote) {   // podgląd emotki: prawdziwa fasolka robi backflipa w pętli
       facing = 0; const p = emotePose((performance.now() / 1000) % EMOTE_TIME);
@@ -1852,6 +2123,8 @@ function update(dt) {
   // dźwięki: kroki i gwizd spadania
   if (grounded && !diving && hs > 2) { stepAcc += hs * dt; if (stepAcc > 2.6) { stepAcc = 0; sfx.step(); } }
   else if (!grounded) stepAcc = 1.5;
+  if (equipStep === 'hearts' && grounded && !diving && !won && hs > 2) { trailAcc += dt * STEP_RATE * Math.min(1, hs / MAX_SPEED); while (trailAcc >= 1) { trailAcc -= 1; spawnStepHeart(); } }   // serca wypadają ze stóp, im szybciej biegniesz, tym gęściej
+  else trailAcc = 0;
   if (pos.y < -8 && !fallSnd) { fallSnd = true; sfx.fall(); }
 
   // respawn po spadnięciu

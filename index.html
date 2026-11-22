@@ -465,6 +465,9 @@
   .kbBtn { font-size: clamp(16px, 3.4vmin, 26px); min-width: 120px; padding: 4px 14px; -webkit-text-stroke: 6px #1b1b1b; text-transform: none;
            background: #ffd21f; box-shadow: 0 0 0 4px #fff18a inset, 0 6px 0 rgba(0,0,0,.35); }
   .kbBtn.listen { background: #e8232b; box-shadow: 0 0 0 4px #ff6b6b inset, 0 6px 0 rgba(0,0,0,.35); }
+  /* hover: każdy guzik lekko jaśnieje (zaznaczone żółte kategorie / zakładki i guziki klawiszy też; profilowy bez zmian) */
+  .cat.on:hover, .tab.on:hover, .kbBtn:hover { background: #ffe14d; }
+  .kbBtn.listen:hover { background: #ff3b43; }
   /* suwaki w stylu gry: tor rysowany na samym inpucie (z paddingiem), więc gałka na końcu siedzi W ŚRODKU toru */
   .row input[type=range] {
     -webkit-appearance: none; appearance: none; flex: 1; min-width: 120px; max-width: none; height: 16px; margin: 9px 27px; padding: 0; box-sizing: border-box;

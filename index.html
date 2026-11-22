@@ -731,9 +731,8 @@ const sfx = {
   },
   win() {   // wesoła fanfara
     if (!audioOn()) return; const t = actx.currentTime;
-    [60, 64, 67, 72, 76].forEach((m, i) => tone(mtof(m), t + i * 0.1, 0.32, { type: 'triangle', vol: 0.28 }));
-    [72, 76, 79, 84].forEach(m => tone(mtof(m), t + 0.55, 1.0, { type: 'square', vol: 0.06, lp: 2600, a: 0.02 }));
-    tone(mtof(48), t + 0.55, 1.0, { type: 'triangle', vol: 0.25 });
+    [72, 76, 79, 84].forEach(m => tone(mtof(m), t, 1.0, { type: 'square', vol: 0.06, lp: 2600, a: 0.02 }));   // sam akord, od razu (bez wcześniejszych wznoszących się nutek)
+    tone(mtof(48), t, 1.0, { type: 'triangle', vol: 0.25 });
   },
   jump() {
     if (!audioOn()) return; const t = actx.currentTime;
@@ -2559,7 +2558,7 @@ function update(dt) {
     diveBuffer = 0;
     {
     diveCooldown = DIVE_COOLDOWN;
-    diving = true; diveTimer = DIVE_TIME; jumpBuffer = 0; if (!won) sfx.dive();
+    diving = true; diveTimer = DIVE_TIME; jumpBuffer = 0; sfx.dive();
     vel.x = Math.sin(facing) * DIVE_SPEED;
     vel.z = Math.cos(facing) * DIVE_SPEED;
     vel.y = grounded ? 6 : Math.min(vel.y, 2);
@@ -2597,7 +2596,7 @@ function update(dt) {
   jumpBuffer -= dt;
   coyote = grounded ? 0.1 : coyote - dt;
   if (!diving && jumpBuffer > 0 && coyote > 0) {
-    vel.y = JUMP_V; grounded = false; coyote = 0; jumpBuffer = 0; squash = -0.25; if (!won) sfx.jump();
+    vel.y = JUMP_V; grounded = false; coyote = 0; jumpBuffer = 0; squash = -0.25; sfx.jump();
   }
 
   // grawitacja
@@ -2614,7 +2613,7 @@ function update(dt) {
   const G = (onFloor ? fh : 0) + groundH;   // wysokość środka fasolki, gdy stoi na kafelku
   if (onFloor && vel.y <= 0 && pos.y <= G + (grounded ? 0.3 : 0) && (grounded || prevY >= fh + DIVE_HEIGHT - 0.1)) {
     if (!grounded) {
-      if (vel.y < -3 && !won) sfx.land(-vel.y);   // po wygranej cisza: tylko dźwięk Victory
+      if (vel.y < -3) sfx.land(-vel.y);
       if (vel.y < -6) squash = Math.min(0.35, -vel.y * 0.02);
     }
     if (grounded && Math.abs(G - pos.y) < 0.4) visOff -= (G - pos.y);   // mały uskok między kafelkami: tylko wizualnie wygładzamy
@@ -2630,7 +2629,7 @@ function update(dt) {
   }
 
   // dźwięki: kroki i gwizd spadania
-  if (grounded && !diving && !won && hs > 2) { stepAcc += hs * dt; if (stepAcc > 2.6) { stepAcc = 0; sfx.step(); } }   // po wygranej bez kroków (fasolka jeszcze się ślizga)
+  if (grounded && !diving && hs > 2) { stepAcc += hs * dt; if (stepAcc > 2.6) { stepAcc = 0; sfx.step(); } }
   else if (!grounded) stepAcc = 1.5;
   if (equipStep && grounded && !diving && !won && hs > 2) { trailAcc += dt * STEP_RATE * Math.min(1, hs / MAX_SPEED); while (trailAcc >= 1) { trailAcc -= 1; spawnStepHeart(); } }   // serca wypadają ze stóp, im szybciej biegniesz, tym gęściej
   else trailAcc = 0;

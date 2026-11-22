@@ -182,7 +182,7 @@
     position: absolute; padding: 0; border-radius: 50%; box-sizing: border-box; top: 3vmin;
     width: clamp(56px, 12vmin, 92px); height: clamp(56px, 12vmin, 92px);
   }
-  #setBtn { right: 3vmin; background: #3a7bff; box-shadow: 0 0 0 5px #8fb4ff inset, 0 6px 0 rgba(0,0,0,.35); }
+  #setBtn { right: calc(3vmin + clamp(56px, 12vmin, 92px) + 2vmin); background: #3a7bff; box-shadow: 0 0 0 5px #8fb4ff inset, 0 6px 0 rgba(0,0,0,.35); }
   #setBtn:hover { background: #5590ff; }
   #setBack { left: 3vmin; background: #e8232b; box-shadow: 0 0 0 5px #ff6b6b inset, 0 6px 0 rgba(0,0,0,.35); }
   #setBack:hover { background: #ff3b43; }
@@ -232,16 +232,16 @@
   #prevBack { display: none; }
   body.preview #shop { display: none; }
   body.preview #prevBack { display: block; }
-  #shopBack, #prevBack {
+  #shopBack, #prevBack, #lbBack {
     position: absolute; padding: 0; border-radius: 50%; box-sizing: border-box; top: 3vmin; left: 3vmin;
     width: clamp(56px, 12vmin, 92px); height: clamp(56px, 12vmin, 92px);
     background: #e8232b; box-shadow: 0 0 0 5px #ff6b6b inset, 0 6px 0 rgba(0,0,0,.35);
   }
-  #shopBack:hover, #prevBack:hover { background: #ff3b43; }
-  #shopBack svg, #prevBack svg { position: absolute; inset: 14%; width: 72%; height: 72%; pointer-events: none; }
-  #shopBack path, #prevBack path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
-  #shopBack .o, #prevBack .o { stroke: #1b1b1b; stroke-width: 22; }
-  #shopBack .i, #prevBack .i { stroke: #fff; stroke-width: 11; }
+  #shopBack:hover, #prevBack:hover, #lbBack:hover { background: #ff3b43; }
+  #shopBack svg, #prevBack svg, #lbBack svg { position: absolute; inset: 14%; width: 72%; height: 72%; pointer-events: none; }
+  #shopBack path, #prevBack path, #lbBack path { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+  #shopBack .o, #prevBack .o, #lbBack .o { stroke: #1b1b1b; stroke-width: 22; }
+  #shopBack .i, #prevBack .i, #lbBack .i { stroke: #fff; stroke-width: 11; }
   #shopTop {
     position: absolute; right: 3vmin; display: flex; align-items: center; gap: clamp(8px, 1.8vmin, 16px);
     top: calc(3vmin + (clamp(56px, 12vmin, 92px) - clamp(44px, 9vmin, 70px)) / 2);
@@ -303,6 +303,46 @@
   #gemList { width: 100%; display: flex; flex-direction: column; gap: 2vmin; }
   #gemList .row .val { display: flex; align-items: center; gap: 8px; flex: none; font-size: clamp(16px, 3.6vmin, 28px); color: #fff; -webkit-text-stroke: 7px #1b1b1b; paint-order: stroke fill; letter-spacing: 2px; }
   #gemOk { font-size: clamp(18px, 4vmin, 32px); padding: 6px 30px; }
+
+  /* ---------- Leaderboard ---------- */
+  #lbBtn {
+    position: absolute; padding: 0; border-radius: 50%; box-sizing: border-box; top: 3vmin; right: 3vmin;
+    width: clamp(56px, 12vmin, 92px); height: clamp(56px, 12vmin, 92px);
+    background: #3a7bff; box-shadow: 0 0 0 5px #8fb4ff inset, 0 6px 0 rgba(0,0,0,.35);
+  }
+  #lbBtn:hover { background: #5590ff; }
+  #lbBtn svg { position: absolute; inset: 14%; width: 72%; height: 72%; pointer-events: none; overflow: visible; }
+  #lbBtn .o { fill: #1b1b1b; stroke: #1b1b1b; stroke-width: 11; stroke-linejoin: round; }
+  #lbBtn .i { fill: #fff; stroke: none; }
+  body.lb #menu { display: none; }
+  #lb {
+    position: fixed; inset: 0; z-index: 9; display: none; overflow: auto; background: rgba(11,16,51,.88);
+    font-family: 'Arial Black', 'Impact', system-ui, sans-serif; font-weight: 900; text-transform: uppercase;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body.lb #lb { display: block; }
+  #lb, #lb * { stroke-linejoin: round; stroke-linecap: round; text-rendering: geometricPrecision; }
+  #lbPanel {
+    box-sizing: border-box; width: min(96vw, 640px); margin: 0 auto; display: flex; flex-direction: column; gap: 2vmin;
+    padding: calc(3vmin + clamp(56px, 12vmin, 92px) * .15) 0 6vmin;
+  }
+  #lbMsg { text-align: center; font-size: clamp(14px, 3vmin, 22px); letter-spacing: 2px; color: #fff; -webkit-text-stroke: 6px #1b1b1b; paint-order: stroke fill; min-height: 1.2em; }
+  #lbList { display: flex; flex-direction: column; gap: 1.8vmin; }
+  .lbRow {
+    display: flex; align-items: center; gap: clamp(8px, 2vmin, 16px); box-sizing: border-box; flex: none;
+    background: #3a7bff; border: 7px solid #1b1b1b; border-radius: 16px; padding: 6px 14px;
+    box-shadow: 0 0 0 4px #8fb4ff inset, 0 7px 0 rgba(0,0,0,.35);
+  }
+  .lbRow.top1 { background: #ffd21f; box-shadow: 0 0 0 4px #fff18a inset, 0 7px 0 rgba(0,0,0,.35); }
+  .lbRow.top2 { background: #b7c0d6; box-shadow: 0 0 0 4px #e6ebf7 inset, 0 7px 0 rgba(0,0,0,.35); }
+  .lbRow.top3 { background: #e08a3c; box-shadow: 0 0 0 4px #ffc48a inset, 0 7px 0 rgba(0,0,0,.35); }
+  .lbRow.me { background: #2bbf4b; box-shadow: 0 0 0 4px #7dff9a inset, 0 7px 0 rgba(0,0,0,.35); }
+  .lbRank, .lbName, .lbVal { color: #fff; -webkit-text-stroke: 7px #1b1b1b; paint-order: stroke fill; letter-spacing: 2px; font-size: clamp(16px, 3.6vmin, 28px); }
+  .lbRank { min-width: 2.4em; text-align: center; flex: none; }
+  .lbName { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 4px 6px; }
+  .lbVal { flex: none; }
+  .lbAv { width: clamp(44px, 9vmin, 64px); height: clamp(44px, 9vmin, 64px); }
+  .lbAv::after { border-width: 6px; box-shadow: 0 0 0 3px #fff inset; }
 
   #settings {
     position: fixed; inset: 0; z-index: 9; display: none; overflow: auto; background: rgba(11,16,51,.88);
@@ -458,8 +498,17 @@
   <button id="profileBtn" title="Profile"><div class="avatar"></div><span id="profileName"></span></button>
   <button id="playBtn">PLAY</button>
   <button id="setBtn" class="pbtn" title="Settings"><svg viewBox="0 0 64 64"><path class="o" d="M39.48 13.95 L39.79 14.08 L40.11 14.21 L40.43 14.34 L40.75 14.45 L41.10 14.53 L41.49 14.53 L41.98 14.36 L42.70 13.83 L43.75 12.83 L45.02 11.57 L46.15 10.62 L46.97 10.23 L47.54 10.21 L48.00 10.37 L48.41 10.61 L48.80 10.88 L49.17 11.17 L49.53 11.47 L49.89 11.78 L50.24 12.09 L50.58 12.42 L50.92 12.74 L51.26 13.08 L51.58 13.42 L51.91 13.76 L52.22 14.11 L52.53 14.47 L52.83 14.83 L53.12 15.20 L53.39 15.59 L53.63 16.00 L53.79 16.46 L53.77 17.03 L53.38 17.85 L52.43 18.98 L51.17 20.25 L50.17 21.30 L49.64 22.02 L49.47 22.51 L49.47 22.90 L49.55 23.25 L49.66 23.57 L49.79 23.89 L49.92 24.21 L50.05 24.52 L50.18 24.84 L50.31 25.15 L50.45 25.47 L50.60 25.78 L50.79 26.08 L51.06 26.35 L51.54 26.58 L52.41 26.72 L53.86 26.75 L55.65 26.76 L57.12 26.89 L57.98 27.19 L58.40 27.58 L58.61 28.02 L58.73 28.48 L58.81 28.95 L58.87 29.41 L58.91 29.88 L58.95 30.35 L58.97 30.82 L58.99 31.29 L59.00 31.76 L59.00 32.24 L58.99 32.71 L58.97 33.18 L58.95 33.65 L58.91 34.12 L58.87 34.59 L58.81 35.05 L58.73 35.52 L58.61 35.98 L58.40 36.42 L57.98 36.81 L57.12 37.11 L55.65 37.24 L53.86 37.25 L52.41 37.28 L51.54 37.42 L51.06 37.65 L50.79 37.92 L50.60 38.22 L50.45 38.53 L50.31 38.85 L50.18 39.16 L50.05 39.48 L49.92 39.79 L49.79 40.11 L49.66 40.43 L49.55 40.75 L49.47 41.10 L49.47 41.49 L49.64 41.98 L50.17 42.70 L51.17 43.75 L52.43 45.02 L53.38 46.15 L53.77 46.97 L53.79 47.54 L53.63 48.00 L53.39 48.41 L53.12 48.80 L52.83 49.17 L52.53 49.53 L52.22 49.89 L51.91 50.24 L51.58 50.58 L51.26 50.92 L50.92 51.26 L50.58 51.58 L50.24 51.91 L49.89 52.22 L49.53 52.53 L49.17 52.83 L48.80 53.12 L48.41 53.39 L48.00 53.63 L47.54 53.79 L46.97 53.77 L46.15 53.38 L45.02 52.43 L43.75 51.17 L42.70 50.17 L41.98 49.64 L41.49 49.47 L41.10 49.47 L40.75 49.55 L40.43 49.66 L40.11 49.79 L39.79 49.92 L39.48 50.05 L39.16 50.18 L38.85 50.31 L38.53 50.45 L38.22 50.60 L37.92 50.79 L37.65 51.06 L37.42 51.54 L37.28 52.41 L37.25 53.86 L37.24 55.65 L37.11 57.12 L36.81 57.98 L36.42 58.40 L35.98 58.61 L35.52 58.73 L35.05 58.81 L34.59 58.87 L34.12 58.91 L33.65 58.95 L33.18 58.97 L32.71 58.99 L32.24 59.00 L31.76 59.00 L31.29 58.99 L30.82 58.97 L30.35 58.95 L29.88 58.91 L29.41 58.87 L28.95 58.81 L28.48 58.73 L28.02 58.61 L27.58 58.40 L27.19 57.98 L26.89 57.12 L26.76 55.65 L26.75 53.86 L26.72 52.41 L26.58 51.54 L26.35 51.06 L26.08 50.79 L25.78 50.60 L25.47 50.45 L25.15 50.31 L24.84 50.18 L24.52 50.05 L24.21 49.92 L23.89 49.79 L23.57 49.66 L23.25 49.55 L22.90 49.47 L22.51 49.47 L22.02 49.64 L21.30 50.17 L20.25 51.17 L18.98 52.43 L17.85 53.38 L17.03 53.77 L16.46 53.79 L16.00 53.63 L15.59 53.39 L15.20 53.12 L14.83 52.83 L14.47 52.53 L14.11 52.22 L13.76 51.91 L13.42 51.58 L13.08 51.26 L12.74 50.92 L12.42 50.58 L12.09 50.24 L11.78 49.89 L11.47 49.53 L11.17 49.17 L10.88 48.80 L10.61 48.41 L10.37 48.00 L10.21 47.54 L10.23 46.97 L10.62 46.15 L11.57 45.02 L12.83 43.75 L13.83 42.70 L14.36 41.98 L14.53 41.49 L14.53 41.10 L14.45 40.75 L14.34 40.43 L14.21 40.11 L14.08 39.79 L13.95 39.48 L13.82 39.16 L13.69 38.85 L13.55 38.53 L13.40 38.22 L13.21 37.92 L12.94 37.65 L12.46 37.42 L11.59 37.28 L10.14 37.25 L8.35 37.24 L6.88 37.11 L6.02 36.81 L5.60 36.42 L5.39 35.98 L5.27 35.52 L5.19 35.05 L5.13 34.59 L5.09 34.12 L5.05 33.65 L5.03 33.18 L5.01 32.71 L5.00 32.24 L5.00 31.76 L5.01 31.29 L5.03 30.82 L5.05 30.35 L5.09 29.88 L5.13 29.41 L5.19 28.95 L5.27 28.48 L5.39 28.02 L5.60 27.58 L6.02 27.19 L6.88 26.89 L8.35 26.76 L10.14 26.75 L11.59 26.72 L12.46 26.58 L12.94 26.35 L13.21 26.08 L13.40 25.78 L13.55 25.47 L13.69 25.15 L13.82 24.84 L13.95 24.52 L14.08 24.21 L14.21 23.89 L14.34 23.57 L14.45 23.25 L14.53 22.90 L14.53 22.51 L14.36 22.02 L13.83 21.30 L12.83 20.25 L11.57 18.98 L10.62 17.85 L10.23 17.03 L10.21 16.46 L10.37 16.00 L10.61 15.59 L10.88 15.20 L11.17 14.83 L11.47 14.47 L11.78 14.11 L12.09 13.76 L12.42 13.42 L12.74 13.08 L13.08 12.74 L13.42 12.42 L13.76 12.09 L14.11 11.78 L14.47 11.47 L14.83 11.17 L15.20 10.88 L15.59 10.61 L16.00 10.37 L16.46 10.21 L17.03 10.23 L17.85 10.62 L18.98 11.57 L20.25 12.83 L21.30 13.83 L22.02 14.36 L22.51 14.53 L22.90 14.53 L23.25 14.45 L23.57 14.34 L23.89 14.21 L24.21 14.08 L24.52 13.95 L24.84 13.82 L25.15 13.69 L25.47 13.55 L25.78 13.40 L26.08 13.21 L26.35 12.94 L26.58 12.46 L26.72 11.59 L26.75 10.14 L26.76 8.35 L26.89 6.88 L27.19 6.02 L27.58 5.60 L28.02 5.39 L28.48 5.27 L28.95 5.19 L29.41 5.13 L29.88 5.09 L30.35 5.05 L30.82 5.03 L31.29 5.01 L31.76 5.00 L32.24 5.00 L32.71 5.01 L33.18 5.03 L33.65 5.05 L34.12 5.09 L34.59 5.13 L35.05 5.19 L35.52 5.27 L35.98 5.39 L36.42 5.60 L36.81 6.02 L37.11 6.88 L37.24 8.35 L37.25 10.14 L37.28 11.59 L37.42 12.46 L37.65 12.94 L37.92 13.21 L38.22 13.40 L38.53 13.55 L38.85 13.69 L39.16 13.82Z M21 32a11 11 0 1 0 22 0a11 11 0 1 0 -22 0Z"/><path class="i" d="M39.48 13.95 L39.79 14.08 L40.11 14.21 L40.43 14.34 L40.75 14.45 L41.10 14.53 L41.49 14.53 L41.98 14.36 L42.70 13.83 L43.75 12.83 L45.02 11.57 L46.15 10.62 L46.97 10.23 L47.54 10.21 L48.00 10.37 L48.41 10.61 L48.80 10.88 L49.17 11.17 L49.53 11.47 L49.89 11.78 L50.24 12.09 L50.58 12.42 L50.92 12.74 L51.26 13.08 L51.58 13.42 L51.91 13.76 L52.22 14.11 L52.53 14.47 L52.83 14.83 L53.12 15.20 L53.39 15.59 L53.63 16.00 L53.79 16.46 L53.77 17.03 L53.38 17.85 L52.43 18.98 L51.17 20.25 L50.17 21.30 L49.64 22.02 L49.47 22.51 L49.47 22.90 L49.55 23.25 L49.66 23.57 L49.79 23.89 L49.92 24.21 L50.05 24.52 L50.18 24.84 L50.31 25.15 L50.45 25.47 L50.60 25.78 L50.79 26.08 L51.06 26.35 L51.54 26.58 L52.41 26.72 L53.86 26.75 L55.65 26.76 L57.12 26.89 L57.98 27.19 L58.40 27.58 L58.61 28.02 L58.73 28.48 L58.81 28.95 L58.87 29.41 L58.91 29.88 L58.95 30.35 L58.97 30.82 L58.99 31.29 L59.00 31.76 L59.00 32.24 L58.99 32.71 L58.97 33.18 L58.95 33.65 L58.91 34.12 L58.87 34.59 L58.81 35.05 L58.73 35.52 L58.61 35.98 L58.40 36.42 L57.98 36.81 L57.12 37.11 L55.65 37.24 L53.86 37.25 L52.41 37.28 L51.54 37.42 L51.06 37.65 L50.79 37.92 L50.60 38.22 L50.45 38.53 L50.31 38.85 L50.18 39.16 L50.05 39.48 L49.92 39.79 L49.79 40.11 L49.66 40.43 L49.55 40.75 L49.47 41.10 L49.47 41.49 L49.64 41.98 L50.17 42.70 L51.17 43.75 L52.43 45.02 L53.38 46.15 L53.77 46.97 L53.79 47.54 L53.63 48.00 L53.39 48.41 L53.12 48.80 L52.83 49.17 L52.53 49.53 L52.22 49.89 L51.91 50.24 L51.58 50.58 L51.26 50.92 L50.92 51.26 L50.58 51.58 L50.24 51.91 L49.89 52.22 L49.53 52.53 L49.17 52.83 L48.80 53.12 L48.41 53.39 L48.00 53.63 L47.54 53.79 L46.97 53.77 L46.15 53.38 L45.02 52.43 L43.75 51.17 L42.70 50.17 L41.98 49.64 L41.49 49.47 L41.10 49.47 L40.75 49.55 L40.43 49.66 L40.11 49.79 L39.79 49.92 L39.48 50.05 L39.16 50.18 L38.85 50.31 L38.53 50.45 L38.22 50.60 L37.92 50.79 L37.65 51.06 L37.42 51.54 L37.28 52.41 L37.25 53.86 L37.24 55.65 L37.11 57.12 L36.81 57.98 L36.42 58.40 L35.98 58.61 L35.52 58.73 L35.05 58.81 L34.59 58.87 L34.12 58.91 L33.65 58.95 L33.18 58.97 L32.71 58.99 L32.24 59.00 L31.76 59.00 L31.29 58.99 L30.82 58.97 L30.35 58.95 L29.88 58.91 L29.41 58.87 L28.95 58.81 L28.48 58.73 L28.02 58.61 L27.58 58.40 L27.19 57.98 L26.89 57.12 L26.76 55.65 L26.75 53.86 L26.72 52.41 L26.58 51.54 L26.35 51.06 L26.08 50.79 L25.78 50.60 L25.47 50.45 L25.15 50.31 L24.84 50.18 L24.52 50.05 L24.21 49.92 L23.89 49.79 L23.57 49.66 L23.25 49.55 L22.90 49.47 L22.51 49.47 L22.02 49.64 L21.30 50.17 L20.25 51.17 L18.98 52.43 L17.85 53.38 L17.03 53.77 L16.46 53.79 L16.00 53.63 L15.59 53.39 L15.20 53.12 L14.83 52.83 L14.47 52.53 L14.11 52.22 L13.76 51.91 L13.42 51.58 L13.08 51.26 L12.74 50.92 L12.42 50.58 L12.09 50.24 L11.78 49.89 L11.47 49.53 L11.17 49.17 L10.88 48.80 L10.61 48.41 L10.37 48.00 L10.21 47.54 L10.23 46.97 L10.62 46.15 L11.57 45.02 L12.83 43.75 L13.83 42.70 L14.36 41.98 L14.53 41.49 L14.53 41.10 L14.45 40.75 L14.34 40.43 L14.21 40.11 L14.08 39.79 L13.95 39.48 L13.82 39.16 L13.69 38.85 L13.55 38.53 L13.40 38.22 L13.21 37.92 L12.94 37.65 L12.46 37.42 L11.59 37.28 L10.14 37.25 L8.35 37.24 L6.88 37.11 L6.02 36.81 L5.60 36.42 L5.39 35.98 L5.27 35.52 L5.19 35.05 L5.13 34.59 L5.09 34.12 L5.05 33.65 L5.03 33.18 L5.01 32.71 L5.00 32.24 L5.00 31.76 L5.01 31.29 L5.03 30.82 L5.05 30.35 L5.09 29.88 L5.13 29.41 L5.19 28.95 L5.27 28.48 L5.39 28.02 L5.60 27.58 L6.02 27.19 L6.88 26.89 L8.35 26.76 L10.14 26.75 L11.59 26.72 L12.46 26.58 L12.94 26.35 L13.21 26.08 L13.40 25.78 L13.55 25.47 L13.69 25.15 L13.82 24.84 L13.95 24.52 L14.08 24.21 L14.21 23.89 L14.34 23.57 L14.45 23.25 L14.53 22.90 L14.53 22.51 L14.36 22.02 L13.83 21.30 L12.83 20.25 L11.57 18.98 L10.62 17.85 L10.23 17.03 L10.21 16.46 L10.37 16.00 L10.61 15.59 L10.88 15.20 L11.17 14.83 L11.47 14.47 L11.78 14.11 L12.09 13.76 L12.42 13.42 L12.74 13.08 L13.08 12.74 L13.42 12.42 L13.76 12.09 L14.11 11.78 L14.47 11.47 L14.83 11.17 L15.20 10.88 L15.59 10.61 L16.00 10.37 L16.46 10.21 L17.03 10.23 L17.85 10.62 L18.98 11.57 L20.25 12.83 L21.30 13.83 L22.02 14.36 L22.51 14.53 L22.90 14.53 L23.25 14.45 L23.57 14.34 L23.89 14.21 L24.21 14.08 L24.52 13.95 L24.84 13.82 L25.15 13.69 L25.47 13.55 L25.78 13.40 L26.08 13.21 L26.35 12.94 L26.58 12.46 L26.72 11.59 L26.75 10.14 L26.76 8.35 L26.89 6.88 L27.19 6.02 L27.58 5.60 L28.02 5.39 L28.48 5.27 L28.95 5.19 L29.41 5.13 L29.88 5.09 L30.35 5.05 L30.82 5.03 L31.29 5.01 L31.76 5.00 L32.24 5.00 L32.71 5.01 L33.18 5.03 L33.65 5.05 L34.12 5.09 L34.59 5.13 L35.05 5.19 L35.52 5.27 L35.98 5.39 L36.42 5.60 L36.81 6.02 L37.11 6.88 L37.24 8.35 L37.25 10.14 L37.28 11.59 L37.42 12.46 L37.65 12.94 L37.92 13.21 L38.22 13.40 L38.53 13.55 L38.85 13.69 L39.16 13.82Z M21 32a11 11 0 1 0 22 0a11 11 0 1 0 -22 0Z"/></svg></button>
+  <button id="lbBtn" class="pbtn" title="Leaderboard"><svg viewBox="0 0 64 64"><g class="o"><path d="M18 8 H46 V26 C46 36 40 42 32 42 C24 42 18 36 18 26 Z"/><path d="M18 13 H7 V21 C7 28 11 32 18 32 V27 C15 27 13 25 13 21 V18 H18 Z"/><path d="M46 13 H57 V21 C57 28 53 32 46 32 V27 C49 27 51 25 51 21 V18 H46 Z"/><path d="M28 41 H36 V50 H28 Z"/><path d="M19 50 H45 V58 H19 Z"/></g><g class="i"><path d="M18 8 H46 V26 C46 36 40 42 32 42 C24 42 18 36 18 26 Z"/><path d="M18 13 H7 V21 C7 28 11 32 18 32 V27 C15 27 13 25 13 21 V18 H18 Z"/><path d="M46 13 H57 V21 C57 28 53 32 46 32 V27 C49 27 51 25 51 21 V18 H46 Z"/><path d="M28 41 H36 V50 H28 Z"/><path d="M19 50 H45 V58 H19 Z"/></g></svg></button>
   <button id="shopBtn" class="pbtn" title="Shop"><svg viewBox="-11 -12.5 84 84"><path class="d" d="M4 8 H13 L21.2 34"/><path class="b" d="M15.9 17 H58 L52 38 H21 Z"/><circle class="dc" cx="25" cy="50" r="10"/><circle class="dc" cx="49" cy="50" r="10"/><path class="w" d="M4 8 H13 L21.2 34"/><path class="bw" d="M15.9 17 H58 L52 38 H21 Z"/><circle class="wc" cx="25" cy="50" r="5.5"/><circle class="wc" cx="49" cy="50" r="5.5"/></svg></button>
   <button id="custBtn" class="pbtn" title="Customize"><svg viewBox="-14.5 -11.5 91 91"><path class="o" d="M37 30 L59 30 L61 62 L52 62 L48 42 L44 62 L35 62 Z"/><path class="i" d="M37 30 L59 30 L61 62 L52 62 L48 42 L44 62 L35 62 Z"/><path class="o" d="M15 6 Q21 13 27 6 L35 9 L41 17 L36 22 L32 19 L32 36 L10 36 L10 19 L6 22 L1 17 L7 9 Z"/><path class="i" d="M15 6 Q21 13 27 6 L35 9 L41 17 L36 22 L32 19 L32 36 L10 36 L10 19 L6 22 L1 17 L7 9 Z"/></svg></button>
+</div>
+<div id="lb">
+  <button id="lbBack" class="pbtn" title="Back"><svg viewBox="0 0 64 64"><path class="o" d="M40 12 L20 32 L40 52"/><path class="i" d="M40 12 L20 32 L40 52"/></svg></button>
+  <div id="lbPanel">
+    <div class="cats"><button class="pbtn cat on" data-lb="wins">Wins</button><button class="pbtn cat" data-lb="rate">Win Rate</button></div>
+    <div id="lbMsg"></div>
+    <div id="lbList"></div>
+  </div>
 </div>
 <div id="settings">
   <button id="setBack" class="pbtn" title="Back"><svg viewBox="0 0 64 64"><path class="o" d="M40 12 L20 32 L40 52"/><path class="i" d="M40 12 L20 32 L40 52"/></svg></button>
@@ -1010,7 +1059,7 @@ let lastSpace = -1, diveBuffer = 0;
 let inMenu = true;
 camera.position.set(0, 1.9, 5.2);
 function startGame() {
-  if (!inMenu || profileOpen || settingsOpen || shopOpen || custOpen) return;
+  if (!inMenu || profileOpen || settingsOpen || shopOpen || custOpen || lbOpen) return;
   pvT = 0; resetArena();
   sfx.play();
   inMenu = false; document.body.classList.remove('menu');
@@ -1035,7 +1084,7 @@ addEventListener('keydown', e => {
 });
 addEventListener('keyup', e => keys[e.code] = false);
 document.getElementById('playBtn').addEventListener('click', startGame);
-addEventListener('keydown', e => { if (inMenu && !profileOpen && !settingsOpen && !shopOpen && !custOpen && e.target.tagName !== 'INPUT' && e.code === 'Enter') startGame(); });
+addEventListener('keydown', e => { if (inMenu && !profileOpen && !settingsOpen && !shopOpen && !custOpen && !lbOpen && e.target.tagName !== 'INPUT' && e.code === 'Enter') startGame(); });
 
 const cv = renderer.domElement;
 cv.style.touchAction = 'none';
@@ -1303,6 +1352,8 @@ async function verifyGuestNick() {   // re-roll silently if a connected player a
 function cacheSave() { try { localStorage.setItem(CLOUD_KEY, JSON.stringify({ uid: acct.uid, data: snapshot() })); } catch (err) {} }
 function pushCloud() {
   if (!acct || !fbDb) return Promise.resolve();
+  const tot = stats.wins + stats.losses;   // publiczny wpis do rankingu: nick, wins, win rate (od 5 gier), skin
+  fbDb.collection('leaderboard').doc(acct.uid).set({ nick: playerNick, wins: stats.wins, games: tot, wr: tot >= LB_MIN_GAMES ? Math.round(stats.wins / tot * 1000) / 10 : 0, equip: equipBean }).catch(() => {});
   return fbDb.collection('users').doc(acct.uid).set(snapshot()).catch(() => {});
 }
 let cloudT = 0;
@@ -1396,7 +1447,7 @@ const avCam = new THREE.PerspectiveCamera(30, 1, 0.1, 80);
 avCam.position.set(0, 0.5, 3.9); avCam.lookAt(0, 0.3, 0);   // fasolka mniejsza, cała widoczna w kółku
 let avSize = 0;
 function renderAvatar() {
-  if (!inMenu || profileOpen || settingsOpen || shopOpen || custOpen) return;
+  if (!inMenu || profileOpen || settingsOpen || shopOpen || custOpen || lbOpen) return;
   const w = avEl.clientWidth; if (!w) return;
   if (w !== avSize) { avSize = w; avRenderer.setPixelRatio(Math.min(devicePixelRatio, 2)); avRenderer.setSize(w, w, false); }
   avBean.rotation.y = 0;   // profilowe się nie kręci
@@ -1417,7 +1468,7 @@ function renderStats() {
   document.getElementById('stRate').textContent = (total ? Math.round(stats.wins / total * 100) : 0) + '%';
 }
 function openProfile() {
-  if (!inMenu || shopOpen || custOpen) return;
+  if (!inMenu || shopOpen || custOpen || lbOpen) return;
   sfx.click();
   profileOpen = true; document.body.classList.add('profile');
   nickInput.value = playerNick; renderStats();
@@ -1444,6 +1495,56 @@ nickInput.addEventListener('keydown', e => { if (e.key === 'Enter') saveNick(); 
 addEventListener('keydown', e => { if (e.code === 'Escape' && profileOpen) closeProfile(); });
 applyNick(); renderStats();
 
+// ---------- Leaderboard (Wins / Win Rate, top 100) ----------
+const LB_MIN_GAMES = 5;   // do Win Rate liczą się gracze z co najmniej 5 rozegranymi grami
+let lbOpen = false, lbCat = 'wins', lbToken = 0;
+const lbEl = document.getElementById('lb'), lbList = document.getElementById('lbList'), lbMsg = document.getElementById('lbMsg');
+function lbAvatar(id) {   // profilowe gracza: jego skin (kolor z katalogu) na ciemnym tle
+  const b = BEANS.find(x => x.id === id) || BEANS[0], c = '#' + b.color.toString(16).padStart(6, '0');
+  const shape = b.shape === 'heart'
+    ? '<path d="M50 84 C20 62 12 44 22 30 C30 20 44 24 50 34 C56 24 70 20 78 30 C88 44 80 62 50 84 Z" fill="' + c + '"/>'
+    : '<ellipse cx="50" cy="52" rx="27" ry="34" fill="' + c + '"/>';
+  return '<svg viewBox="0 0 100 100">' + shape + '<ellipse cx="41" cy="38" rx="7" ry="11" fill="#fff" opacity=".35" transform="rotate(20 41 38)"/></svg>';
+}
+async function loadLeaderboard() {
+  const my = ++lbToken;
+  lbList.textContent = ''; lbMsg.textContent = 'Loading...';
+  if (!fbDb) { lbMsg.textContent = 'Leaderboard needs an internet connection'; return; }
+  try {
+    if (acct) await pushCloud();   // twój wpis jest aktualny
+    const col = fbDb.collection('leaderboard');
+    const q = lbCat === 'wins' ? col.where('wins', '>', 0).orderBy('wins', 'desc') : col.where('wr', '>', 0).orderBy('wr', 'desc');
+    const snap = await q.limit(100).get();
+    if (my !== lbToken) return;
+    const rows = snap.docs.map(d => Object.assign({ uid: d.id }, d.data()));
+    rows.sort((a, b) => lbCat === 'wins' ? (b.wins - a.wins) || (b.wr - a.wr) : (b.wr - a.wr) || (b.wins - a.wins));   // remis: drugie kryterium
+    lbMsg.textContent = !rows.length ? 'No players yet - connect your account and win!' : (lbCat === 'rate' ? 'Min. ' + LB_MIN_GAMES + ' games' : '');
+    rows.forEach((r, i) => {
+      const row = document.createElement('div');
+      row.className = 'lbRow' + (i < 3 ? ' top' + (i + 1) : '') + (acct && r.uid === acct.uid ? ' me' : '');
+      row.innerHTML = '<span class="lbRank"></span><div class="avatar lbAv"></div><span class="lbName"></span><span class="lbVal"></span>';
+      row.querySelector('.lbRank').textContent = i + 1;
+      row.querySelector('.lbAv').innerHTML = lbAvatar(r.equip);
+      renderNick(row.querySelector('.lbName'), String(r.nick || 'Bean'));
+      row.querySelector('.lbVal').textContent = lbCat === 'wins' ? (r.wins | 0) : (Math.round(r.wr * 10) / 10) + '%';
+      lbList.appendChild(row);
+    });
+  } catch (err) { if (my === lbToken) lbMsg.textContent = 'Could not load the leaderboard'; }
+}
+function openLb() {
+  if (!inMenu || profileOpen || settingsOpen || shopOpen || custOpen || lbOpen) return;
+  sfx.click(); lbOpen = true; document.body.classList.add('lb'); lbEl.scrollTop = 0; loadLeaderboard();
+}
+function closeLb() { sfx.click(); lbOpen = false; lbToken++; document.body.classList.remove('lb'); }
+document.getElementById('lbBtn').addEventListener('click', openLb);
+document.getElementById('lbBack').addEventListener('click', closeLb);
+document.querySelectorAll('#lb .cat').forEach(b => b.addEventListener('click', () => {
+  sfx.click(); lbCat = b.dataset.lb;
+  document.querySelectorAll('#lb .cat').forEach(x => x.classList.toggle('on', x === b));
+  lbEl.scrollTop = 0; loadLeaderboard();
+}));
+addEventListener('keydown', e => { if (e.code === 'Escape' && lbOpen) closeLb(); });
+
 // ---------- Ustawienia ----------
 let settingsOpen = false;
 function applySettings() {
@@ -1451,7 +1552,7 @@ function applySettings() {
   document.querySelectorAll('.tog[data-key]').forEach(b => { const on = settings[b.dataset.key]; b.classList.toggle('on', on); b.textContent = on ? 'ON' : 'OFF'; });
   applyAudioSettings();
 }
-function openSettings() { if (!inMenu || profileOpen || shopOpen || custOpen) return; sfx.click(); settingsOpen = true; document.body.classList.add('settings'); updateLayoutPreview(); }
+function openSettings() { if (!inMenu || profileOpen || shopOpen || custOpen || lbOpen) return; sfx.click(); settingsOpen = true; document.body.classList.add('settings'); updateLayoutPreview(); }
 function closeSettings() { sfx.click(); settingsOpen = false; rebinding = null; buildKeybinds(); document.body.classList.remove('settings'); updateLayoutPreview(); }
 document.getElementById('setBtn').addEventListener('click', openSettings);
 document.getElementById('setBack').addEventListener('click', closeSettings);
@@ -1558,7 +1659,7 @@ applyTouchLayout(); buildKeybinds(); syncSliders(); onModeChange();
 let shopOpen = false;
 function updateGemsUI() { document.getElementById('shopGemCount').textContent = gems; }
 updateGemsUI();
-function openShop() { if (!inMenu || profileOpen || settingsOpen || custOpen) return; sfx.click(); updateBuyBtn(); shopOpen = true; document.body.classList.add('shop'); renderCreator(); claimCreatorGems(); flushCreatorQueue(); if (shopNoteQ) { const q = shopNoteQ; shopNoteQ = ''; shopNote(q); } }
+function openShop() { if (!inMenu || profileOpen || settingsOpen || custOpen || lbOpen) return; sfx.click(); updateBuyBtn(); shopOpen = true; document.body.classList.add('shop'); renderCreator(); claimCreatorGems(); flushCreatorQueue(); if (shopNoteQ) { const q = shopNoteQ; shopNoteQ = ''; shopNote(q); } }
 // za co są gemy (na razie tylko wygrana); kolejne źródła dopisz do GEM_SOURCES
 const GEM_SOURCES = [{ label: 'Win a match', gems: WIN_GEMS }];
 const gemInfoEl = document.getElementById('gemInfo');
@@ -1754,7 +1855,7 @@ document.querySelectorAll('#shop .cat, #cust .cat').forEach(b => b.addEventListe
 }));
 applyCats();
 function openCust() {
-  if (!inMenu || profileOpen || settingsOpen || shopOpen) return;
+  if (!inMenu || profileOpen || settingsOpen || shopOpen || lbOpen) return;
   sfx.click(); buildCust(); custOpen = true; document.body.classList.add('cust'); cgrid.scrollTop = 0;
 }
 function closeCust() { sfx.click(); custOpen = false; document.body.classList.remove('cust'); }

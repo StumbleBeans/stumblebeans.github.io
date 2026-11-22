@@ -457,12 +457,27 @@
   #setPanel { max-height: 94vh; overflow-y: auto; overflow-x: hidden; scrollbar-width: none; padding: 4px 0 14px; }
   #setPanel::-webkit-scrollbar { display: none; }
   .sub { width: 100%; display: flex; flex-direction: column; gap: 2vmin; align-items: stretch; }
+  .row[hidden] { display: none; }
+  #sensPcVal, #sensPhoneVal { min-width: 3.4em; text-align: right; }
   .sub[hidden] { display: none; }
   .sub .cats { align-self: center; }
   .kbBtn { font-size: clamp(16px, 3.4vmin, 26px); min-width: 120px; padding: 4px 14px; -webkit-text-stroke: 6px #1b1b1b; text-transform: none;
            background: #ffd21f; box-shadow: 0 0 0 4px #fff18a inset, 0 6px 0 rgba(0,0,0,.35); }
   .kbBtn.listen { background: #e8232b; box-shadow: 0 0 0 4px #ff6b6b inset, 0 6px 0 rgba(0,0,0,.35); }
-  .row input[type=range] { flex: 1; min-width: 0; max-width: 300px; height: 30px; accent-color: #ffd21f; cursor: pointer; }
+  /* suwaki w stylu gry: tor rysowany na samym inpucie (z paddingiem), więc gałka na końcu siedzi W ŚRODKU toru */
+  .row input[type=range] {
+    -webkit-appearance: none; appearance: none; flex: 1; min-width: 120px; max-width: none; height: 16px; margin: 9px 27px; padding: 0; box-sizing: border-box;
+    border-radius: 10px; box-shadow: 0 0 0 4px #1b1b1b; cursor: pointer; --f: .5;
+    background: linear-gradient(#ffd21f, #ffd21f) 0 0 / calc(100% * var(--f)) 100% no-repeat, #fff;
+  }
+  .rowH { visibility: hidden; min-width: 0 !important; width: 0; padding-left: 0 !important; padding-right: 0 !important; border-left-width: 0; border-right-width: 0; margin-left: -14px; }   /* niewidoczny przycisk: wiersz ma wysokość jak inne settingsy */
+  .row input[type=range]:focus { outline: none; }
+  .row input[type=range]::-webkit-slider-runnable-track { height: 16px; background: transparent; margin: 0 -17px; }   /* gałka dochodzi środkiem do samych końców toru */
+  .row input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 34px; height: 34px; margin-top: -9px; box-sizing: border-box; border-radius: 50%; background: #ffd21f; border: 6px solid #1b1b1b; box-shadow: 0 0 0 3px #fff18a inset, 0 4px 0 rgba(0,0,0,.35); transition: transform .08s; }
+  .row input[type=range]:active::-webkit-slider-thumb { transform: scale(.88); }
+  .row input[type=range]::-moz-range-track { height: 16px; background: transparent; }
+  .row input[type=range]::-moz-range-thumb { width: 34px; height: 34px; box-sizing: border-box; border-radius: 50%; background: #ffd21f; border: 6px solid #1b1b1b; box-shadow: 0 0 0 3px #fff18a inset, 0 4px 0 rgba(0,0,0,.35); }
+  /* suwaki w stylu gry: gruby czarny obrys, żółte wypełnienie, żółta gałka */
   /* podczas ustawiania guzików na telefonie widać je na żywo nad ustawieniami */
   body.setLayout #touch { display: block !important; z-index: 10; }
   body.setLayout #touch * { pointer-events: none !important; }
@@ -472,7 +487,7 @@
   #setPanel { width: min(98vw, 1000px); }
   #setTabs { width: 100%; flex-wrap: nowrap; }
   #setTabs .tab { flex: 0 1 auto; font-size: clamp(12px, min(3.6vmin, 2.6vw), 28px); padding: 5px min(22px, 1.8vw); }   /* rozmiar jak w oryginale, wszystkie zakładki w jednej linii */
-  #setPanel .setList { width: min(100%, 620px); }
+  #setPanel .setList { width: min(100%, 760px); }
   /* widok emotki trzyma się w środku pierwszego (jasnego) obrysu, nie wchodzi na czarną ramkę */
   #emoteSlot canvas { inset: auto; left: 4px; top: 4px; width: calc(100% - 8px); height: calc(100% - 8px); border-radius: 9px; }
   #emoteBtn canvas { inset: auto; left: 5px; top: 5px; width: calc(100% - 10px); height: calc(100% - 10px); border-radius: 50%; }
@@ -522,6 +537,8 @@
       <div class="row" id="fsRow"><span class="lbl">Full screen</span><button id="fsBtn" class="pbtn tog" data-key="fs"></button></div>
     </div>
     <div class="setList" id="tab-gameplay" hidden>
+      <div class="row" id="sensPc"><span class="lbl">Camera sensitivity</span><input type="range" id="slSensPc" min="20" max="250" step="5"><span class="lbl" id="sensPcVal"></span><button class="pbtn tog rowH" tabindex="-1" aria-hidden="true">ON</button></div>
+      <div class="row" id="sensPhone" hidden><span class="lbl">Camera sensitivity</span><input type="range" id="slSensPhone" min="20" max="250" step="5"><span class="lbl" id="sensPhoneVal"></span><button class="pbtn tog rowH" tabindex="-1" aria-hidden="true">ON</button></div>
       <div class="row"><span class="lbl">Show nickname</span><button class="pbtn tog" data-key="nick"></button></div>
       <div class="row"><span class="lbl">Show timer</span><button class="pbtn tog" data-key="timer"></button></div>
     </div>
@@ -1089,8 +1106,8 @@ cv.style.touchAction = 'none';
 cv.addEventListener('click', () => { if (!phone && !inMenu) cv.requestPointerLock(); });
 addEventListener('mousemove', e => {
   if (!document.pointerLockElement) return;
-  yaw   -= e.movementX * 0.0025;
-  pitch += e.movementY * 0.0025;
+  yaw   -= e.movementX * 0.0025 * controls.sens.pc;
+  pitch += e.movementY * 0.0025 * controls.sens.pc;
   pitch = Math.max(-0.2, Math.min(1.2, pitch));
 });
 
@@ -1102,8 +1119,8 @@ cv.addEventListener('pointerdown', e => {
 });
 cv.addEventListener('pointermove', e => {
   if (e.pointerId !== camId) return;
-  yaw   -= (e.clientX - camX) * 0.006;
-  pitch += (e.clientY - camY) * 0.006;
+  yaw   -= (e.clientX - camX) * 0.006 * controls.sens.phone;
+  pitch += (e.clientY - camY) * 0.006 * controls.sens.phone;
   pitch = Math.max(-0.2, Math.min(1.2, pitch));
   camX = e.clientX; camY = e.clientY;
 });
@@ -1152,7 +1169,7 @@ const BEANS = [
 const beanById = id => BEANS.find(b => b.id === id) || BEANS[0];
 let ownedBeans = ['red'], equipBean = 'red', gems = 0;
 // Kody twórców: wpisujesz kod w Shopie -> przez 7 dni połowa gemów wydanych na zakupy trafia do twórcy (ciebie to nic nie kosztuje)
-const CREATOR_CODES = { antxo: { nick: '<clr/#3a7bff>CODE: Antxo' } };   // kod (małymi literami) -> konto, które dostaje gemy
+const CREATOR_CODES = { antxo: { nick: '<clr/#3a7bff>CODE: Antxo' }, popito: { nick: 'CODE: <clr/red>POPITO' } };   // kod (małymi literami) -> konto, które dostaje gemy
 const CREATOR_DAYS = 7, CREATOR_SHARE = 0.5;
 let creator = null;   // aktywny kod: { code, until (ms) } albo null
 const WIN_GEMS = 10;   // gemy za wygraną (bez żadnego napisu)
@@ -1185,7 +1202,7 @@ function triggerEmote() {
 const DEFAULT_BINDS = { fwd: 'KeyW', back: 'KeyS', left: 'KeyA', right: 'KeyD', jump: 'Space', emote: 'KeyB' };
 const BIND_NAMES = { fwd: 'Move forward', back: 'Move back', left: 'Move left', right: 'Move right', jump: 'Jump', emote: 'Emote' };
 const DEFAULT_TOUCH = { joy: { x: 16, y: 72, s: 1, o: 1 }, jump: { x: 88, y: 74, s: 1, o: 1 }, emote: { x: 88, y: 41, s: 1, o: 1 } };
-const controls = { binds: Object.assign({}, DEFAULT_BINDS), touch: JSON.parse(JSON.stringify(DEFAULT_TOUCH)) };
+const controls = { binds: Object.assign({}, DEFAULT_BINDS), touch: JSON.parse(JSON.stringify(DEFAULT_TOUCH)), sens: { pc: 1, phone: 1 } };
 const binds = controls.binds;
 function applyControls(c) {
   c = c || {};
@@ -1194,6 +1211,7 @@ function applyControls(c) {
     const raw = c.touch && c.touch[k] ? c.touch[k][f] : undefined;
     controls.touch[k][f] = typeof raw === 'number' && isFinite(raw) ? raw : DEFAULT_TOUCH[k][f];
   }
+  for (const k of ['pc', 'phone']) { const v = c.sens && c.sens[k]; controls.sens[k] = typeof v === 'number' && v >= 0.2 && v <= 2.5 ? v : 1; }   // czułość kamery
   const et = controls.touch.emote;   // stare domyślne położenie (y = 46) przesuwamy na nowe, własne ustawienia zostają
   if (et.x === 88 && et.y === 46 && et.s === 1 && et.o === 1) et.y = DEFAULT_TOUCH.emote.y;
 }
@@ -1601,6 +1619,7 @@ function updateLayoutPreview() {   // na telefonie w zakładce Buttons widać gu
   document.body.classList.toggle('setLayout', phone && document.body.classList.contains('settings') && !!on && on.dataset.tab === 'keybinds');
 }
 function onModeChange() {
+  const sp = document.getElementById('sensPc'), sh = document.getElementById('sensPhone'); if (sp) sp.hidden = phone; if (sh) sh.hidden = !phone;
   const tk = document.getElementById('tabKb'); if (tk) tk.textContent = phone ? 'Buttons' : 'Keybinds';
   const a = document.getElementById('kbPc'), b = document.getElementById('kbPhone'); if (a) a.hidden = phone; if (b) b.hidden = !phone;
   const t = document.getElementById('phoneTest'); if (t) { t.classList.toggle('on', phone); t.textContent = phone ? 'ON' : 'OFF'; }
@@ -1647,7 +1666,9 @@ function applyTouchLayout() {
 }
 let curBtn = 'joy';
 const slX = document.getElementById('slX'), slY = document.getElementById('slY'), slS = document.getElementById('slS'), slO = document.getElementById('slO');
-function syncSliders() { const c = controls.touch[curBtn]; slX.value = c.x; slY.value = c.y; slS.value = Math.round(c.s * 100); slO.value = Math.round(c.o * 100); }
+function paintRanges() { document.querySelectorAll('input[type=range]').forEach(el => el.style.setProperty('--f', (el.value - el.min) / (el.max - el.min))); }
+addEventListener('input', e => { if (e.target.type === 'range') paintRanges(); });
+function syncSliders() { requestAnimationFrame(paintRanges); syncSens(); const c = controls.touch[curBtn]; slX.value = c.x; slY.value = c.y; slS.value = Math.round(c.s * 100); slO.value = Math.round(c.o * 100); }
 [[slX, 'x', 1], [slY, 'y', 1], [slS, 's', 100], [slO, 'o', 100]].forEach(([el, f, d]) => {
   el.addEventListener('input', () => { controls.touch[curBtn][f] = el.value / d; applyTouchLayout(); });
   el.addEventListener('change', () => persist());
@@ -1663,6 +1684,18 @@ document.getElementById('btnReset').addEventListener('click', () => {
 emBtn.addEventListener('pointerdown', e => { e.preventDefault(); emBtn.classList.add('down'); triggerEmote(); });
 ['pointerup', 'pointercancel', 'pointerleave'].forEach(t => emBtn.addEventListener(t, () => emBtn.classList.remove('down')));
 emSlot.addEventListener('click', triggerEmote);
+// czułość kamery (osobno na PC i na telefonie)
+function syncSens() {
+  for (const [k, id] of [['pc', 'Pc'], ['phone', 'Phone']]) {
+    document.getElementById('slSens' + id).value = Math.round(controls.sens[k] * 100);
+    document.getElementById('sens' + id + 'Val').textContent = Math.round(controls.sens[k] * 100) + '%';
+  }
+}
+for (const [k, id] of [['pc', 'Pc'], ['phone', 'Phone']]) {
+  const el = document.getElementById('slSens' + id);
+  el.addEventListener('input', () => { controls.sens[k] = el.value / 100; document.getElementById('sens' + id + 'Val').textContent = el.value + '%'; });
+  el.addEventListener('change', () => persist());
+}
 applyTouchLayout(); buildKeybinds(); syncSliders(); onModeChange();
 
 // ---------- Shop ----------

@@ -254,7 +254,7 @@
   #gemHelp:hover { background: #5590ff; }
   #gemHelp svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
   #gemHelp text { font-family: 'Arial Black', 'Impact', system-ui, sans-serif; font-weight: 900; font-size: 40px; fill: #fff; stroke: #1b1b1b; stroke-width: 9px; paint-order: stroke fill; stroke-linejoin: round; text-transform: none; }
-  #shopGems {
+  #shopGems, #shopCarrots {
     box-sizing: border-box; display: flex; align-items: center; gap: 10px;
     height: clamp(44px, 9vmin, 70px);
     padding: 0 18px; background: #3a7bff; border: 7px solid #1b1b1b; border-radius: 16px;
@@ -263,7 +263,8 @@
   }
   .gem { width: 1.3em; height: 1.3em; flex: none; overflow: visible; }
   #shopPanel {
-    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: min(96vw, 720px);
+    /* wyśrodkowane w miejscu POD górnym paskiem (Back / ? / gemy), żeby zakładki nie wchodziły na guziki */
+    position: absolute; left: 50%; top: calc(50% + (3vmin + clamp(56px, 12vmin, 92px)) / 2); transform: translate(-50%, -50%); width: min(96vw, 720px);
     display: flex; flex-direction: column; align-items: center; gap: 2vmin;
   }
   #creatorBox { width: 100%; display: flex; flex-direction: column; gap: 2vmin; align-items: stretch; }
@@ -284,7 +285,7 @@
   #shopToast span { display: inline-block; padding: 8px 22px; background: #2bbf4b; border: 7px solid #1b1b1b; border-radius: 16px; box-shadow: 0 0 0 4px #7dff9a inset, 0 7px 0 rgba(0,0,0,.35); color: #fff; -webkit-text-stroke: 6px #1b1b1b; paint-order: stroke fill; letter-spacing: 2px; font-size: clamp(16px, 3.6vmin, 28px); }
   #shopToast.show { display: block; animation: toastIn 2.8s both; }
   .shopItem { width: 100%; gap: clamp(10px, 2.4vmin, 20px); padding: 12px 18px; }
-  #shopList { width: 100%; display: flex; flex-direction: column; gap: 2vmin; max-height: calc(100vh - 30vmin); overflow-y: auto; overflow-x: hidden; padding: 0 0 12px; scrollbar-width: none; }
+  #shopList { width: 100%; display: flex; flex-direction: column; gap: 2vmin; min-height: 26vmin; max-height: calc(100vh - 3vmin - clamp(56px, 12vmin, 92px) - 2 * (clamp(12px, min(3.6vmin, 3.6vw), 28px) * 1.2 + 30px) - 12vmin); overflow-y: auto; overflow-x: hidden; padding: 0 0 12px; scrollbar-width: none; }
   #shopList::-webkit-scrollbar { display: none; }
   #shopList .row { flex: none; }
   .shopView {
@@ -327,6 +328,7 @@
     padding: calc(3vmin + clamp(56px, 12vmin, 92px) * .15) 0 6vmin;
   }
   #lbMsg { text-align: center; font-size: clamp(14px, 3vmin, 22px); letter-spacing: 2px; color: #fff; -webkit-text-stroke: 6px #1b1b1b; paint-order: stroke fill; min-height: 1.2em; }
+  #lbMsg:empty { display: none; }   /* pusty pasek nie rozpycha odstępu między kategoriami a listą (tak samo jak w sklepie) */
   #lbList { display: flex; flex-direction: column; gap: 1.8vmin; }
   .lbRow {
     display: flex; align-items: center; gap: clamp(8px, 2vmin, 16px); box-sizing: border-box; flex: none;
@@ -401,6 +403,8 @@
          background: #3a7bff; box-shadow: 0 0 0 4px #8fb4ff inset, 0 6px 0 rgba(0,0,0,.35); }
   .cat:hover { background: #5590ff; }
   .cat.on { background: #ffd21f; box-shadow: 0 0 0 4px #fff18a inset, 0 6px 0 rgba(0,0,0,.35); }
+  .subcats { margin-top: 1vmin; }   /* Normal / Event: ten sam rozmiar co główne kategorie i taki sam odstęp jak Joystick / Jump / Emote w Settings */
+  .subcats[hidden] { display: none; }
   #cwrap { position: absolute; right: 2vw; top: 0; bottom: 0; width: 42vw; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2.4vmin; }
   body.cust #cwrap { animation: pIn .55s .45s cubic-bezier(.2,1.4,.4,1) both; }
   @media (max-aspect-ratio: 1/1) {
@@ -546,10 +550,10 @@
       <div class="sub" id="kbPc"></div>
       <div class="sub" id="kbPhone" hidden>
         <div class="cats" id="btnPick"><button class="pbtn cat on" data-b="joy">Joystick</button><button class="pbtn cat" data-b="jump">Jump</button><button class="pbtn cat" data-b="emote">Emote</button></div>
-        <div class="row"><span class="lbl">Left / Right</span><input type="range" id="slX" min="0" max="100"></div>
-        <div class="row"><span class="lbl">Up / Down</span><input type="range" id="slY" min="0" max="100"></div>
-        <div class="row"><span class="lbl">Size</span><input type="range" id="slS" min="50" max="160"></div>
-        <div class="row"><span class="lbl">Opacity</span><input type="range" id="slO" min="20" max="100"></div>
+        <div class="row"><span class="lbl">Left / Right</span><input type="range" id="slX" min="0" max="100"><button class="pbtn tog rowH" tabindex="-1" aria-hidden="true">ON</button></div>
+        <div class="row"><span class="lbl">Up / Down</span><input type="range" id="slY" min="0" max="100"><button class="pbtn tog rowH" tabindex="-1" aria-hidden="true">ON</button></div>
+        <div class="row"><span class="lbl">Size</span><input type="range" id="slS" min="50" max="160"><button class="pbtn tog rowH" tabindex="-1" aria-hidden="true">ON</button></div>
+        <div class="row"><span class="lbl">Opacity</span><input type="range" id="slO" min="20" max="100"><button class="pbtn tog rowH" tabindex="-1" aria-hidden="true">ON</button></div>
         <div class="row"><span class="lbl">Reset buttons</span><button id="btnReset" class="pbtn tog">Reset</button></div>
       </div>
     </div>
@@ -559,14 +563,15 @@
     </div>
   </div>
 </div>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="gemIcon" viewBox="-3 -1 38 34"><path d="M9 4 H23 L30 12 L16 29 L2 12 Z" fill="#1b1b1b" stroke="#1b1b1b" stroke-width="9" stroke-linejoin="round"/><path d="M9 4 H23 L30 12 L16 29 L2 12 Z" fill="#fff" stroke="none"/></symbol><symbol id="lockIcon" viewBox="0 0 64 64"><path d="M20 29 V21 a12 12 0 0 1 24 0 V29" fill="none" stroke="#1b1b1b" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 29 V21 a12 12 0 0 1 24 0 V29" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><rect x="12" y="28" width="40" height="28" rx="7" fill="#1b1b1b" stroke="#1b1b1b" stroke-width="9" stroke-linejoin="round"/><rect x="12" y="28" width="40" height="28" rx="7" fill="#fff"/></symbol></svg>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="gemIcon" viewBox="-3 -1 38 34"><path d="M9 4 H23 L30 12 L16 29 L2 12 Z" fill="#1b1b1b" stroke="#1b1b1b" stroke-width="9" stroke-linejoin="round"/><path d="M9 4 H23 L30 12 L16 29 L2 12 Z" fill="#fff" stroke="none"/></symbol><symbol id="carrotIcon" viewBox="-3 -12 38 48"><g fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M16 10 L8.5 -0.5 M16 10 V-4 M16 10 L23.5 -0.5" stroke="#1b1b1b" stroke-width="15"/><path d="M16 10 L8.5 -0.5 M16 10 V-4 M16 10 L23.5 -0.5" stroke="#fff" stroke-width="6"/></g><path d="M8.5 9 C9 6.5 23 6.5 23.5 9 L18.2 29.5 Q16 33 13.8 29.5 Z" fill="#1b1b1b" stroke="#1b1b1b" stroke-width="9" stroke-linejoin="round"/><path d="M8.5 9 C9 6.5 23 6.5 23.5 9 L18.2 29.5 Q16 33 13.8 29.5 Z" fill="#fff"/></symbol><symbol id="lockIcon" viewBox="0 0 64 64"><path d="M20 29 V21 a12 12 0 0 1 24 0 V29" fill="none" stroke="#1b1b1b" stroke-width="15" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 29 V21 a12 12 0 0 1 24 0 V29" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><rect x="12" y="28" width="40" height="28" rx="7" fill="#1b1b1b" stroke="#1b1b1b" stroke-width="9" stroke-linejoin="round"/><rect x="12" y="28" width="40" height="28" rx="7" fill="#fff"/></symbol></svg>
 <div id="shop">
   <button id="shopBack" class="pbtn" title="Back"><svg viewBox="0 0 64 64"><path class="o" d="M40 12 L20 32 L40 52"/><path class="i" d="M40 12 L20 32 L40 52"/></svg></button>
-  <div id="shopTop"><button id="gemHelp" class="pbtn" title="How to get gems"><svg viewBox="0 0 64 64"><text x="34" y="46.5" text-anchor="middle">?</text></svg></button><div id="shopGems"><svg class="gem"><use href="#gemIcon"/></svg><span id="shopGemCount">0</span></div></div>
+  <div id="shopTop"><button id="gemHelp" class="pbtn" title="How to get gems"><svg viewBox="0 0 64 64"><text x="34" y="46.5" text-anchor="middle">?</text></svg></button><div id="shopGems"><svg class="gem"><use href="#gemIcon"/></svg><span id="shopGemCount">0</span></div><div id="shopCarrots"><svg class="gem"><use href="#carrotIcon"/></svg><span id="shopCarrotCount">0</span></div></div>
   <div id="shopToast"><span></span></div>
   <div id="gemInfo"><div id="gemCard"><div id="gemList"></div><button id="gemOk" class="pbtn tog on">OK</button></div></div>
   <div id="shopPanel">
     <div class="cats"><button class="pbtn cat on" data-cat="beans">Beans</button><button class="pbtn cat" data-cat="emotes">Emotes</button><button class="pbtn cat" data-cat="footsteps">Footsteps</button><button class="pbtn cat" data-cat="creator">Creator</button></div>
+    <div class="cats subcats" id="shopSub"><button class="pbtn cat on" data-sub="normal">Normal</button><button class="pbtn cat" data-sub="event">Event</button></div>
     <div id="shopList"></div>
     <div id="creatorBox" hidden>
       <div class="row" id="crForm"><input id="crInput" type="text" maxlength="24" spellcheck="false" autocomplete="off" placeholder="Enter code"><button id="crApply" class="pbtn tog on">Apply</button></div>
@@ -677,6 +682,10 @@ let emoteBus = null;
 const _gate = {};
 function gate(k, gap) { const t = actx.currentTime; if (t - (_gate[k] || -9) < gap) return false; _gate[k] = t; return true; }
 const sfx = {
+  bubble() {   // chmurka z emotką: krótki "pop"
+    if (!audioOn()) return; const t = actx.currentTime;
+    tone(560, t, 0.1, { to: 900, slide: 0.08, vol: 0.12 }); tone(900, t + 0.07, 0.16, { to: 1200, slide: 0.12, vol: 0.1 });
+  },
   emote() {   // backflip: przysiad, wybicie, salto, lądowanie
     if (!audioOn()) return; const t = actx.currentTime;
     sfx.emoteStop();
@@ -1046,7 +1055,37 @@ const beanGeo = id => (beanById(id).shape === 'heart' ? HEART_GEO : SPHERE_GEO);
 const beanRough = id => (beanById(id).shape === 'heart' ? 0.85 : 0.45);   // serce matowe jak plastelina
 const HEART_SPIN = 0.3;   // serce jest płaskie, więc każdy obrót widać wyraźnie (zwykłe fasolki prawie nie zmieniają wyglądu) – kręci się wolniej, żeby wrażenie tempa było takie samo
 const beanSpin = (id, ang) => (beanById(id).shape === 'heart' ? ang * HEART_SPIN : ang);
-const setBeanLook = (m, id) => { m.geometry = beanGeo(id); m.material.roughness = beanRough(id); };
+// uszy królika: wydłużony "jajowaty" kształt (najszerszy nisko, zwężający się ku zaokrąglonej końcówce), spłaszczony i lekko wygięty na zewnątrz;
+// to dzieci siatki fasolki, więc poruszają się i skaczą razem z nią
+const EAR_GEO = (() => {
+  const pts = [];
+  for (let i = 0; i <= 28; i++) {
+    const t = i / 28, k = t < 0.4 ? (0.4 - t) / 0.4 : (t - 0.4) / 0.6;
+    pts.push(new THREE.Vector2(Math.sqrt(Math.max(0, 1 - k * k)) * (1 - 0.22 * t), -1 + 2 * t));   // promień w zależności od wysokości
+  }
+  const g = new THREE.LatheGeometry(pts, 28), pa = g.attributes.position;
+  for (let i = 0; i < pa.count; i++) { const t = (pa.getY(i) + 1) / 2; pa.setX(i, pa.getX(i) + 0.45 * t * t); }   // czubek wygięty na zewnątrz
+  pa.needsUpdate = true; g.computeBoundingSphere();
+  return g;
+})();
+const EAR_MAT = new THREE.MeshStandardMaterial({ color: 0xf4f4f4, roughness: 0.55, side: THREE.DoubleSide });
+function makeEars() {
+  const g = new THREE.Group();
+  for (const sd of [-1, 1]) {
+    const ear = new THREE.Mesh(EAR_GEO, EAR_MAT); ear.castShadow = true;
+    ear.position.set(sd * 0.19, 0.98 / STRETCH, 0); ear.rotation.z = -sd * 0.12;   // lekko rozchylone na boki
+    ear.scale.set(sd * 0.105, 0.34 / STRETCH, 0.07 / 0.9);   // wymiary podzielone przez skalę fasolki (1, 1.3, 0.9); ujemny X odbija lewe ucho
+    g.add(ear);
+  }
+  return g;
+}
+const setBeanLook = (m, id) => {
+  m.geometry = beanGeo(id); m.material.roughness = beanRough(id);
+  const ears = !!beanById(id).ears;
+  if (ears && !m.userData.ears) { m.userData.ears = makeEars(); m.add(m.userData.ears); }
+  if (m.userData.ears) m.userData.ears.visible = ears;
+  if (m.userData.onLook) m.userData.onLook(id);   // kamera podglądu odsuwa się, żeby uszy się mieściły
+};
 const bean = new THREE.Group();
 const body = new THREE.Mesh(
   SPHERE_GEO,
@@ -1078,7 +1117,7 @@ function startGame() {
   pvT = 0; resetArena();
   sfx.play();
   inMenu = false; document.body.classList.remove('menu');
-  facing = 0; yaw = 0; pitch = 0.35; tilt.set(0, 0); squash = 0; camBaseY = pos.y; visOff = 0; emoteT = -1; emoteCd = 0; sfx.emoteStop();
+  facing = 0; yaw = 0; pitch = 0.35; tilt.set(0, 0); squash = 0; camBaseY = pos.y; visOff = 0; emoteT = -1; emoteCd = 0; bubbleT = -1; sfx.emoteStop();
 }
 let phone = false;
 const joy = { x: 0, y: 0, id: null };
@@ -1162,26 +1201,150 @@ let profileOpen = false, custOpen = false, pvT = 0;
 // Katalog fasolek. 'red' jest domyślna, reszta do kupienia w shopie.
 const BEANS = [
   { id: 'red',  name: 'Red Bean',  color: 0xe8453c },
-  { id: 'purple', name: 'Purple Bean', color: 0xa24bf0, price: 30, noShop: true },
-  { id: 'white',  name: 'White Bean',  color: 0xf4f4f4, price: 30, noShop: true },
-  { id: 'heart',  name: 'Heart Bean',  color: 0xff7ac8, price: 50, shape: 'heart' }
+  { id: 'heart',  name: 'Heart Bean',  color: 0xff7ac8, price: 50, shape: 'heart' },
+  // Event: biała fasolka z uszami królika, kupowana za MARCHEWKI (carrots), nie za gemy. 150 marchewek ≈ 15 minut zbierania – zmień liczbę, żeby było łatwiej / trudniej
+  { id: 'bunny',  name: 'Bunny Bean',  color: 0xf4f4f4, carrots: 150, ears: true, sub: 'event' }
 ];
 const beanById = id => BEANS.find(b => b.id === id) || BEANS[0];
-let ownedBeans = ['red'], equipBean = 'red', gems = 0;
+let ownedBeans = ['red'], equipBean = 'red', gems = 0, carrotCount = 0;   // gemy i marchewki (waluty)
 // Kody twórców: wpisujesz kod w Shopie -> przez 7 dni połowa gemów wydanych na zakupy trafia do twórcy (ciebie to nic nie kosztuje)
 const CREATOR_CODES = { antxo: { nick: '<clr/#3a7bff>CODE: Antxo' }, popito: { nick: 'CODE: <clr/red>POPITO' } };   // kod (małymi literami) -> konto, które dostaje gemy
 const CREATOR_DAYS = 7, CREATOR_SHARE = 0.5;
 let creator = null;   // aktywny kod: { code, until (ms) } albo null
 const WIN_GEMS = 10;   // gemy za wygraną (bez żadnego napisu)
 // ---------- Emotki ----------
-const EMOTES = [{ id: 'backflip', name: 'Backflip', price: 20, noShop: true }];   // cena Backflipa w gemach
+const EMOTES = [
+  // chmurki z ikoną nad głową (bez animacji fasolki); ikona = id emotki (patrz drawEmoteIcon)
+  // Normal, za GEMY; ikony fasolek mają kolor założonej fasolki. Kolejność w Shopie = kolejność tutaj (Heart na samym dole)
+  { id: 'bean', name: 'Bean', price: 15, bubble: true },          // zwykła fasolka
+  { id: 'cry', name: 'Crying Bean', price: 15, bubble: true },    // płacząca fasolka
+  { id: 'cool', name: 'Cool Bean', price: 15, bubble: true },     // fasolka w okularach przeciwsłonecznych
+  { id: 'heart', name: 'Heart', price: 15, bubble: true },        // serce
+  { id: 'bunny', name: 'Bunny Bean', carrots: 40, sub: 'event', bubble: true },   // Event, za MARCHEWKI: biała fasolka z uszami królika (zawsze biała, niezależnie od założonego skina)
+  { id: 'carrot', name: 'Carrot', carrots: 40, sub: 'event', bubble: true }   // Event, za MARCHEWKI: 40 ≈ 4 minuty zbierania (~10 marchewek na minutę gry)
+];
 const EMOTE_TIME = 4, EMOTE_CD = 5;   // czas trwania emotki i cooldown (s)
-let ownedEmotes = [], equipEmote = null, emoteT = -1, emoteCd = 0;
+let ownedEmotes = [], equipEmote = null, emoteT = -1, emoteCd = 0, bubbleT = -1;
+const BUBBLE_TIME = 3, BUBBLE_SIZE = 1.5;   // ile sekund wisi chmurka i jak duża jest w świecie gry
 const emoteById = id => EMOTES.find(e => e.id === id);
 // ---------- Footsteps (ślady za fasolką) ----------
-const FOOTSTEPS = [{ id: 'hearts', name: 'Hearts', price: 30 }];
+const FOOTSTEPS = [
+  { id: 'hearts', name: 'Hearts', price: 30 },
+  { id: 'carrots', name: 'Carrots', carrots: 90, sub: 'event' }   // Event, za MARCHEWKI: 90 ≈ 9 minut zbierania (zakładając ~10 marchewek na minutę gry) – zmień liczbę, żeby było łatwiej / trudniej
+];
 let ownedSteps = [], equipStep = null;
 const stepById = id => FOOTSTEPS.find(f => f.id === id);
+// marchewka rysowana na canvasie (ten sam kształt co ślad Carrots), same kolory, bez obrysu
+function drawCarrot(ctx, cx, cy, S, rot) {
+  const leaf = a => () => {
+    const c = Math.cos(a), sn = Math.sin(a), P = (x, y) => [x * c - y * sn, 0.27 + x * sn + y * c];
+    ctx.moveTo(...P(0, 0)); ctx.quadraticCurveTo(...P(0.11, 0.2), ...P(0, 0.42)); ctx.quadraticCurveTo(...P(-0.11, 0.2), ...P(0, 0));
+  };
+  const body = () => {
+    ctx.moveTo(0, -0.55); ctx.bezierCurveTo(-0.08, -0.2, -0.24, 0, -0.22, 0.2); ctx.bezierCurveTo(-0.2, 0.34, 0.2, 0.34, 0.22, 0.2); ctx.bezierCurveTo(0.24, 0, 0.08, -0.2, 0, -0.55);
+  };
+  const parts = [[body, '#ff8a1f'], [leaf(0), '#4fd16b'], [leaf(0.6), '#4fd16b'], [leaf(-0.6), '#4fd16b']];
+  ctx.save(); ctx.translate(cx, cy); ctx.rotate(rot); ctx.scale(S, -S); ctx.translate(0, -0.07); ctx.lineJoin = 'round';
+  for (const [f, col] of parts) { ctx.beginPath(); f(); ctx.closePath(); ctx.fillStyle = col; ctx.fill(); }
+  ctx.restore();
+}
+// serce (ten sam kształt co ślad Hearts), bez obrysu
+function drawHeart(ctx, cx, cy, S) {
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(S, -S);
+  ctx.beginPath(); ctx.moveTo(0, -0.5); ctx.bezierCurveTo(-0.7, 0.05, -0.35, 0.55, 0, 0.22); ctx.bezierCurveTo(0.35, 0.55, 0.7, 0.05, 0, -0.5); ctx.closePath();
+  ctx.fillStyle = '#ff7ac8'; ctx.fill(); ctx.restore();
+}
+// płacząca fasolka w kolorze założonej fasolki: ciało, smutne brwi, oczy, strużki łez i buzia (bez obrysu)
+function drawCryBean(ctx, cx, cy, S, col) {
+  const ink = '#1b1b1b', tear = '#8fe0ff';
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(S, S); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.fillStyle = col; ctx.beginPath(); ctx.ellipse(0, 0, 0.46, 0.58, 0, 0, Math.PI * 2); ctx.fill();   // ciało
+  ctx.strokeStyle = tear; ctx.lineWidth = 0.08;
+  for (const sx of [-1, 1]) {   // łzy: proste strużki z oczu w dół policzków, zakończone zaokrąglonym końcem
+    ctx.beginPath(); ctx.moveTo(sx * 0.18, -0.02); ctx.quadraticCurveTo(sx * 0.27, 0.14, sx * 0.25, 0.36); ctx.stroke();
+  }
+  ctx.strokeStyle = ink; ctx.fillStyle = ink; ctx.lineWidth = 0.045;
+  for (const sx of [-1, 1]) {
+    ctx.beginPath(); ctx.ellipse(sx * 0.18, -0.09, 0.055, 0.085, 0, 0, Math.PI * 2); ctx.fill();   // oczy
+    ctx.beginPath(); ctx.moveTo(sx * 0.3, -0.2); ctx.lineTo(sx * 0.09, -0.29); ctx.stroke();       // smutne brwi
+  }
+  ctx.beginPath(); ctx.arc(0, 0.33, 0.09, Math.PI * 1.15, Math.PI * 1.85); ctx.stroke();           // buzia w podkówkę
+  ctx.restore();
+}
+// fasolka w okularach (cool): ciało, czarne szkła z połyskiem, mostek i krzywy uśmieszek (bez obrysu)
+function drawCoolBean(ctx, cx, cy, S, col) {
+  const ink = '#1b1b1b';
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(S, S); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  ctx.fillStyle = col; ctx.beginPath(); ctx.ellipse(0, 0, 0.46, 0.58, 0, 0, Math.PI * 2); ctx.fill();   // ciało
+  ctx.fillStyle = ink;
+  for (const sx of [-1, 1]) {   // szkła okularów
+    ctx.beginPath(); ctx.moveTo(sx * 0.03, -0.21); ctx.lineTo(sx * 0.44, -0.21); ctx.quadraticCurveTo(sx * 0.43, 0.06, sx * 0.24, 0.06); ctx.quadraticCurveTo(sx * 0.05, 0.06, sx * 0.03, -0.21); ctx.fill();
+  }
+  ctx.fillRect(-0.05, -0.2, 0.1, 0.045);   // mostek
+  ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineCap = 'round';
+  for (const sx of [-1, 1]) {   // połysk na szkłach
+    ctx.lineWidth = 0.035; ctx.beginPath(); ctx.moveTo(sx * 0.13, -0.16); ctx.lineTo(sx * 0.21, -0.07); ctx.stroke();
+    ctx.lineWidth = 0.02; ctx.beginPath(); ctx.moveTo(sx * 0.25, -0.16); ctx.lineTo(sx * 0.29, -0.11); ctx.stroke();
+  }
+  ctx.strokeStyle = ink; ctx.lineWidth = 0.05;
+  ctx.beginPath(); ctx.moveTo(-0.11, 0.2); ctx.quadraticCurveTo(0.03, 0.31, 0.14, 0.17); ctx.stroke();   // uśmieszek
+  ctx.restore();
+}
+// zwykła fasolka w kolorze założonej fasolki: ciało, dwoje oczu i mały uśmiech
+function drawPlainBean(ctx, cx, cy, S, col) {
+  const ink = '#1b1b1b';
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(S, S); ctx.lineCap = 'round';
+  ctx.fillStyle = col; ctx.beginPath(); ctx.ellipse(0, 0, 0.46, 0.58, 0, 0, Math.PI * 2); ctx.fill();   // ciało
+  for (const sx of [-1, 1]) {   // oczy
+    ctx.fillStyle = ink; ctx.beginPath(); ctx.ellipse(sx * 0.17, -0.1, 0.06, 0.09, 0, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.strokeStyle = ink; ctx.lineWidth = 0.045; ctx.beginPath(); ctx.arc(0, 0.12, 0.1, Math.PI * 0.2, Math.PI * 0.8); ctx.stroke();   // uśmiech
+  ctx.restore();
+}
+// Bunny Bean: zawsze biała fasolka z długimi uszami królika, różowym noskiem i uśmiechem
+function drawBunnyBean(ctx, cx, cy, S) {
+  const ink = '#1b1b1b', white = '#f6f7fb';
+  ctx.save(); ctx.translate(cx, cy); ctx.scale(S, S); ctx.translate(0, 0.11); ctx.lineCap = 'round';
+  for (const sx of [-1, 1]) {   // uszy (za ciałem), lekko rozchylone
+    ctx.save(); ctx.translate(sx * 0.17, -0.5); ctx.rotate(sx * 0.16);
+    ctx.fillStyle = white; ctx.beginPath(); ctx.ellipse(0, 0, 0.115, 0.32, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+  }
+  const body = () => { ctx.beginPath(); ctx.ellipse(0, 0.1, 0.44, 0.5, 0, 0, Math.PI * 2); };
+  body(); ctx.fillStyle = white; ctx.fill();
+  ctx.save(); body(); ctx.clip(); ctx.fillStyle = '#dfe3ee'; ctx.beginPath(); ctx.ellipse(0.1, 0.5, 0.6, 0.42, 0, 0, Math.PI * 2); ctx.fill();   // lekkie cieniowanie dołu
+  ctx.fillStyle = white; ctx.beginPath(); ctx.ellipse(0.06, 0.43, 0.6, 0.42, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+  ctx.fillStyle = ink;
+  for (const sx of [-1, 1]) { ctx.beginPath(); ctx.ellipse(sx * 0.15, 0.04, 0.05, 0.075, 0, 0, Math.PI * 2); ctx.fill(); }   // oczy
+  ctx.fillStyle = '#ff7fa6'; ctx.beginPath(); ctx.ellipse(0, 0.15, 0.04, 0.028, 0, 0, Math.PI * 2); ctx.fill();   // nosek
+  ctx.strokeStyle = ink; ctx.lineWidth = 0.032;
+  for (const sx of [-1, 1]) { ctx.beginPath(); ctx.arc(sx * 0.035, 0.19, 0.035, 0, Math.PI); ctx.stroke(); }   // buzia w kształcie "w"
+  ctx.restore();
+}
+const beanCss = () => '#' + (((beanById(equipBean) || {}).color != null ? beanById(equipBean).color : 0xff3b3b)).toString(16).padStart(6, '0');
+const drawEmoteIcon = (ctx, id, cx, cy, S) => id === 'heart' ? drawHeart(ctx, cx, cy, S) : id === 'bunny' ? drawBunnyBean(ctx, cx, cy, S * 0.95) : id === 'bean' ? drawPlainBean(ctx, cx, cy, S * 1.1, beanCss()) : id === 'cry' ? drawCryBean(ctx, cx, cy, S * 1.1, beanCss()) : id === 'cool' ? drawCoolBean(ctx, cx, cy, S * 1.1, beanCss()) : drawCarrot(ctx, cx, cy, S, 0.5);
+// chmurka jak w Stumble Guys, ale w stylu gry: niebieska, ciemny obrys + jasnoniebieski wewnętrzny obrys, w środku ikona emotki
+function makeBubbleCanvas(icon) {
+  const cv = document.createElement('canvas'); cv.width = cv.height = 256; const c = cv.getContext('2d');
+  const x0 = 26, y0 = 14, x1 = 230, y1 = 178, r = 46, tx = 128, tw = 26, ty = 234;
+  const path = () => {
+    c.beginPath(); c.moveTo(x0 + r, y0); c.arcTo(x1, y0, x1, y1, r); c.arcTo(x1, y1, tx + tw, y1, r);
+    c.lineTo(tx + tw, y1); c.lineTo(tx, ty); c.lineTo(tx - tw, y1);   // ogonek w dół, do fasolki
+    c.arcTo(x0, y1, x0, y0, r); c.arcTo(x0, y0, x1, y0, r); c.closePath();
+  };
+  c.lineJoin = 'round';
+  path(); c.fillStyle = '#1b1b1b'; c.strokeStyle = '#1b1b1b'; c.lineWidth = 28; c.stroke(); c.fill();   // ciemny obrys
+  path(); c.fillStyle = '#3a7bff'; c.fill();
+  c.save(); path(); c.clip(); path(); c.strokeStyle = '#8fb4ff'; c.lineWidth = 20; c.stroke(); c.restore();   // jasny obrys w środku
+  drawEmoteIcon(c, icon || 'carrot', 128, 96, 92);
+  return cv;
+}
+const bubbleCv = makeBubbleCanvas();
+const bubbleTex = new THREE.CanvasTexture(bubbleCv); bubbleTex.anisotropy = 4;
+const gameBubble = new THREE.Sprite(new THREE.SpriteMaterial({ map: bubbleTex, transparent: true, depthWrite: false }));
+const bubbleTexCache = { carrot: bubbleTex };
+function bubbleTexFor(id) { const k = (id === 'bean' || id === 'cry' || id === 'cool') ? id + equipBean : id; return bubbleTexCache[k] || (bubbleTexCache[k] = Object.assign(new THREE.CanvasTexture(makeBubbleCanvas(id)), { anisotropy: 4 })); }   // płacząca fasolka ma kolor fasolki, więc osobna tekstura na każdy kolor
+gameBubble.center.set(0.5, 0); gameBubble.visible = false; gameBubble.renderOrder = 8; scene.add(gameBubble);   // kotwica na czubku ogonka
 function emotePose(t) {   // czysty backflip: 0-0.9 przysiad, 0.9-2.1 jedno salto w tył, 2.1-2.5 lądowanie, 2.5-4.0 ukłon i stanie
   let rx = 0, rz = 0, y = 0, sq = 0;
   const ss = k => k * k * (3 - 2 * k);
@@ -1195,6 +1358,12 @@ function emotePose(t) {   // czysty backflip: 0-0.9 przysiad, 0.9-2.1 jedno salt
   return { rx, rz, y, sq };
 }
 function triggerEmote() {
+  const em = equipEmote && emoteById(equipEmote);
+  if (em && em.bubble) {   // chmurka: bez animacji fasolki, można ją pokazać w biegu i w powietrzu
+    if (inMenu || eliminated || emoteCd > 0 || bubbleT >= 0) return;
+    gameBubble.material.map = bubbleTexFor(em.id); gameBubble.material.needsUpdate = true;
+    bubbleT = 0; emoteCd = EMOTE_CD; sfx.bubble(); return;
+  }
   if (inMenu || eliminated || won || !grounded || diving || diveBuffer > 0 || jumpBuffer > 0 || emoteT >= 0 || emoteCd > 0 || !equipEmote) return;
   emoteT = 0; emoteCd = EMOTE_CD; sfx.emote();
 }
@@ -1312,11 +1481,11 @@ async function freshNick(uid) {      // random free Bean_N for a connected accou
 }
 
 function readGuest() {
-  const g = { nick: '', wins: 0, losses: 0, settings: {}, owned: ['red'], equip: 'red', gems: 0, emotes: [], emEquip: null, steps: [], stEquip: null, controls: null };
+  const g = { nick: '', wins: 0, losses: 0, settings: {}, owned: ['red'], equip: 'red', gems: 0, carrots: 0, emotes: [], emEquip: null, steps: [], stEquip: null, controls: null };
   try { const n = localStorage.getItem('stumbleBeansNick'); if (n) g.nick = nickCanon(n); } catch (err) {}
   try { const t = JSON.parse(localStorage.getItem('stumbleBeansStats')); if (t) { g.wins = t.wins | 0; g.losses = t.losses | 0; } } catch (err) {}
   try { const t = JSON.parse(localStorage.getItem('stumbleBeansSettings')); if (t) g.settings = t; } catch (err) {}
-  try { const t = JSON.parse(localStorage.getItem('stumbleBeansBeans')); if (t) { g.owned = t.owned; g.equip = t.equip; g.gems = t.gems | 0; g.emotes = t.emotes || []; g.emEquip = t.emEquip || null; g.steps = t.steps || []; g.stEquip = t.stEquip || null; g.creator = t.creator || null; } } catch (err) {}
+  try { const t = JSON.parse(localStorage.getItem('stumbleBeansBeans')); if (t) { g.owned = t.owned; g.equip = t.equip; g.gems = t.gems | 0; g.carrots = t.carrots | 0; g.emotes = t.emotes || []; g.emEquip = t.emEquip || null; g.steps = t.steps || []; g.stEquip = t.stEquip || null; g.creator = t.creator || null; } } catch (err) {}
   try { g.controls = JSON.parse(localStorage.getItem('stumbleBeansControls')); } catch (err) {}
   return g;
 }
@@ -1325,7 +1494,7 @@ function saveGuest() {
     localStorage.setItem('stumbleBeansNick', playerNick);
     localStorage.setItem('stumbleBeansStats', JSON.stringify(stats));
     localStorage.setItem('stumbleBeansSettings', JSON.stringify(settings));
-    localStorage.setItem('stumbleBeansBeans', JSON.stringify({ owned: ownedBeans, equip: equipBean, gems, emotes: ownedEmotes, emEquip: equipEmote, steps: ownedSteps, stEquip: equipStep, creator }));
+    localStorage.setItem('stumbleBeansBeans', JSON.stringify({ owned: ownedBeans, equip: equipBean, gems, carrots: carrotCount, emotes: ownedEmotes, emEquip: equipEmote, steps: ownedSteps, stEquip: equipStep, creator }));
     localStorage.setItem('stumbleBeansControls', JSON.stringify(controls));
   } catch (err) {}
 }
@@ -1339,6 +1508,7 @@ function applyProfile(d) {
   if (!ownedBeans.includes('red')) ownedBeans.unshift('red');
   equipBean = ownedBeans.includes(d.equip) ? d.equip : 'red';
   gems = Math.max(0, d.gems | 0);
+  carrotCount = Math.max(0, d.carrots | 0);
   ownedEmotes = (Array.isArray(d.emotes) ? d.emotes : []).filter(id => emoteById(id));
   equipEmote = d.emEquip === null ? null : (ownedEmotes.includes(d.emEquip) ? d.emEquip : (ownedEmotes[0] || null));
   ownedSteps = (Array.isArray(d.steps) ? d.steps : []).filter(id => stepById(id));
@@ -1349,44 +1519,88 @@ function applyProfile(d) {
 }
 function snapshot() {
   const total = stats.wins + stats.losses;
-  return { nick: playerNick, settings: Object.assign({}, settings), wins: stats.wins, losses: stats.losses, owned: ownedBeans.slice(), equip: equipBean, gems, emotes: ownedEmotes.slice(), emEquip: equipEmote, steps: ownedSteps.slice(), stEquip: equipStep, creator: creator ? { code: creator.code, until: creator.until } : null, controls: JSON.parse(JSON.stringify(controls)), winRate: total ? Math.round(stats.wins / total * 100) : 0 };
+  return { nick: playerNick, settings: Object.assign({}, settings), wins: stats.wins, losses: stats.losses, owned: ownedBeans.slice(), equip: equipBean, gems, carrots: carrotCount, emotes: ownedEmotes.slice(), emEquip: equipEmote, steps: ownedSteps.slice(), stEquip: equipStep, creator: creator ? { code: creator.code, until: creator.until } : null, controls: JSON.parse(JSON.stringify(controls)), winRate: total ? Math.round(stats.wins / total * 100) : 0 };
 }
 function loadGuest() {               // guest profile from localStorage; no profile yet -> brand new one
   const g = readGuest(); const fresh = !g.nick;
   if (fresh) g.nick = randomBean(0);
   applyProfile(g);
-  if (fresh) { saveGuest(); verifyGuestNick(); }
+  if (fresh) saveGuest();
+  ensureGuestNick();
 }
-async function verifyGuestNick() {   // re-roll silently if a connected player already has this Bean_N
-  if (!fbDb) return;
-  for (let t = 1; t < 15; t++) {
-    const o = await nickOwner(playerNick);
-    if (!o || acct) return;
-    playerNick = randomBean(t); saveGuest(); applyNick();
+// Nicki gości też są unikalne: każdy gość dostaje anonimowe konto Firebase (bez okienka) i rezerwuje pod nim swój nick w tej samej
+// kolekcji "nicks" co gracze z Google. Dzięki temu nikt (zalogowany ani nie) nie zrobi sobie nicku, który ktoś już ma.
+const authReady = fbAuth ? new Promise(res => { const un = fbAuth.onAuthStateChanged(() => { un(); res(); }); }) : Promise.resolve();
+async function guestUid() {          // uid anonimowego konta gościa (tworzy je przy pierwszej potrzebie), null = brak Firebase / ktoś jest zalogowany
+  if (!fbAuth || !fbDb) return null;
+  try {
+    await authReady;                 // najpierw Firebase musi przywrócić zapisanego użytkownika, inaczej powstałoby nowe konto przy każdym wejściu
+    let u = fbAuth.currentUser;
+    if (!u) u = (await fbAuth.signInAnonymously()).user;
+    return u.isAnonymous ? u.uid : null;
+  } catch (err) { return null; }
+}
+async function ensureGuestNick() {   // rezerwuje nick gościa; jeśli ktoś już ma taki nick, dostajesz nowe Bean_N
+  for (let t = 0; t < 15; t++) {
+    const uid = await guestUid(); if (!uid || acct) return;
+    try { await claimNick(playerNick, null, uid); return; }
+    catch (err) { if (err.message !== 'taken') return; }
+    playerNick = randomBean(t + 1); saveGuest(); applyNick();
   }
 }
+async function releaseNick(n, uid) { // oddaje nick (gdy gość przechodzi na inne, istniejące konto, jego stary anonimowy uid już nie wróci)
+  if (!fbDb || !n) return;
+  try {
+    const ref = fbDb.collection('nicks').doc(nickKey(n));
+    await fbDb.runTransaction(async tx => { const d = await tx.get(ref); if (d.exists && d.data().uid === uid) tx.delete(ref); });
+  } catch (err) {}
+}
 function cacheSave() { try { localStorage.setItem(CLOUD_KEY, JSON.stringify({ uid: acct.uid, data: snapshot() })); } catch (err) {} }
+function lbEntry() {                 // publiczny wpis do rankingu: nick, wins, win rate (od 5 gier), skin
+  const tot = stats.wins + stats.losses;
+  return { nick: playerNick, wins: stats.wins, games: tot, wr: tot >= LB_MIN_GAMES ? Math.round(stats.wins / tot * 1000) / 10 : 0, equip: equipBean };
+}
 function pushCloud() {
   if (!acct || !fbDb) return Promise.resolve();
-  const tot = stats.wins + stats.losses;   // publiczny wpis do rankingu: nick, wins, win rate (od 5 gier), skin
-  fbDb.collection('leaderboard').doc(acct.uid).set({ nick: playerNick, wins: stats.wins, games: tot, wr: tot >= LB_MIN_GAMES ? Math.round(stats.wins / tot * 1000) / 10 : 0, equip: equipBean }).catch(() => {});
+  fbDb.collection('leaderboard').doc(acct.uid).set(lbEntry()).catch(() => {});
   return fbDb.collection('users').doc(acct.uid).set(snapshot()).catch(() => {});
 }
+// Gość w topce: po pierwszej wygranej Firebase po cichu nadaje mu anonimowe konto (bez okienka logowania),
+// pod nim zapisuje się wpis do rankingu. Dane gościa dalej są tylko w localStorage.
+let guestPushing = null;
+function pushGuestLb() {
+  if (acct || !fbAuth || !fbDb || stats.wins <= 0) return Promise.resolve();
+  if (guestPushing) return guestPushing;
+  guestPushing = (async () => {
+    try {
+      const uid = await guestUid();
+      if (!uid || acct) return;   // brak Firebase albo w międzyczasie zalogowałeś się przez Google
+      await fbDb.collection('leaderboard').doc(uid).set(lbEntry());
+    } catch (err) {}
+  })().then(() => { guestPushing = null; });
+  return guestPushing;
+}
+function retireGuestEntry(uid) {     // wpis gościa znika z rankingu (wins = 0), gdy loguje się na INNE istniejące konto
+  return fbDb.collection('leaderboard').doc(uid).set({ nick: playerNick, wins: 0, games: 0, wr: 0, equip: equipBean }).catch(() => {});
+}
+function myLbUid() { return acct ? acct.uid : (fbAuth && fbAuth.currentUser && fbAuth.currentUser.isAnonymous ? fbAuth.currentUser.uid : null); }
 let cloudT = 0;
 function persist() {                 // save to wherever the current profile lives
   if (acct) { cacheSave(); clearTimeout(cloudT); cloudT = setTimeout(pushCloud, 400); }
-  else saveGuest();
+  else { saveGuest(); clearTimeout(cloudT); cloudT = setTimeout(pushGuestLb, 800); }
 }
 function saveStats() { persist(); }
-addEventListener('pagehide', () => { if (acct) { cacheSave(); pushCloud(); } });
+addEventListener('pagehide', () => { if (acct) { cacheSave(); pushCloud(); } else pushGuestLb(); });
 
 let authSeq = 0;
 async function onAuth(user) {
+  if (user && user.isAnonymous) return;   // anonimowe konto gościa (tylko do rankingu) to dalej "not connected"
   const my = ++authSeq;
   if (!user) {                       // logged out -> back to the not connected profile (or a new one)
     const was = acct; acct = null;
     try { localStorage.removeItem(CLOUD_KEY); } catch (err) {}
     if (was) { loadGuest(); refreshProfileUI(); }
+    pushGuestLb();                   // gość z wygranymi trafia do topki
     return;
   }
   const hadCache = !!acct;
@@ -1404,7 +1618,7 @@ async function onAuth(user) {
     if (nick) { try { await claimNick(nick, null, user.uid); } catch (err) { if (err.message === 'taken') nick = ''; } }
     if (!nick) nick = await freshNick(user.uid);
     if (my !== authSeq) return;
-    const keep = { nick, wins: g.wins, losses: g.losses, settings: g.settings, owned: g.owned, equip: g.equip, gems: g.gems, emotes: g.emotes, emEquip: g.emEquip, steps: g.steps, stEquip: g.stEquip, creator: g.creator || null, controls: g.controls };
+    const keep = { nick, wins: g.wins, losses: g.losses, settings: g.settings, owned: g.owned, equip: g.equip, gems: g.gems, carrots: g.carrots, emotes: g.emotes, emEquip: g.emEquip, steps: g.steps, stEquip: g.stEquip, creator: g.creator || null, controls: g.controls };
     applyProfile(keep);
     try { await ref.set(snapshot()); clearGuest(); cacheSave(); }
     catch (err) { acct = null; fbAuth.signOut().catch(() => {}); applyProfile(g); refreshProfileUI(); return; }
@@ -1461,6 +1675,8 @@ function applyBeanColor() { const c = beanById(equipBean).color; body.material.c
 applyBeanColor();
 const avCam = new THREE.PerspectiveCamera(30, 1, 0.1, 80);
 avCam.position.set(0, 0.5, 3.9); avCam.lookAt(0, 0.3, 0);   // fasolka mniejsza, cała widoczna w kółku
+avBean.userData.onLook = id => { const e = !!beanById(id).ears; avCam.position.set(0, e ? 0.6 : 0.5, e ? 4.6 : 3.9); avCam.lookAt(0, 0.3, 0); };   // z uszami kamera odsunięta
+avBean.userData.onLook(equipBean);
 let avSize = 0;
 function renderAvatar() {
   if (!inMenu || profileOpen || settingsOpen || shopOpen || custOpen || lbOpen) return;
@@ -1499,7 +1715,11 @@ async function saveNick() {
   if (Array.from(nickPlain(n)).length >= NICK_MIN && n !== playerNick) {
     let ok = true;
     if (acct && fbDb) { try { await claimNick(n, playerNick, acct.uid); } catch (err) { ok = false; } }
-    else if (fbDb) { if (await nickOwner(n)) ok = false; }
+    else if (fbDb) {                 // gość: nick rezerwuje się pod jego anonimowym kontem
+      const uid = await guestUid();
+      if (uid && !acct) { try { await claimNick(n, playerNick, uid); } catch (err) { if (err.message === 'taken') ok = false; } }
+      else if (await nickOwner(n)) ok = false;
+    }
     if (ok) { playerNick = n; persist(); applyNick(); }
   }
   nickInput.value = playerNick; nickInput.blur();
@@ -1540,7 +1760,7 @@ async function loadLeaderboard() {
   lbList.textContent = ''; lbMsg.textContent = '';
   if (!fbDb) return;
   try {
-    if (acct) await pushCloud();   // twój wpis jest aktualny
+    if (acct) await pushCloud(); else await pushGuestLb();   // twój wpis jest aktualny (też jako gość)
     const col = fbDb.collection('leaderboard');
     const q = lbCat === 'wins' ? col.where('wins', '>', 0).orderBy('wins', 'desc') : col.where('wr', '>', 0).orderBy('wr', 'desc');
     const snap = await q.limit(100).get();
@@ -1549,7 +1769,7 @@ async function loadLeaderboard() {
     rows.sort((a, b) => lbCat === 'wins' ? (b.wins - a.wins) || (b.wr - a.wr) : (b.wr - a.wr) || (b.wins - a.wins));   // remis: drugie kryterium
         rows.forEach((r, i) => {
       const row = document.createElement('div');
-      row.className = 'lbRow' + (i < 3 ? ' top' + (i + 1) : '') + (acct && r.uid === acct.uid ? ' me' : '');
+      row.className = 'lbRow' + (i < 3 ? ' top' + (i + 1) : '') + (r.uid === myLbUid() ? ' me' : '');
       row.innerHTML = '<span class="lbRank"></span><div class="avatar lbAv"></div><span class="lbName"></span><span class="lbVal"></span>';
       row.querySelector('.lbRank').textContent = '#' + (i + 1);
       const au = lbAvatarURL(r.equip); row.querySelector('.lbAv').innerHTML = au ? '<img alt="" src="' + au + '">' : lbAvatar(r.equip);
@@ -1622,8 +1842,7 @@ function onModeChange() {
   const sp = document.getElementById('sensPc'), sh = document.getElementById('sensPhone'); if (sp) sp.hidden = phone; if (sh) sh.hidden = !phone;
   const tk = document.getElementById('tabKb'); if (tk) tk.textContent = phone ? 'Buttons' : 'Keybinds';
   const a = document.getElementById('kbPc'), b = document.getElementById('kbPhone'); if (a) a.hidden = phone; if (b) b.hidden = !phone;
-  const t = document.getElementById('phoneTest'); if (t) { t.classList.toggle('on', phone); t.textContent = phone ? 'ON' : 'OFF'; }
-  updateLayoutPreview();
+  const t =   updateLayoutPreview();
 }
 document.querySelectorAll('.tab').forEach(b => b.addEventListener('click', updateLayoutPreview));
 let rebinding = null;
@@ -1700,14 +1919,17 @@ applyTouchLayout(); buildKeybinds(); syncSliders(); onModeChange();
 
 // ---------- Shop ----------
 let shopOpen = false;
-function updateGemsUI() { document.getElementById('shopGemCount').textContent = gems; }
+function updateGemsUI() { document.getElementById('shopGemCount').textContent = gems; document.getElementById('shopCarrotCount').textContent = carrotCount; }
 updateGemsUI();
 function openShop() { if (!inMenu || profileOpen || settingsOpen || custOpen || lbOpen) return; sfx.click(); updateBuyBtn(); shopOpen = true; document.body.classList.add('shop'); renderCreator(); claimCreatorGems(); flushCreatorQueue(); if (shopNoteQ) { const q = shopNoteQ; shopNoteQ = ''; shopNote(q); } }
 // za co są gemy (na razie tylko wygrana); kolejne źródła dopisz do GEM_SOURCES
 const GEM_SOURCES = [{ label: 'Win a match', gems: WIN_GEMS }];
 const gemInfoEl = document.getElementById('gemInfo');
+const CARROT_SOURCES = [{ label: 'Collect a carrot', n: 1 }];   // za co są marchewki
 document.getElementById('gemList').innerHTML = GEM_SOURCES.map(g =>
-  '<div class="row"><span class="lbl">' + g.label + '</span><span class="val"><svg class="gem"><use href="#gemIcon"/></svg>+' + g.gems + '</span></div>').join('');
+  '<div class="row"><span class="lbl">' + g.label + '</span><span class="val"><svg class="gem"><use href="#gemIcon"/></svg>+' + g.gems + '</span></div>').join('') +
+  CARROT_SOURCES.map(g =>
+  '<div class="row"><span class="lbl">' + g.label + '</span><span class="val"><svg class="gem"><use href="#carrotIcon"/></svg>+' + g.n + '</span></div>').join('');
 const gemInfoOpen = () => gemInfoEl.classList.contains('show');
 function openGemInfo() { sfx.click(); gemInfoEl.classList.add('show'); }
 function closeGemInfo() { sfx.click(); gemInfoEl.classList.remove('show'); }
@@ -1725,23 +1947,25 @@ addEventListener('keydown', e => { if (e.code === 'Escape') { if (gemInfoOpen())
 // lista sklepu budowana z katalogu BEANS (wszystko, co ma cenę); podgląd 3D rysuje wspólny renderer z Customize
 const ownedList = kind => kind === 'bean' ? ownedBeans : kind === 'emote' ? ownedEmotes : ownedSteps;
 const shopList = document.getElementById('shopList');
-const shopSrc = [...BEANS.filter(b => b.price != null && !b.noShop).map(b => ({ kind: 'bean', b })), ...EMOTES.filter(e => !e.noShop).map(e => ({ kind: 'emote', b: e })), ...FOOTSTEPS.filter(f => !f.noShop).map(f => ({ kind: 'footstep', b: f }))];
+const shopSrc = [...BEANS.filter(b => (b.price != null || b.carrots != null) && !b.noShop).map(b => ({ kind: 'bean', b })), ...EMOTES.filter(e => !e.noShop).map(e => ({ kind: 'emote', b: e })), ...FOOTSTEPS.filter(f => !f.noShop).map(f => ({ kind: 'footstep', b: f }))];
 const shopItems = shopSrc.map(({ kind, b }) => {
   const row = document.createElement('div'); row.className = 'row shopItem';
   const view = document.createElement('div'); view.className = 'shopView';
   const cv = document.createElement('canvas'); view.appendChild(cv);
   const info = document.createElement('div'); info.className = 'itemInfo';
-  info.innerHTML = '<span class="itemName"></span><span class="itemPrice"><svg class="gem"><use href="#gemIcon"/></svg><span></span></span>';
+  const inCarrots = b.carrots != null, cost = inCarrots ? b.carrots : b.price;   // przedmiot za marchewki albo za gemy
+  info.innerHTML = '<span class="itemName"></span><span class="itemPrice"><svg class="gem"><use href="#' + (inCarrots ? 'carrotIcon' : 'gemIcon') + '"/></svg><span></span></span>';
   info.querySelector('.itemName').textContent = b.name;
-  info.querySelector('.itemPrice span:last-child').textContent = b.price;
+  info.querySelector('.itemPrice span:last-child').textContent = cost;
   const btn = document.createElement('button'); btn.className = 'pbtn tog on buyBtn'; btn.textContent = 'BUY';
   row.append(view, info, btn); shopList.appendChild(row);
   btn.addEventListener('click', () => {
     sfx.click();
     const list = ownedList(kind);
-    if (list.includes(b.id) || gems < b.price) return;
-    gems -= b.price; updateGemsUI(); list.push(b.id);
-    const cr = activeCreator();   // kod twórcy: połowa wydanych gemów leci do niego
+    if (list.includes(b.id) || (inCarrots ? carrotCount : gems) < cost) return;
+    if (inCarrots) carrotCount -= cost; else gems -= cost;
+    updateGemsUI(); list.push(b.id);
+    const cr = inCarrots ? null : activeCreator();   // kod twórcy: połowa wydanych gemów leci do niego (marchewki się nie liczą)
     if (cr && !isOwnCreator(cr)) { const n = Math.floor(b.price * CREATOR_SHARE); if (n > 0) { sendCreatorGems(cr.nick, n); shopNote('+' + n + ' gems for ' + nickPlain(cr.nick) + '!'); } }
     if (kind === 'emote' && !equipEmote) equipEmote = b.id;
     if (kind === 'footstep' && !equipStep) equipStep = b.id;
@@ -1823,6 +2047,11 @@ async function claimCreatorGems() {   // tylko zalogowane konto (to ono jest wł
 flushCreatorQueue();
 
 let shAng = 0;
+function bubblePose() {   // podgląd emotki-chmurki: nieruchoma, mniejsza fasolka na dole, żeby nad nią zmieściła się chmurka
+  const e = !!beanById(equipBean).ears, k = e ? 0.5 : 0.6;
+  cuBean.scale.set(k, STRETCH * k, 0.9 * k); cuBean.position.y = e ? -0.62 : -0.55; cuBean.rotation.set(0, 0.3, 0);
+}
+const drawBubbleOverlay = (ctx, px) => ctx.drawImage(bubbleCv, px * 0.25, px * 0.02, px * 0.5, px * 0.5);
 function setPose(p) {   // poza fasolki w podglądach (null = zwykła, obracająca się)
   if (!p) { cuBean.position.y = 0; cuBean.rotation.set(0, 0, 0); cuBean.scale.set(1, STRETCH, 0.9); return; }
   cuBean.rotation.set(p.rx, 0.6, p.rz, 'YXZ'); cuBean.position.y = p.y * 0.28;
@@ -1837,11 +2066,13 @@ function renderShop() {
     const w = it.cv.clientWidth; if (!w) continue;
     const px = Math.min(384, Math.round(w * dpr));
     if (it.cv.width !== px) { it.cv.width = px; it.cv.height = px; }
-    if (it.kind === 'footstep') { renderStepPreview(it.ctx, px); continue; }
-    if (it.kind === 'emote') { setBeanLook(cuBean, equipBean); cuBean.material.color.setHex(beanById(equipBean).color); setPose(emotePose(tp)); }
+    if (it.kind === 'footstep') { renderStepPreview(it.ctx, px, it.b.id); continue; }
+    if (it.kind === 'emote' && it.b.bubble) { it.ctx.clearRect(0, 0, px, px); drawEmoteIcon(it.ctx, it.b.id, px / 2, px / 2, px * 0.5); continue; }   // chmurka: w podglądzie sama marchewka, bez fasolki i bez chmurki
+    if (it.kind === 'emote') { setBeanLook(cuBean, equipBean); cuBean.material.color.setHex(beanById(equipBean).color); if (it.b.bubble) bubblePose(); else setPose(emotePose(tp)); }
     else { setBeanLook(cuBean, it.b.id); cuBean.material.color.setHex(it.b.color); setPose(null); cuBean.rotation.y = beanSpin(it.b.id, shAng); }
     cuRenderer.render(cuScene, cuCam);
     it.ctx.clearRect(0, 0, px, px); it.ctx.drawImage(cuRenderer.domElement, 0, 0, px, px);
+    if (it.kind === 'emote' && it.b.bubble) drawBubbleOverlay(it.ctx, px);
   }
   setPose(null);
 }
@@ -1882,17 +2113,26 @@ function buildCust() {
   applyCats();
 }
 // kategorie Beans / Emotes (osobno w Shopie i w Customize)
-let shopCat = 'beans', custCat = 'beans';
+let shopCat = 'beans', custCat = 'beans', shopSub = 'normal';   // kategoria (Shop i Customize osobno) + podkategoria Normal / Event (tylko w Shopie)
+const CAT_KIND = { beans: 'bean', emotes: 'emote', footsteps: 'footstep' };
+const shopSubEl = document.getElementById('shopSub');
 function applyCats() {
-  shopItems.forEach(it => it.row.style.display = it.kind === ({ beans: 'bean', emotes: 'emote', footsteps: 'footstep' })[shopCat] ? '' : 'none');
-  cuCards.forEach(c => c.card.style.display = c.kind === ({ beans: 'bean', emotes: 'emote', footsteps: 'footstep' })[custCat] ? '' : 'none');
+  shopItems.forEach(it => it.row.style.display = it.kind === CAT_KIND[shopCat] && (it.b.sub || 'normal') === shopSub ? '' : 'none');
+  cuCards.forEach(c => c.card.style.display = c.kind === CAT_KIND[custCat] ? '' : 'none');   // Customize: wszystko z danej kategorii, bez Normal / Event
+  shopSubEl.hidden = shopCat === 'creator';
   shopList.style.display = shopCat === 'creator' ? 'none' : '';
   crBox.hidden = shopCat !== 'creator';
   if (shopCat === 'creator') renderCreator();
 }
-document.querySelectorAll('#shop .cat, #cust .cat').forEach(b => b.addEventListener('click', () => {
+document.querySelectorAll('#shop .cat[data-cat], #cust .cat[data-cat]').forEach(b => b.addEventListener('click', () => {
   sfx.click();
   if (b.closest('#shop')) shopCat = b.dataset.cat; else custCat = b.dataset.cat;
+  b.parentElement.querySelectorAll('.cat').forEach(x => x.classList.toggle('on', x === b));
+  applyCats();
+}));
+document.querySelectorAll('#shop .cat[data-sub]').forEach(b => b.addEventListener('click', () => {
+  sfx.click();
+  shopSub = b.dataset.sub;
   b.parentElement.querySelectorAll('.cat').forEach(x => x.classList.toggle('on', x === b));
   applyCats();
 }));
@@ -1915,6 +2155,7 @@ const cuBean = new THREE.Mesh(SPHERE_GEO, new THREE.MeshStandardMaterial({ color
 cuBean.scale.set(1, STRETCH, 0.9); cuScene.add(cuBean);
 const cuCam = new THREE.PerspectiveCamera(30, 1, 0.1, 80);
 cuCam.position.set(0, 0.3, 4.2); cuCam.lookAt(0, 0, 0);
+cuBean.userData.onLook = id => { const e = !!beanById(id).ears; cuCam.position.set(0, e ? 0.45 : 0.3, e ? 4.9 : 4.2); cuCam.lookAt(0, e ? 0.25 : 0, 0); };   // z uszami kamera odsunięta
 // płaskie serduszko (kształt śladu) – używane w grze i w podglądzie
 const STEP_HEART_GEO = (() => {
   const sh = new THREE.Shape();
@@ -1923,16 +2164,51 @@ const STEP_HEART_GEO = (() => {
   sh.bezierCurveTo(0.35, 0.55, 0.7, 0.05, 0, -0.5);
   return new THREE.ShapeGeometry(sh, 24);
 })();
+// płaska marchewka (kształt śladu): pomarańczowy korpus + zielone liście; kolory siedzą w wierzchołkach, więc to nadal jeden materiał
+function mergeColored(parts) {
+  const pos = [], col = [], idx = []; let off = 0;
+  for (const { geo, color } of parts) {
+    const p = geo.attributes.position, c = new THREE.Color(color), ix = geo.index;
+    for (let i = 0; i < p.count; i++) { pos.push(p.getX(i), p.getY(i), p.getZ(i)); col.push(c.r, c.g, c.b); }
+    if (ix) for (let i = 0; i < ix.count; i++) idx.push(ix.getX(i) + off); else for (let i = 0; i < p.count; i++) idx.push(i + off);
+    off += p.count;
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); g.setIndex(idx);
+  return g;
+}
+const STEP_CARROT_GEO = (() => {
+  const body = new THREE.Shape();
+  body.moveTo(0, -0.55);
+  body.bezierCurveTo(-0.08, -0.2, -0.24, 0.0, -0.22, 0.2);
+  body.bezierCurveTo(-0.2, 0.34, 0.2, 0.34, 0.22, 0.2);
+  body.bezierCurveTo(0.24, 0.0, 0.08, -0.2, 0, -0.55);
+  const leaf = a => {
+    const sh = new THREE.Shape(); sh.moveTo(0, 0); sh.quadraticCurveTo(0.11, 0.2, 0, 0.42); sh.quadraticCurveTo(-0.11, 0.2, 0, 0);
+    const g = new THREE.ShapeGeometry(sh, 12); g.rotateZ(a); g.translate(0, 0.27, 0); return g;
+  };
+  const g = mergeColored([
+    { geo: new THREE.ShapeGeometry(body, 24), color: 0xff8a1f },
+    { geo: leaf(0), color: 0x4fd16b }, { geo: leaf(0.6), color: 0x4fd16b }, { geo: leaf(-0.6), color: 0x4fd16b }
+  ]);
+  g.scale(1.3, 1.3, 1);
+  return g;
+})();
+const STEP_STYLES = {   // kształt + materiał każdego śladu (gra i podgląd w Shopie / Customize)
+  hearts:  { geo: STEP_HEART_GEO,  mat: () => new THREE.MeshBasicMaterial({ color: 0xff7ac8, transparent: true, side: THREE.DoubleSide, depthWrite: false }) },
+  carrots: { geo: STEP_CARROT_GEO, mat: () => new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, side: THREE.DoubleSide, depthWrite: false }) }
+};
 // podgląd Footsteps: kamera z ukosa (jak w grze, zza fasolki), fasolka biegnie w dal po przewijanej podłodze,
 // a z jej stóp tryskają serduszka, spadają na podłogę, odjeżdżają z nią do tyłu i gasną (wszystko liczone z czasu, bez stanu)
 const FP_INT = 0.30, FP_RATE = 13, FP_LIFE = 1.7, FP_G = 7, FP_N = Math.ceil(FP_RATE * FP_LIFE) + 2, FP_SPEED = 3.2, FP_FY = -0.6;   // FP_FY: niewidzialny poziom, na który spadają serduszka
 const fpHearts = [];
 for (let i = 0; i < FP_N; i++) {
-  const m = new THREE.Mesh(STEP_HEART_GEO, new THREE.MeshBasicMaterial({ color: 0xff7ac8, transparent: true, side: THREE.DoubleSide, depthWrite: false }));
+  const m = new THREE.Mesh(STEP_HEART_GEO, STEP_STYLES.hearts.mat());
+  m.userData.mats = { hearts: m.material, carrots: STEP_STYLES.carrots.mat() };
   m.renderOrder = 3; m.visible = false; cuScene.add(m); fpHearts.push(m);
 }
 const fpRand = (k, n) => { const v = Math.sin(k * 12.9898 + n * 78.233) * 43758.5453; return v - Math.floor(v); };
-function renderStepPreview(ctx, px) {
+function renderStepPreview(ctx, px, id) {
   const T = performance.now() / 1000, ph = (T / FP_INT) % 1, hop = Math.abs(Math.sin(Math.PI * ph)), land = Math.cos(2 * Math.PI * ph);
   setBeanLook(cuBean, equipBean); cuBean.material.color.setHex(beanById(equipBean).color);
   const k = 0.7, sq = 0.06 * land;
@@ -1944,6 +2220,7 @@ function renderStepPreview(ctx, px) {
   const k0 = Math.floor(T * FP_RATE);
   for (let i = 0; i < FP_N; i++) {   // serca wypadają ze stóp (na przemian lewa/prawa), spadają na podłogę i odjeżdżają z nią do tyłu
     const n = k0 - i, age = T - n / FP_RATE, m = fpHearts[i];
+    m.geometry = (STEP_STYLES[id] || STEP_STYLES.hearts).geo; m.material = m.userData.mats[id] || m.userData.mats.hearts;
     if (age < 0 || age > FP_LIFE) { m.visible = false; continue; }
     const foot = (n % 2 ? 1 : -1) * 0.17, x0 = foot + (fpRand(n, 1) - 0.5) * 0.12, vx = (fpRand(n, 2) - 0.5) * 1.5 + foot * 2.2;
     const vy = 1.7 + fpRand(n, 3) * 1.3, vz = 1.0 + fpRand(n, 4) * 1.4, y0 = FP_FY + 0.12, size = 0.34 + fpRand(n, 5) * 0.16;
@@ -1970,11 +2247,13 @@ function renderCust() {
     const w = c.cv.clientWidth; if (!w) continue;
     const px = Math.min(384, Math.round(w * dpr));
     if (c.cv.width !== px) { c.cv.width = px; c.cv.height = px; }
-    if (c.kind === 'footstep') { renderStepPreview(c.ctx, px); continue; }
-    if (c.kind === 'emote') { setBeanLook(cuBean, equipBean); cuBean.material.color.setHex(beanById(equipBean).color); setPose(emotePose(tp)); }
+    if (c.kind === 'footstep') { renderStepPreview(c.ctx, px, c.id); continue; }
+    if (c.kind === 'emote' && (emoteById(c.id) || {}).bubble) { c.ctx.clearRect(0, 0, px, px); drawEmoteIcon(c.ctx, c.id, px / 2, px / 2, px * 0.5); continue; }   // chmurka: w podglądzie sama marchewka, bez fasolki i bez chmurki
+    if (c.kind === 'emote') { setBeanLook(cuBean, equipBean); cuBean.material.color.setHex(beanById(equipBean).color); if ((emoteById(c.id) || {}).bubble) bubblePose(); else setPose(emotePose(tp)); }
     else { setBeanLook(cuBean, c.id); cuBean.material.color.setHex(c.color); setPose(null); cuBean.rotation.y = beanSpin(c.id, cuAng); }
     cuRenderer.render(cuScene, cuCam);
     c.ctx.clearRect(0, 0, px, px); c.ctx.drawImage(cuRenderer.domElement, 0, 0, px, px);
+    if (c.kind === 'emote' && (emoteById(c.id) || {}).bubble) drawBubbleOverlay(c.ctx, px);
   }
   setPose(null);
 }
@@ -1987,14 +2266,17 @@ function renderEmoteViews() {
   const live = (!inMenu && !eliminated) || document.body.classList.contains('setLayout');
   if (inMenu) for (const v of emViews) { v.cd.classList.remove('on'); v.el.classList.remove('cool'); }   // w menu / podglądzie guzików nie ma cooldownu
   if (!equipEmote || !live) return;
-  const dpr = Math.min(devicePixelRatio || 1, 2), p = emotePose((performance.now() / 1000) % EMOTE_TIME);
+  const dpr = Math.min(devicePixelRatio || 1, 2), p = emotePose((performance.now() / 1000) % EMOTE_TIME), emBub = !!(emoteById(equipEmote) || {}).bubble;
   for (const v of emViews) {
     const w = v.cv.clientWidth; if (!w) continue;
     const px = Math.min(256, Math.round(w * dpr));
     if (v.cv.width !== px) { v.cv.width = px; v.cv.height = px; }
-    setBeanLook(cuBean, equipBean); cuBean.material.color.setHex(beanById(equipBean).color); setPose(p);
-    cuRenderer.render(cuScene, cuCam);
-    v.ctx.clearRect(0, 0, px, px); v.ctx.drawImage(cuRenderer.domElement, 0, 0, px, px);
+    if (emBub) { v.ctx.clearRect(0, 0, px, px); drawEmoteIcon(v.ctx, equipEmote, px / 2, px / 2, px * 0.5); }   // chmurka: w slocie sama ikona emotki
+    else {
+      setBeanLook(cuBean, equipBean); cuBean.material.color.setHex(beanById(equipBean).color); setPose(p);
+      cuRenderer.render(cuScene, cuCam);
+      v.ctx.clearRect(0, 0, px, px); v.ctx.drawImage(cuRenderer.domElement, 0, 0, px, px);
+    }
     const showCd = emoteCd > 0 && !inMenu; v.cd.classList.toggle('on', showCd); v.el.classList.toggle('cool', showCd); if (showCd) v.cd.textContent = Math.ceil(emoteCd);
   }
   setPose(null);
@@ -2013,9 +2295,21 @@ connBtn.addEventListener('click', async () => {
     return;
   }
   const provider = new firebase.auth.GoogleAuthProvider();
-  try { await fbAuth.signInWithPopup(provider); }
-  catch (err) {
-    if (err && (err.code === 'auth/popup-blocked' || err.code === 'auth/operation-not-supported-in-this-environment')) fbAuth.signInWithRedirect(provider).catch(() => {});
+  const anon = fbAuth.currentUser && fbAuth.currentUser.isAnonymous ? fbAuth.currentUser : null;
+  try {
+    if (anon) {                      // gość ma już anonimowe konto z wpisem w topce: podpinamy do niego Google (to samo uid, wpis zostaje)
+      await anon.linkWithPopup(provider);
+      await onAuth(fbAuth.currentUser);
+    } else await fbAuth.signInWithPopup(provider);
+  } catch (err) {
+    const c = err && err.code;
+    if (anon && c === 'auth/credential-already-in-use' && err.credential) {   // to konto Google już istnieje: logujemy się na nie, a wpis gościa znika z topki
+      await retireGuestEntry(anon.uid); await releaseNick(playerNick, anon.uid);
+      fbAuth.signInWithCredential(err.credential).catch(() => { pushGuestLb(); ensureGuestNick(); });
+    } else if (c === 'auth/popup-blocked' || c === 'auth/operation-not-supported-in-this-environment') {
+      if (anon) { await retireGuestEntry(anon.uid); await releaseNick(playerNick, anon.uid); }
+      fbAuth.signInWithRedirect(provider).catch(() => { pushGuestLb(); });
+    } else { pushGuestLb(); ensureGuestNick(); }
   }
 });
 updateConnUI();
@@ -2052,7 +2346,72 @@ function setTimer(sec) {   // odliczanie: 3:00 -> 0:00 (sec = czas, który upły
   const left = Math.max(0, Math.ceil(WIN_TIME - sec)); if (left === lastSec) return; lastSec = left;
   timerEl.textContent = Math.floor(left / 60) + ':' + String(left % 60).padStart(2, '0');
 }
+// ---------- Marchewki: 3-10 naraz, losowo na kafelkach, które jeszcze stoją; zebrana znika (na razie bez efektu) ----------
+const CARROT_MIN = 3, CARROT_MAX = 10;
+const carrotBodyGeo = (() => {   // lekko zaokrąglona marchewka: czubek na dole, gruby koniec na górze
+  const prof = [[0, 0], [0.05, 0.06], [0.1, 0.22], [0.15, 0.42], [0.19, 0.62], [0.2, 0.74], [0.17, 0.8], [0, 0.82]].map(p => new THREE.Vector2(p[0], p[1]));
+  return new THREE.LatheGeometry(prof, 14);
+})();
+const carrotLeafGeo = new THREE.ConeGeometry(0.07, 0.4, 6);
+const carrotMat = new THREE.MeshStandardMaterial({ color: 0xff8a1f, emissive: 0xff6a00, emissiveIntensity: 0.18, roughness: 0.7 });
+const carrotLeafMat = new THREE.MeshStandardMaterial({ color: 0x4fd16b, emissive: 0x1fa84a, emissiveIntensity: 0.2, roughness: 0.7 });
+
+function makeCarrot() {
+  const tilt = new THREE.Group(), body = new THREE.Mesh(carrotBodyGeo, carrotMat); body.castShadow = true; tilt.add(body);   // prawdziwy cień od słońca, taki sam jak u fasolki
+  for (let i = 0; i < 3; i++) {   // zielone liście na górze
+    const leaf = new THREE.Mesh(carrotLeafGeo, carrotLeafMat), a = i / 3 * Math.PI * 2 + 0.4;
+    leaf.castShadow = true; leaf.position.set(Math.cos(a) * 0.07, 0.99, Math.sin(a) * 0.07); leaf.rotation.set(Math.sin(a) * 0.5, 0, -Math.cos(a) * 0.5); tilt.add(leaf);
+  }
+  tilt.rotation.z = 0.42;
+  const spin = new THREE.Group(); spin.add(tilt);
+  const root = new THREE.Group(); root.add(spin);
+  return { root, spin };
+}
+const carrots = [];
+let carrotTarget = CARROT_MIN, carrotTargetT = 0, carrotSpawnT = 0;
+function clearCarrots() { for (const c of carrots) scene.remove(c.root); carrots.length = 0; carrotTarget = CARROT_MIN + Math.floor(Math.random() * (CARROT_MAX - CARROT_MIN + 1)); carrotTargetT = 6 + Math.random() * 6; carrotSpawnT = 1.0; }
+function spawnCarrot() {
+  const used = new Set(carrots.map(c => c.tile));
+  const free = tiles.filter(t => t.state === 0 && !t.warn && t.ring < ringsNow && !used.has(t) && Math.hypot(t.x - pos.x, t.z - pos.z) > 3.5);   // tylko stabilne kafelki, nie na brzegu, nie pod graczem
+  if (!free.length) return false;
+  const t = free[(Math.random() * free.length) | 0], c = makeCarrot(), a = Math.random() * Math.PI * 2, d = Math.random() * 0.9;
+  c.tile = t; c.ox = Math.cos(a) * d; c.oz = Math.sin(a) * d; c.age = 0; c.taken = 0; c.ph = Math.random() * 6.28; c.rot = Math.random() * 6.28;
+  c.root.scale.setScalar(0.01); c.root.position.set(t.x + c.ox, t.dy, t.z + c.oz); scene.add(c.root); carrots.push(c);
+  return true;
+}
+function updateCarrots(dt) {   // animacja: unoszenie, obrót, pojawianie się; zebrana znika; jedzie z kafelkiem, gdy ten spada
+  for (let i = carrots.length - 1; i >= 0; i--) {
+    const c = carrots[i], t = c.tile; c.age += dt; c.rot += dt * 1.6;
+    if (c.taken) {   // pęka w górę i znika
+      c.taken += dt; const k = Math.min(1, c.taken / 0.25);
+      c.root.scale.setScalar(Math.max(0.001, (1 + 0.35 * Math.sin(k * Math.PI)) * (1 - k * k)));
+      c.spin.position.y += dt * 2.2;
+      if (k >= 1) { scene.remove(c.root); carrots.splice(i, 1); }
+      continue;
+    }
+    if (t.state === 3 || t.dy < -6) { scene.remove(c.root); carrots.splice(i, 1); continue; }
+    const k = Math.min(1, c.age / 0.45), cc = k - 1, sp = Math.max(0.01, 1 + 2.70158 * cc * cc * cc + 1.70158 * cc * cc);   // wyskakuje ze sprężynką jak kafelki
+    c.root.scale.setScalar(sp);
+    c.root.position.set(t.x + c.ox, t.dy, t.z + c.oz);
+    c.spin.position.y = 0.5 + Math.sin(c.age * 2.4 + c.ph) * 0.1; c.spin.rotation.y = c.rot;
+  }
+}
+function updateCarrotSpawns(dt) {   // losowo dorzuca marchewki, tak by na mapie było 3-10 naraz
+  carrotTargetT -= dt;
+  if (carrotTargetT <= 0) { carrotTarget = CARROT_MIN + Math.floor(Math.random() * (CARROT_MAX - CARROT_MIN + 1)); carrotTargetT = 5 + Math.random() * 8; }
+  const live = carrots.reduce((n, c) => n + (c.taken ? 0 : 1), 0);
+  carrotSpawnT -= dt;
+  if (carrotSpawnT <= 0 && live < Math.max(CARROT_MIN, carrotTarget)) carrotSpawnT = spawnCarrot() ? (live < CARROT_MIN ? 0.3 : 0.5 + Math.random() * 2.2) : 0.6;
+}
+function collectCarrots() {   // wystarczy podejść / dotknąć; na razie nic poza zniknięciem
+  for (const c of carrots) {
+    if (c.taken || c.age < 0.3) continue;
+    const t = c.tile, cy = t.dy + 0.95;
+    if (Math.hypot(pos.x - (t.x + c.ox), pos.z - (t.z + c.oz)) < 1.15 && Math.abs(pos.y - cy) < HALF_H + 0.45) { c.taken = 0.001; carrotCount++; persist(); updateGemsUI(); }   // +1 marchewka, zapisuje się
+  }
+}
 function resetArena() {
+  clearCarrots();
   for (const t of tiles) {
     t.state = 0; t.t = 0; t.dy = 0; t.vy = 0; t.wt = 0; t.warn = false; t.perm = false;
     t.mesh.visible = true; t.mesh.position.y = -TILE_H / 2; t.mesh.rotation.set(0, 0, 0); t.mesh.scale.set(1, 1, 1);
@@ -2102,7 +2461,7 @@ let trailAcc = 0;
 const STEP_RATE = 15, STEP_LIFE = 1.6, STEP_GRAV = 6;   // ile serc na sekundę przy pełnej prędkości, czas życia, grawitacja
 function spawnStepHeart() {
   const tile = tileAtXZ(pos.x, pos.z); if (!tile || !isSolid(tile)) return;
-  const m = new THREE.Mesh(STEP_HEART_GEO, new THREE.MeshBasicMaterial({ color: 0xff7ac8, transparent: true, side: THREE.DoubleSide, depthWrite: false }));
+  const st = STEP_STYLES[equipStep] || STEP_STYLES.hearts, m = new THREE.Mesh(st.geo, st.mat());
   const sp = Math.hypot(vel.x, vel.z) || 1, mx = vel.x / sp, mz = vel.z / sp, r = () => Math.random() - 0.5, side = r() * 0.5, back = 0.6 + Math.random() * 0.9;
   m.position.set(pos.x - mz * side - mx * 0.1, tile.dy + 0.12, pos.z + mx * side - mz * 0.1);
   m.scale.setScalar(0.01); m.renderOrder = 5; scene.add(m);
@@ -2128,6 +2487,7 @@ function updateStepHearts(dt) {
 function update(dt) {
   updateTiles(dt);
   updateStepHearts(dt);
+  updateCarrots(dt);
   if (inMenu) {   // menu główne: fasolka kręci się na środku
     facing += dt * 0.9;
     const br = Math.sin(performance.now() / 500) * 0.04;
@@ -2166,6 +2526,7 @@ function update(dt) {
   else {
     gameT += dt; setTimer(gameT);
     if (gameT >= WIN_TIME) winGame(); else arenaEvents();
+    if (!won) { updateCarrotSpawns(dt); collectCarrots(); }
   }
   // kamera strzałkami (opcjonalnie)
   if (keys.ArrowLeft)  yaw += 2.2 * dt;
@@ -2188,6 +2549,7 @@ function update(dt) {
     emoteT += dt;
     if (hasInput || jumpBuffer > 0 || diveBuffer > 0 || diving || !grounded || won || emoteT >= EMOTE_TIME) { emoteT = -1; sfx.emoteStop(); }
   }
+  if (bubbleT >= 0) { bubbleT += dt; if (bubbleT >= BUBBLE_TIME) bubbleT = -1; }   // chmurka nie przerywa się ruchem
 
   // dive
   diveCooldown -= dt;
@@ -2269,7 +2631,7 @@ function update(dt) {
   // dźwięki: kroki i gwizd spadania
   if (grounded && !diving && hs > 2) { stepAcc += hs * dt; if (stepAcc > 2.6) { stepAcc = 0; sfx.step(); } }
   else if (!grounded) stepAcc = 1.5;
-  if (equipStep === 'hearts' && grounded && !diving && !won && hs > 2) { trailAcc += dt * STEP_RATE * Math.min(1, hs / MAX_SPEED); while (trailAcc >= 1) { trailAcc -= 1; spawnStepHeart(); } }   // serca wypadają ze stóp, im szybciej biegniesz, tym gęściej
+  if (equipStep && grounded && !diving && !won && hs > 2) { trailAcc += dt * STEP_RATE * Math.min(1, hs / MAX_SPEED); while (trailAcc >= 1) { trailAcc -= 1; spawnStepHeart(); } }   // serca wypadają ze stóp, im szybciej biegniesz, tym gęściej
   else trailAcc = 0;
   if (pos.y < -8 && !fallSnd) { fallSnd = true; sfx.fall(); }
 
@@ -2297,6 +2659,16 @@ function update(dt) {
   let sqv = squash;
   if (emoteT >= 0) { const p = emotePose(emoteT); bean.position.y += p.y; bean.rotation.set(p.rx, facing, p.rz, 'YXZ'); sqv = p.sq; }
   body.scale.set(1 + sqv * 0.6 - stretchAir * 0.3, STRETCH * (1 - sqv + stretchAir), 0.9 + sqv * 0.6);
+  if (bubbleT >= 0 && !eliminated && !inMenu) {   // chmurka z emotką nad głową: wyskakuje, wisi, na końcu się chowa
+    const a = Math.min(1, bubbleT / 0.25), pop = 1 + 2.70158 * Math.pow(a - 1, 3) + 1.70158 * Math.pow(a - 1, 2), out = Math.min(1, (BUBBLE_TIME - bubbleT) / 0.25);
+    gameBubble.visible = true; let bLift = beanById(equipBean).ears ? 0.62 : 0.14;
+    if (settings.nick) {   // nick włączony: chmurka wisi nad napisem (nick ma stały rozmiar w px, więc przeliczamy jego wysokość na jednostki świata)
+      const wpp = 2 * camera.position.distanceTo(bean.position) * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) / innerHeight;
+      bLift = Math.max(bLift, 50 * wpp);
+    }
+    gameBubble.position.set(bean.position.x, bean.position.y + HALF_H + bLift, bean.position.z);
+    gameBubble.scale.setScalar(BUBBLE_SIZE * Math.max(0.001, pop * out));
+  } else { gameBubble.visible = false; if (bubbleT >= 0) bubbleT = -1; }
 
   // kamera trzecioosobowa
   const dist = 8;

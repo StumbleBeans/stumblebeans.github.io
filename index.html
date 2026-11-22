@@ -852,17 +852,20 @@ const sun = new THREE.DirectionalLight(0xdde4ff, 0.7);
 
 // ---------- Gwiazdy ----------
 const stars = (function makeStars() {
-  const N = 1600, arr = new Float32Array(N * 3);
-  for (let i = 0; i < N; i++) {
-    const u = Math.random() * Math.PI * 2;
-    const v = Math.random() * 2 - 1;                 // cała sfera (góra i dół)
-    const r = 220, s = Math.sqrt(1 - v * v);
-    arr[i * 3]     = Math.cos(u) * s * r;
-    arr[i * 3 + 1] = v * r;
-    arr[i * 3 + 2] = Math.sin(u) * s * r;
+  const N = 1100, arr = new Float32Array(N * 3), r = 220;   // mniej gwiazdek niż wcześniej (było 1600)
+  const MIN_COS = Math.cos(1.5 * Math.PI / 180);            // min. odstęp 1.5° między gwiazdkami, żeby nie nachodziły na siebie
+  let n = 0;
+  for (let tries = 0; n < N && tries < N * 60; tries++) {
+    const u = Math.random() * Math.PI * 2, v = Math.random() * 2 - 1;   // cała sfera (góra i dół)
+    const s = Math.sqrt(1 - v * v), x = Math.cos(u) * s, y = v, z = Math.sin(u) * s;
+    let ok = true;
+    for (let j = 0; j < n; j++) if (x * arr[j * 3] + y * arr[j * 3 + 1] + z * arr[j * 3 + 2] > MIN_COS) { ok = false; break; }
+    if (!ok) continue;
+    arr[n * 3] = x; arr[n * 3 + 1] = y; arr[n * 3 + 2] = z; n++;
   }
+  for (let i = 0; i < n * 3; i++) arr[i] *= r;   // jednostkowe wektory -> sfera o promieniu r
   const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.BufferAttribute(arr, 3));
+  g.setAttribute('position', new THREE.BufferAttribute(arr.slice(0, n * 3), 3));   // tylko faktycznie wylosowane gwiazdki
   const m = new THREE.PointsMaterial({ color: 0xffffff, size: 2.2, sizeAttenuation: false, fog: false, transparent: true, opacity: 0.9, depthWrite: false });
   const p = new THREE.Points(g, m);
   p.frustumCulled = false;
@@ -1323,7 +1326,7 @@ function drawBunnyBean(ctx, cx, cy, S) {
   for (const sx of [-1, 1]) { ctx.beginPath(); ctx.arc(sx * 0.035, 0.19, 0.035, 0, Math.PI); ctx.stroke(); }   // buzia w kształcie "w"
   ctx.restore();
 }
-const beanCss = () => '#' + (((beanById(equipBean) || {}).color != null ? beanById(equipBean).color : 0xff3b3b)).toString(16).padStart(6, '0');
+const beanCss = () => '#' + BEANS[0].color.toString(16).padStart(6, '0');   // emotki Bean / Crying / Cool mają zawsze kolor podstawowej fasolki (Bean), niezależnie od założonego skina
 const drawEmoteIcon = (ctx, id, cx, cy, S) => id === 'heart' ? drawHeart(ctx, cx, cy, S) : id === 'bunny' ? drawBunnyBean(ctx, cx, cy, S * 0.95) : id === 'bean' ? drawPlainBean(ctx, cx, cy, S * 1.1, beanCss()) : id === 'cry' ? drawCryBean(ctx, cx, cy, S * 1.1, beanCss()) : id === 'cool' ? drawCoolBean(ctx, cx, cy, S * 1.1, beanCss()) : drawCarrot(ctx, cx, cy, S, 0.5);
 // chmurka jak w Stumble Guys, ale w stylu gry: niebieska, ciemny obrys + jasnoniebieski wewnętrzny obrys, w środku ikona emotki
 function makeBubbleCanvas(icon) {
@@ -1345,7 +1348,7 @@ const bubbleCv = makeBubbleCanvas();
 const bubbleTex = new THREE.CanvasTexture(bubbleCv); bubbleTex.anisotropy = 4;
 const gameBubble = new THREE.Sprite(new THREE.SpriteMaterial({ map: bubbleTex, transparent: true, depthWrite: false }));
 const bubbleTexCache = { carrot: bubbleTex };
-function bubbleTexFor(id) { const k = (id === 'bean' || id === 'cry' || id === 'cool') ? id + equipBean : id; return bubbleTexCache[k] || (bubbleTexCache[k] = Object.assign(new THREE.CanvasTexture(makeBubbleCanvas(id)), { anisotropy: 4 })); }   // płacząca fasolka ma kolor fasolki, więc osobna tekstura na każdy kolor
+function bubbleTexFor(id) { return bubbleTexCache[id] || (bubbleTexCache[id] = Object.assign(new THREE.CanvasTexture(makeBubbleCanvas(id)), { anisotropy: 4 })); }   // kolor emotek jest stały, więc jedna tekstura na emotkę
 gameBubble.center.set(0.5, 0); gameBubble.visible = false; gameBubble.renderOrder = 8; scene.add(gameBubble);   // kotwica na czubku ogonka
 function emotePose(t) {   // czysty backflip: 0-0.9 przysiad, 0.9-2.1 jedno salto w tył, 2.1-2.5 lądowanie, 2.5-4.0 ukłon i stanie
   let rx = 0, rz = 0, y = 0, sq = 0;
@@ -2553,7 +2556,7 @@ function update(dt) {
     diveBuffer = 0;
     {
     diveCooldown = DIVE_COOLDOWN;
-    diving = true; diveTimer = DIVE_TIME; jumpBuffer = 0; sfx.dive();
+    diving = true; diveTimer = DIVE_TIME; jumpBuffer = 0; if (!won) sfx.dive();
     vel.x = Math.sin(facing) * DIVE_SPEED;
     vel.z = Math.cos(facing) * DIVE_SPEED;
     vel.y = grounded ? 6 : Math.min(vel.y, 2);
@@ -2591,7 +2594,7 @@ function update(dt) {
   jumpBuffer -= dt;
   coyote = grounded ? 0.1 : coyote - dt;
   if (!diving && jumpBuffer > 0 && coyote > 0) {
-    vel.y = JUMP_V; grounded = false; coyote = 0; jumpBuffer = 0; squash = -0.25; sfx.jump();
+    vel.y = JUMP_V; grounded = false; coyote = 0; jumpBuffer = 0; squash = -0.25; if (!won) sfx.jump();
   }
 
   // grawitacja
@@ -2608,7 +2611,7 @@ function update(dt) {
   const G = (onFloor ? fh : 0) + groundH;   // wysokość środka fasolki, gdy stoi na kafelku
   if (onFloor && vel.y <= 0 && pos.y <= G + (grounded ? 0.3 : 0) && (grounded || prevY >= fh + DIVE_HEIGHT - 0.1)) {
     if (!grounded) {
-      if (vel.y < -3) sfx.land(-vel.y);
+      if (vel.y < -3 && !won) sfx.land(-vel.y);   // po wygranej cisza: tylko dźwięk Victory
       if (vel.y < -6) squash = Math.min(0.35, -vel.y * 0.02);
     }
     if (grounded && Math.abs(G - pos.y) < 0.4) visOff -= (G - pos.y);   // mały uskok między kafelkami: tylko wizualnie wygładzamy
@@ -2624,7 +2627,7 @@ function update(dt) {
   }
 
   // dźwięki: kroki i gwizd spadania
-  if (grounded && !diving && hs > 2) { stepAcc += hs * dt; if (stepAcc > 2.6) { stepAcc = 0; sfx.step(); } }
+  if (grounded && !diving && !won && hs > 2) { stepAcc += hs * dt; if (stepAcc > 2.6) { stepAcc = 0; sfx.step(); } }   // po wygranej bez kroków (fasolka jeszcze się ślizga)
   else if (!grounded) stepAcc = 1.5;
   if (equipStep && grounded && !diving && !won && hs > 2) { trailAcc += dt * STEP_RATE * Math.min(1, hs / MAX_SPEED); while (trailAcc >= 1) { trailAcc -= 1; spawnStepHeart(); } }   // serca wypadają ze stóp, im szybciej biegniesz, tym gęściej
   else trailAcc = 0;

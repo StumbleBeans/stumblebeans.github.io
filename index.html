@@ -281,9 +281,6 @@
   #crActive { flex-direction: column; justify-content: center; gap: 4px; padding: 14px 18px 18px; }
   .crStar { width: clamp(34px, 8vmin, 60px); height: clamp(34px, 8vmin, 60px); overflow: visible; }
   #crActive .tog { margin-top: 8px; }
-  #shopToast { position: absolute; left: 0; right: 0; bottom: 5vmin; text-align: center; z-index: 5; display: none; pointer-events: none; }
-  #shopToast span { display: inline-block; padding: 8px 22px; background: #2bbf4b; border: 7px solid #1b1b1b; border-radius: 16px; box-shadow: 0 0 0 4px #7dff9a inset, 0 7px 0 rgba(0,0,0,.35); color: #fff; -webkit-text-stroke: 6px #1b1b1b; paint-order: stroke fill; letter-spacing: 2px; font-size: clamp(16px, 3.6vmin, 28px); }
-  #shopToast.show { display: block; animation: toastIn 2.8s both; }
   .shopItem { width: 100%; gap: clamp(10px, 2.4vmin, 20px); padding: 12px 18px; }
   #shopList { width: 100%; display: flex; flex-direction: column; gap: 2vmin; min-height: 26vmin; max-height: calc(100vh - 3vmin - clamp(56px, 12vmin, 92px) - 2 * (clamp(12px, min(3.6vmin, 3.6vw), 28px) * 1.2 + 30px) - 12vmin); overflow-y: auto; overflow-x: hidden; padding: 0 0 12px; scrollbar-width: none; }
   #shopList::-webkit-scrollbar { display: none; }
@@ -567,7 +564,6 @@
 <div id="shop">
   <button id="shopBack" class="pbtn" title="Back"><svg viewBox="0 0 64 64"><path class="o" d="M40 12 L20 32 L40 52"/><path class="i" d="M40 12 L20 32 L40 52"/></svg></button>
   <div id="shopTop"><button id="gemHelp" class="pbtn" title="How to get gems"><svg viewBox="0 0 64 64"><text x="34" y="46.5" text-anchor="middle">?</text></svg></button><div id="shopGems"><svg class="gem"><use href="#gemIcon"/></svg><span id="shopGemCount">0</span></div><div id="shopCarrots"><svg class="gem"><use href="#carrotIcon"/></svg><span id="shopCarrotCount">0</span></div></div>
-  <div id="shopToast"><span></span></div>
   <div id="gemInfo"><div id="gemCard"><div id="gemList"></div><button id="gemOk" class="pbtn tog on">OK</button></div></div>
   <div id="shopPanel">
     <div class="cats"><button class="pbtn cat on" data-cat="beans">Beans</button><button class="pbtn cat" data-cat="emotes">Emotes</button><button class="pbtn cat" data-cat="footsteps">Footsteps</button><button class="pbtn cat" data-cat="creator">Creator</button></div>
@@ -700,6 +696,12 @@ const sfx = {
     const b = emoteBus; emoteBus = null; const t = actx.currentTime;
     try { b.gain.cancelScheduledValues(t); b.gain.setTargetAtTime(0, t, 0.015); } catch (err) {}
     setTimeout(() => { try { b.disconnect(); } catch (err) {} }, 500);
+  },
+  carrot() {   // zebrana marchewka: krótkie chrupnięcie + jasny dwunutowy "ding"
+    if (!audioOn() || !gate('carrot', 0.05)) return; const t = actx.currentTime;
+    noise(t, 0.07, { f: 2400, to: 1400, q: 1.2, vol: 0.12, a: 0.005 });
+    tone(mtof(79), t + 0.02, 0.1, { type: 'triangle', vol: 0.16 });
+    tone(mtof(86), t + 0.08, 0.2, { type: 'triangle', vol: 0.15 });
   },
   honey() {   // dotknięty kafelek robi się lepki: miękkie "bloop"
     if (!audioOn() || !gate('honey', 0.07)) return; const t = actx.currentTime;
@@ -1921,7 +1923,7 @@ applyTouchLayout(); buildKeybinds(); syncSliders(); onModeChange();
 let shopOpen = false;
 function updateGemsUI() { document.getElementById('shopGemCount').textContent = gems; document.getElementById('shopCarrotCount').textContent = carrotCount; }
 updateGemsUI();
-function openShop() { if (!inMenu || profileOpen || settingsOpen || custOpen || lbOpen) return; sfx.click(); updateBuyBtn(); shopOpen = true; document.body.classList.add('shop'); renderCreator(); claimCreatorGems(); flushCreatorQueue(); if (shopNoteQ) { const q = shopNoteQ; shopNoteQ = ''; shopNote(q); } }
+function openShop() { if (!inMenu || profileOpen || settingsOpen || custOpen || lbOpen) return; sfx.click(); updateBuyBtn(); shopOpen = true; document.body.classList.add('shop'); renderCreator(); claimCreatorGems(); flushCreatorQueue(); }
 // za co są gemy (na razie tylko wygrana); kolejne źródła dopisz do GEM_SOURCES
 const GEM_SOURCES = [{ label: 'Win a match', gems: WIN_GEMS }];
 const gemInfoEl = document.getElementById('gemInfo');
@@ -1966,7 +1968,7 @@ const shopItems = shopSrc.map(({ kind, b }) => {
     if (inCarrots) carrotCount -= cost; else gems -= cost;
     updateGemsUI(); list.push(b.id);
     const cr = inCarrots ? null : activeCreator();   // kod twórcy: połowa wydanych gemów leci do niego (marchewki się nie liczą)
-    if (cr && !isOwnCreator(cr)) { const n = Math.floor(b.price * CREATOR_SHARE); if (n > 0) { sendCreatorGems(cr.nick, n); shopNote('+' + n + ' gems for ' + nickPlain(cr.nick) + '!'); } }
+    if (cr && !isOwnCreator(cr)) { const n = Math.floor(b.price * CREATOR_SHARE); if (n > 0) { sendCreatorGems(cr.nick, n); } }   // po cichu, bez żadnego dymka
     if (kind === 'emote' && !equipEmote) equipEmote = b.id;
     if (kind === 'footstep' && !equipStep) equipStep = b.id;
     persist(); updateBuyBtn();
@@ -1985,13 +1987,6 @@ function activeCreator() {   // aktywny kod albo null (wygasły znika sam)
   return creator ? { code: creator.code, until: creator.until, nick: CREATOR_CODES[creator.code].nick } : null;
 }
 const isOwnCreator = cr => !!cr && !!playerNick && nickKey(playerNick) === nickKey(cr.nick);   // twórca kupujący ze swoim kodem nie dostaje gemów sam od siebie
-let shopNoteQ = '', shopNoteT = 0;
-function shopNote(txt) {   // zielony dymek w sklepie (jak nie jest otwarty, pokaże się po wejściu)
-  if (!shopOpen) { shopNoteQ = txt; return; }
-  const t = document.getElementById('shopToast'); t.firstElementChild.textContent = txt;
-  t.classList.remove('show'); void t.offsetWidth; t.classList.add('show');
-  clearTimeout(shopNoteT); shopNoteT = setTimeout(() => t.classList.remove('show'), 2900);
-}
 function crLeft(ms) {
   const d = Math.floor(ms / 864e5), h = Math.floor(ms / 36e5) % 24, m = Math.floor(ms / 6e4) % 60, s = Math.floor(ms / 1e3) % 60;
   return d ? d + 'd ' + h + 'h' : h ? h + 'h ' + m + 'm' : m + 'm ' + s + 's';
@@ -2041,7 +2036,7 @@ async function claimCreatorGems() {   // tylko zalogowane konto (to ono jest wł
       if (p > 0) tx.update(ref, { pending: 0 });
       return p;
     });
-    if (n > 0) { gems += n; persist(); updateGemsUI(); shopNote('Creator code: +' + n + ' gems!'); }
+    if (n > 0) { gems += n; persist(); updateGemsUI(); }
   } catch (err) {} finally { crClaiming = false; }
 }
 flushCreatorQueue();
@@ -2407,7 +2402,7 @@ function collectCarrots() {   // wystarczy podejść / dotknąć; na razie nic p
   for (const c of carrots) {
     if (c.taken || c.age < 0.3) continue;
     const t = c.tile, cy = t.dy + 0.95;
-    if (Math.hypot(pos.x - (t.x + c.ox), pos.z - (t.z + c.oz)) < 1.15 && Math.abs(pos.y - cy) < HALF_H + 0.45) { c.taken = 0.001; carrotCount++; persist(); updateGemsUI(); }   // +1 marchewka, zapisuje się
+    if (Math.hypot(pos.x - (t.x + c.ox), pos.z - (t.z + c.oz)) < 1.15 && Math.abs(pos.y - cy) < HALF_H + 0.45) { c.taken = 0.001; carrotCount++; persist(); updateGemsUI(); sfx.carrot(); }   // +1 marchewka, zapisuje się
   }
 }
 function resetArena() {

@@ -333,14 +333,12 @@
     background: #3a7bff; border: 7px solid #1b1b1b; border-radius: 16px; padding: 6px 14px;
     box-shadow: 0 0 0 4px #8fb4ff inset, 0 7px 0 rgba(0,0,0,.35);
   }
-  .lbRow.top1 { background: #ffd21f; box-shadow: 0 0 0 4px #fff18a inset, 0 7px 0 rgba(0,0,0,.35); }
-  .lbRow.top2 { background: #b7c0d6; box-shadow: 0 0 0 4px #e6ebf7 inset, 0 7px 0 rgba(0,0,0,.35); }
-  .lbRow.top3 { background: #e08a3c; box-shadow: 0 0 0 4px #ffc48a inset, 0 7px 0 rgba(0,0,0,.35); }
   .lbRank, .lbName, .lbVal { color: #fff; -webkit-text-stroke: 7px #1b1b1b; paint-order: stroke fill; letter-spacing: 2px; font-size: clamp(16px, 3.6vmin, 28px); }
   .lbRank { min-width: 3.2em; text-align: center; flex: none; }
   .lbName { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding: 4px 6px; }
   .lbVal { flex: none; }
   .lbAv { width: clamp(44px, 9vmin, 64px); height: clamp(44px, 9vmin, 64px); }
+  .lbRow.me { background: #ffd21f; box-shadow: 0 0 0 4px #fff18a inset, 0 7px 0 rgba(0,0,0,.35); }   /* twój wiersz: żółty jak zaznaczona kategoria */
   .lbAv img { display: block; width: 100%; height: 100%; }
   .lbAv::after { border-width: 6px; box-shadow: 0 0 0 3px #fff inset; }
 
